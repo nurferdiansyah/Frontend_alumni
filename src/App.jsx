@@ -16,6 +16,7 @@ import { Lowongan } from './pages/student/Lowongan';
 import { DetailLowongan as StudentDetailLowongan } from './pages/student/DetailLowongan';
 import { Pengaturan } from './pages/student/Pengaturan';
 import { Notifikasi } from './pages/student/Notifikasi';
+import { EditProfil } from './pages/student/EditProfil';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -48,6 +49,7 @@ function App() {
         <Route path="/dashboard/lowongan/:id" element={<StudentDetailLowongan />} />
         <Route path="/dashboard/notifikasi" element={<Notifikasi />} />
         <Route path="/dashboard/pengaturan" element={<Pengaturan />} />
+        <Route path="/dashboard/edit-profil" element={<EditProfil />} />
       </Routes>
     </Router>
   );

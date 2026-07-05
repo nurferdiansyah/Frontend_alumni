@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { StudentLayout } from '../../components/StudentLayout';
 import { Button } from '../../components/Button';
 import { MapPin, Briefcase, GraduationCap, Edit, Phone, Building2 } from 'lucide-react';
@@ -30,9 +31,11 @@ export function ProfilSaya() {
                 </div>
                 
                 <div className="flex justify-center md:justify-end pb-2">
-                  <Button variant="outline" className="flex items-center gap-2 rounded-xl">
-                    <Edit size={16} /> Edit Profil
-                  </Button>
+                  <Link to="/dashboard/edit-profil">
+                    <Button variant="outline" className="flex items-center gap-2 rounded-xl">
+                      <Edit size={16} /> Edit Profil
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </div>

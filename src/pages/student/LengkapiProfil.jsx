@@ -5,10 +5,9 @@ import { Button } from '../../components/Button';
 import { Camera, MapPin, Briefcase, GraduationCap, ChevronRight, ChevronLeft, Check, Building2, BookOpen, Clock } from 'lucide-react';
 
 const faculties = {
-  "Fakultas Agama Islam": ["Pendidikan Agama Islam", "Ekonomi Syariah"],
-  "Fakultas Keguruan dan Ilmu Pendidikan": ["Pendidikan Bahasa Inggris", "Pendidikan Bahasa Indonesia", "Pendidikan Fisika"],
-  "Fakultas Sains dan Teknologi": ["Informatika", "Sistem Informasi"],
-  "Fakultas Pertanian": ["Agroteknologi"]
+  "Fakultas Agama Islam": ["Pendidikan Agama Islam", "Pendidikan Guru Madrasah Ibtidaiyah"],
+  "Fakultas Pendidikan": ["Pendidikan Fisika", "Pendidikan Ekonomi", "Pendidikan Bahasa Inggris", "Pendidikan Bahasa dan Sastra Indonesia", "Pendidikan Teknologi Informasi"],
+  "Fakultas Sains dan Teknologi": ["Informatika", "Matematika", "Sains Pertanian"]
 };
 
 const locations = {
