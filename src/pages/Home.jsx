@@ -5,7 +5,7 @@ import { Button } from '../components/Button';
 import { CardInfo } from '../components/CardInfo';
 import { JobListItem } from '../components/JobListItem';
 import { ScrollReveal } from '../components/ScrollReveal';
-import { BookOpen, Award, Building, Users, Briefcase, GraduationCap, CheckCircle2, Info, ChevronRight, Laptop, FileText } from 'lucide-react';
+import { BookOpen, Award, Building, Users, Briefcase, GraduationCap, CheckCircle2, Info, ChevronRight, Laptop, FileText, ArrowRight } from 'lucide-react';
 
 export function Home() {
   return (
