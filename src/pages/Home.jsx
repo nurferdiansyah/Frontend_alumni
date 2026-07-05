@@ -43,8 +43,12 @@ export function Home() {
               Selamat datang di Pusat Pengembangan Karir dan Alumni Universitas Nurul Huda (UNUHA). Kami berkomitmen membantu setiap mahasiswa dan lulusan mencapai potensi karir maksimal mereka melalui jejaring profesional yang kuat.
             </p>
             <div className="flex flex-col sm:flex-row gap-5">
-              <Button variant="accent" className="text-base px-8 py-3.5 rounded-xl font-bold shadow-lg shadow-[#7FE0B0]/20 text-[#0F4C3A] bg-[#7FE0B0] hover:bg-[#66c698]">Eksplorasi Karir</Button>
-              <Button variant="outlineWhite" className="text-base px-8 py-3.5 rounded-xl font-bold border-2 border-white/30 hover:border-[#7FE0B0] hover:bg-[#7FE0B0] hover:text-[#0F4C3A] text-white">Tentang Kami</Button>
+              <Link to="/jobs">
+                <Button variant="accent" className="w-full sm:w-auto text-base px-8 py-3.5 rounded-xl font-bold shadow-lg shadow-[#7FE0B0]/20 text-[#0F4C3A] bg-[#7FE0B0] hover:bg-[#66c698]">Eksplorasi Karir</Button>
+              </Link>
+              <Link to="/visi-misi">
+                <Button variant="outlineWhite" className="w-full sm:w-auto text-base px-8 py-3.5 rounded-xl font-bold border-2 border-white/30 hover:border-[#7FE0B0] hover:bg-[#7FE0B0] hover:text-[#0F4C3A] text-white">Tentang Kami</Button>
+              </Link>
             </div>
           </ScrollReveal>
           
