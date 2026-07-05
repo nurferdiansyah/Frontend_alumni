@@ -6,6 +6,7 @@ import { CardInfo } from '../components/CardInfo';
 import { JobListItem } from '../components/JobListItem';
 import { ScrollReveal } from '../components/ScrollReveal';
 import { BookOpen, Award, Building, Users, Briefcase, GraduationCap, CheckCircle2, Info, ChevronRight, Laptop, FileText, ArrowRight, BookMarked } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export function Home() {
   return (
@@ -101,9 +102,9 @@ export function Home() {
                 <h2 className="text-[32px] font-bold text-gray-900 mb-2">Informasi Karir</h2>
                 <p className="text-gray-500 text-[15px] max-w-lg">Program pengembangan kompetensi dan peluang profesional untuk mengantarkan masa depan gemilang.</p>
               </div>
-              <a href="#" className="text-gray-700 font-semibold hover:text-gray-900 transition-colors flex items-center gap-1.5 text-[15px]">
+              <Link to="/jobs" className="text-gray-700 font-semibold hover:text-gray-900 transition-colors flex items-center gap-1.5 text-[15px]">
                 Semua Program Karir <ArrowRight size={16} />
-              </a>
+              </Link>
             </div>
           </ScrollReveal>
 
@@ -207,7 +208,9 @@ export function Home() {
             </div>
             <div className="flex gap-3 w-full sm:w-auto">
               <Button variant="outline" className="flex-1 sm:flex-none text-[14px] px-6 py-2.5 rounded-xl border-gray-200 text-gray-600 bg-white shadow-sm font-semibold">Filter</Button>
-              <Button variant="primary" className="flex-1 sm:flex-none text-[14px] px-6 py-2.5 rounded-xl shadow-sm bg-[#0F4C3A] hover:bg-[#0a3629] font-semibold text-white">Cari Kerja</Button>
+              <Link to="/jobs" className="flex-1 sm:flex-none">
+                <Button variant="primary" className="w-full text-[14px] px-6 py-2.5 rounded-xl shadow-sm bg-[#0F4C3A] hover:bg-[#0a3629] font-semibold text-white">Cari Kerja</Button>
+              </Link>
             </div>
           </div>
         </ScrollReveal>
