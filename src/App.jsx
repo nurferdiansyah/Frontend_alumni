@@ -18,6 +18,13 @@ import { Pengaturan } from './pages/student/Pengaturan';
 import { Notifikasi } from './pages/student/Notifikasi';
 import { EditProfil } from './pages/student/EditProfil';
 
+// Admin Pages
+import { DashboardAdmin } from './pages/admin/DashboardAdmin';
+import { DataAlumni } from './pages/admin/DataAlumni';
+import { LowonganAdmin } from './pages/admin/LowonganAdmin';
+import { BeritaAdmin } from './pages/admin/BeritaAdmin';
+import { PengaturanAdmin } from './pages/admin/PengaturanAdmin';
+
 function ScrollToTop() {
   const { pathname } = useLocation();
 
@@ -50,6 +57,13 @@ function App() {
         <Route path="/dashboard/notifikasi" element={<Notifikasi />} />
         <Route path="/dashboard/pengaturan" element={<Pengaturan />} />
         <Route path="/dashboard/edit-profil" element={<EditProfil />} />
+
+        {/* Admin Routes */}
+        <Route path="/admin/dashboard" element={<DashboardAdmin />} />
+        <Route path="/admin/alumni" element={<DataAlumni />} />
+        <Route path="/admin/lowongan" element={<LowonganAdmin />} />
+        <Route path="/admin/berita" element={<BeritaAdmin />} />
+        <Route path="/admin/pengaturan" element={<PengaturanAdmin />} />
       </Routes>
     </Router>
   );
