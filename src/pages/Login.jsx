@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '../components/Button';
+import { useNavigate } from 'react-router-dom';
 
 export function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -109,7 +111,7 @@ export function Login() {
                 <a href="#" className="text-sm font-bold text-[#0F4C3A] hover:text-[#7FE0B0] transition-colors">Lupa sandi?</a>
               </div>
 
-              <Button variant="primary" className="w-full py-4 rounded-xl text-[16px] font-bold shadow-lg shadow-[#0F4C3A]/20 bg-[#0F4C3A] hover:bg-[#0a3629] hover:-translate-y-1 transition-all text-white">
+              <Button type="button" onClick={() => navigate('/lengkapi-profil')} variant="primary" className="w-full py-4 rounded-xl text-[16px] font-bold shadow-lg shadow-[#0F4C3A]/20 bg-[#0F4C3A] hover:bg-[#0a3629] hover:-translate-y-1 transition-all text-white">
                 Masuk Sekarang
               </Button>
             </form>
