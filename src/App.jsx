@@ -14,6 +14,8 @@ import { Dashboard } from './pages/student/Dashboard';
 import { ProfilSaya } from './pages/student/ProfilSaya';
 import { Lowongan } from './pages/student/Lowongan';
 import { DetailLowongan as StudentDetailLowongan } from './pages/student/DetailLowongan';
+import { Pengaturan } from './pages/student/Pengaturan';
+import { Notifikasi } from './pages/student/Notifikasi';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -44,6 +46,8 @@ function App() {
         <Route path="/profil-saya" element={<ProfilSaya />} />
         <Route path="/dashboard/lowongan" element={<Lowongan />} />
         <Route path="/dashboard/lowongan/:id" element={<StudentDetailLowongan />} />
+        <Route path="/dashboard/notifikasi" element={<Notifikasi />} />
+        <Route path="/dashboard/pengaturan" element={<Pengaturan />} />
       </Routes>
     </Router>
   );

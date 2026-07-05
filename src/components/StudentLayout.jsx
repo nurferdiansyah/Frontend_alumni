@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Home, User, Briefcase, Settings, LogOut, Menu, X, Search, Bell } from 'lucide-react';
+import { Home, User, Briefcase, Settings, LogOut, Menu, X, Search, Bell, CheckCircle } from 'lucide-react';
 
 export function StudentLayout({ children }) {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -11,7 +11,8 @@ export function StudentLayout({ children }) {
     { name: 'Dashboard', icon: Home, path: '/dashboard' },
     { name: 'Profil Saya', icon: User, path: '/profil-saya' },
     { name: 'Lowongan', icon: Briefcase, path: '/dashboard/lowongan' },
-    { name: 'Pengaturan', icon: Settings, path: '#' },
+    { name: 'Notifikasi', icon: Bell, path: '/dashboard/notifikasi' },
+    { name: 'Pengaturan', icon: Settings, path: '/dashboard/pengaturan' },
   ];
 
   const handleLogout = () => navigate('/login');
@@ -61,12 +62,8 @@ export function StudentLayout({ children }) {
               <input type="text" placeholder="Cari..." className="bg-transparent border-none outline-none w-full text-sm" />
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            <button className="relative p-2 text-gray-400 hover:text-[#0F4C3A] transition-colors rounded-full hover:bg-gray-100">
-              <Bell size={20} />
-              <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
-            </button>
-            <div className="h-8 w-px bg-gray-200 mx-2"></div>
+          <div className="flex items-center gap-2 md:gap-4 relative">
+            <div className="h-8 w-px bg-gray-200 mx-1 md:mx-2"></div>
             <Link to="/profil-saya" className="flex items-center gap-3 group">
               <div className="text-right hidden sm:block">
                 <p className="text-sm font-bold text-gray-900 group-hover:text-[#0F4C3A] transition-colors">Budi Santoso</p>
