@@ -8,6 +8,7 @@ import { Berita } from './pages/Berita';
 import { DetailBerita } from './pages/DetailBerita';
 import { DetailLowongan } from './pages/DetailLowongan';
 import { Kontak } from './pages/Kontak';
+import { Login } from './pages/Login';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -32,6 +33,7 @@ function App() {
         <Route path="/berita" element={<Berita />} />
         <Route path="/berita/:id" element={<DetailBerita />} />
         <Route path="/kontak" element={<Kontak />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </Router>
   );

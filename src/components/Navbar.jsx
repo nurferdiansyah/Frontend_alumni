@@ -49,8 +49,8 @@ export function Navbar() {
             onMouseLeave={() => setHoveredAuth('daftar')}
           >
             {['masuk', 'daftar'].map((item) => (
-              <a
-                href="#"
+              <Link
+                to={item === 'masuk' ? '/login' : '#'}
                 key={item}
                 className="relative"
                 onMouseEnter={() => setHoveredAuth(item)}
@@ -66,7 +66,7 @@ export function Navbar() {
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}
                   />
                 )}
-              </a>
+              </Link>
             ))}
           </div>
 
@@ -90,7 +90,9 @@ export function Navbar() {
               );
             })}
             <div className="mt-4 pt-4 border-t border-gray-100 flex flex-col gap-3 px-3">
-              <Button variant="outline" className="w-full">Masuk</Button>
+              <Link to="/login">
+                <Button variant="outline" className="w-full">Masuk</Button>
+              </Link>
               <Button variant="primary" className="w-full">Daftar</Button>
             </div>
           </div>
