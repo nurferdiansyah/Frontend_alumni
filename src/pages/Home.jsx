@@ -42,8 +42,8 @@ export function Home() {
       </section>
 
       {/* 3. Informasi Kampus */}
-      <section id="campus" className="py-24 px-4 sm:px-6 lg:px-8 bg-[#F7F8FA]">
-        <div className="max-w-[1200px] mx-auto">
+      <section id="campus" className="py-20 px-6 md:px-12 lg:px-16 bg-[#F7F8FA]">
+        <div className="w-full max-w-[1150px] mx-auto">
           <ScrollReveal>
             <div className="text-center mb-14">
               <h2 className="text-[32px] font-bold text-gray-900 mb-4">Informasi Kampus</h2>
@@ -96,38 +96,46 @@ export function Home() {
       </section>
 
       {/* 4. Informasi Karir */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-[#F4F7FA] border-t border-gray-100">
-        <div className="max-w-[1200px] mx-auto">
+      <section className="py-20 px-6 md:px-12 lg:px-16 bg-[#F4F7FA] border-t border-gray-100 relative overflow-hidden">
+        {/* Decorative background element */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#7FE0B0]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none"></div>
+
+        <div className="w-full max-w-[1150px] mx-auto relative z-10">
           <ScrollReveal>
-            <div className="flex flex-col sm:flex-row justify-between items-end mb-12 gap-4 border-b border-gray-200 pb-6">
+            <div className="flex flex-col sm:flex-row justify-between items-end mb-10 gap-4 border-b-2 border-gray-200/60 pb-6">
               <div>
-                <h2 className="text-[32px] font-bold text-gray-900 mb-2">Informasi Karir</h2>
-                <p className="text-gray-500 text-[15px] max-w-lg">Program pengembangan kompetensi dan peluang profesional untuk mengantarkan masa depan gemilang.</p>
+                <h2 className="text-4xl md:text-[42px] font-extrabold text-gray-900 mb-3 tracking-tight">Informasi Karir</h2>
+                <p className="text-gray-500 text-[16px] max-w-xl leading-relaxed">Program pengembangan kompetensi dan peluang profesional untuk mengantarkan masa depan gemilang.</p>
               </div>
-              <Link to="/jobs" className="text-gray-700 font-semibold hover:text-gray-900 transition-colors flex items-center gap-1.5 text-[15px]">
-                Semua Program Karir <ArrowRight size={16} />
+              <Link to="/jobs" className="group flex items-center gap-2 px-6 py-2.5 bg-white rounded-full border border-gray-200 text-gray-800 font-bold hover:border-[#0F4C3A] hover:text-[#0F4C3A] transition-all duration-300 shadow-sm hover:shadow-md mb-2">
+                Semua Program <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-300" />
               </Link>
             </div>
           </ScrollReveal>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { title: "Pengembangan Karir", desc: "Konsultasi karir individu dan pemetaan minat bakat untuk alumni.", icon: Users, color: "text-[#A855F7]", bg: "bg-[#F3E8FF]", items: ["Konseling 1-on-1", "Review CV & Portofolio"] },
-              { title: "Program Magang", desc: "Kesempatan magang di berbagai perusahaan mitra industri UNUHA.", icon: Briefcase, color: "text-[#10B981]", bg: "bg-[#D1FAE5]", items: ["Magang BUMN", "Magang Startup"] },
-              { title: "Pelatihan & Kursus", desc: "Tingkatkan skill digital dan soft skill melalui pelatihan bersertifikat.", icon: Laptop, color: "text-[#14B8A6]", bg: "bg-[#CCFBF1]", items: ["Sertifikasi IT", "Public Speaking"] },
-              { title: "Info Pendukung", desc: "Berbagai template dokumen profesional dan tips melamar kerja.", icon: FileText, color: "text-[#6366F1]", bg: "bg-[#E0E7FF]", items: ["Template ATS CV", "Bank Soal Tes"] },
+              { title: "Pengembangan Karir", desc: "Konsultasi karir individu dan pemetaan minat bakat.", icon: Users, accent: "bg-[#0F4C3A]", textAccent: "text-[#0F4C3A]", border: "border-t-[5px] border-[#0F4C3A]", items: ["Konseling 1-on-1", "Review CV & Portofolio"] },
+              { title: "Program Magang", desc: "Kesempatan magang di berbagai perusahaan mitra industri.", icon: Briefcase, accent: "bg-[#18755C]", textAccent: "text-[#18755C]", border: "border-t-[5px] border-[#18755C]", items: ["Magang BUMN", "Magang Startup"] },
+              { title: "Pelatihan & Kursus", desc: "Tingkatkan skill digital melalui pelatihan bersertifikat.", icon: Laptop, accent: "bg-[#209C7A]", textAccent: "text-[#209C7A]", border: "border-t-[5px] border-[#209C7A]", items: ["Sertifikasi IT", "Public Speaking"] },
+              { title: "Info Pendukung", desc: "Berbagai template dokumen profesional untuk melamar kerja.", icon: FileText, accent: "bg-[#29C49A]", textAccent: "text-[#29C49A]", border: "border-t-[5px] border-[#29C49A]", items: ["Template ATS CV", "Bank Soal Tes"] },
             ].map((card, i) => (
               <ScrollReveal key={i} delay={i * 0.1}>
-                <div className="bg-white rounded-[24px] p-7 shadow-sm hover:shadow-md transition-shadow h-full border border-gray-100 flex flex-col">
-                  <div className={`${card.bg} ${card.color} w-12 h-12 rounded-xl flex items-center justify-center mb-6`}>
-                    <card.icon size={24} />
+                <div className={`bg-white rounded-b-[24px] rounded-t-sm p-7 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 h-full border-x border-b border-gray-100 flex flex-col group relative overflow-hidden ${card.border}`}>
+                  {/* Decorative subtle background icon */}
+                  <card.icon size={110} className={`absolute -bottom-6 -right-6 opacity-[0.03] ${card.textAccent} group-hover:scale-110 group-hover:opacity-[0.05] transition-all duration-500 pointer-events-none`} />
+                  
+                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-all duration-300 ${card.accent} text-white shadow-md group-hover:scale-110 group-hover:rotate-3 origin-center`}>
+                    <card.icon size={26} />
                   </div>
-                  <h3 className="font-bold text-[17px] text-gray-900 mb-3">{card.title}</h3>
-                  <p className="text-gray-500 text-[14px] mb-6 leading-relaxed flex-grow">{card.desc}</p>
-                  <ul className="space-y-3 pt-6">
+                  <h3 className="font-extrabold text-[18px] text-gray-900 mb-3 group-hover:text-[#0F4C3A] transition-colors relative z-10">{card.title}</h3>
+                  <p className="text-gray-500 text-[14px] mb-6 leading-relaxed flex-grow relative z-10">{card.desc}</p>
+                  <ul className="space-y-3 pt-5 border-t border-gray-100/80 relative z-10">
                     {card.items.map((item, j) => (
-                      <li key={j} className="flex items-center gap-2.5 text-gray-500 text-[13px]">
-                        <CheckCircle2 size={16} className="text-gray-300 flex-shrink-0" />
+                      <li key={j} className="flex items-center gap-3 text-gray-600 text-[13px] font-medium group/item">
+                        <span className={`w-6 h-6 rounded-full flex items-center justify-center ${card.accent} bg-opacity-10 ${card.textAccent} group-hover/item:scale-110 group-hover/item:bg-opacity-20 transition-all duration-300`}>
+                          <CheckCircle2 size={13} strokeWidth={3} />
+                        </span>
                         <span>{item}</span>
                       </li>
                     ))}
@@ -140,7 +148,7 @@ export function Home() {
       </section>
 
       {/* 5. Berita Kampus */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-[1200px] mx-auto">
+      <section className="py-20 px-6 md:px-12 lg:px-16 w-full max-w-[1150px] mx-auto">
         <ScrollReveal>
           <div className="text-center mb-14">
             <h2 className="text-[32px] font-bold text-gray-900 mb-3 relative inline-block">
@@ -201,7 +209,7 @@ export function Home() {
       </section>
 
       {/* 7. Lowongan Kerja Terbaru */}
-      <section id="jobs" className="py-24 px-4 sm:px-6 lg:px-8 max-w-[1200px] mx-auto">
+      <section id="jobs" className="py-20 px-6 md:px-12 lg:px-16 w-full max-w-[1150px] mx-auto">
         <ScrollReveal>
           <div className="flex flex-col sm:flex-row justify-between items-end mb-12 gap-6">
             <div>
@@ -246,7 +254,7 @@ export function Home() {
       </section>
 
       {/* 8. CTA Banner */}
-      <section className="pb-24 px-4 sm:px-6 lg:px-8 max-w-[1200px] mx-auto">
+      <section className="pb-20 px-6 md:px-12 lg:px-16 w-full max-w-[1150px] mx-auto">
         <ScrollReveal>
           <div className="bg-[#0F4C3A] rounded-[32px] p-12 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left relative overflow-hidden shadow-2xl">
             <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
