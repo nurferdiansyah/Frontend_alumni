@@ -1,8 +1,9 @@
 import React from 'react';
 import { MapPin, Calendar, Clock, Building } from 'lucide-react';
 import { Button } from './Button';
+import { Link } from 'react-router-dom';
 
-export function JobListItem({ position, company, location, deadline, logo }) {
+export function JobListItem({ id = 1, position, company, location, deadline, logo }) {
   return (
     <div className="bg-white rounded-[20px] p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
       <div className="flex items-center gap-5">
@@ -30,7 +31,9 @@ export function JobListItem({ position, company, location, deadline, logo }) {
             <Calendar className="w-4 h-4 mr-2" /> {deadline}
           </div>
         </div>
-        <Button variant="primary" className="w-full md:w-auto px-7 py-3 text-[14px] rounded-xl shadow-none font-bold bg-[#0F4C3A] hover:bg-[#0a3629] text-white">Lamar Sekarang</Button>
+        <Link to={`/jobs/${id}`} className="w-full md:w-auto">
+          <Button variant="primary" className="w-full md:w-auto px-7 py-3 text-[14px] rounded-xl shadow-none font-bold bg-[#0F4C3A] hover:bg-[#0a3629] text-white transition-all hover:-translate-y-0.5">Informasi Kerja</Button>
+        </Link>
       </div>
     </div>
   );

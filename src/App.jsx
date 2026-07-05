@@ -6,6 +6,7 @@ import { Campus } from './pages/Campus';
 import { VisiMisi } from './pages/VisiMisi';
 import { Berita } from './pages/Berita';
 import { DetailBerita } from './pages/DetailBerita';
+import { DetailLowongan } from './pages/DetailLowongan';
 import { Kontak } from './pages/Kontak';
 
 function ScrollToTop() {
@@ -25,6 +26,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/jobs" element={<Jobs />} />
+        <Route path="/jobs/:id" element={<DetailLowongan />} />
         <Route path="/campus" element={<Campus />} />
         <Route path="/visi-misi" element={<VisiMisi />} />
         <Route path="/berita" element={<Berita />} />

@@ -186,17 +186,25 @@ export function Home() {
       </section>
 
       {/* 5. Berita Kampus */}
-      <section className="py-20 px-6 md:px-12 lg:px-16 w-full max-w-[1150px] mx-auto">
-        <ScrollReveal>
-          <div className="text-center mb-14">
-            <h2 className="text-[32px] font-bold text-gray-900 mb-3 relative inline-block">
-              Berita Kampus
-              <div className="absolute -bottom-3 left-[10%] right-[10%] h-[4px] bg-[#111827] rounded-full"></div>
-            </h2>
-          </div>
-        </ScrollReveal>
+      <section className="py-20 px-6 md:px-12 lg:px-16 w-full">
+        <div className="w-full max-w-[1150px] mx-auto">
+          <ScrollReveal>
+            <div className="flex flex-col sm:flex-row justify-between items-center sm:items-end mb-14 gap-6">
+              <div className="flex-1 hidden sm:block"></div>
+              <h2 className="text-[32px] font-bold text-gray-900 mb-3 sm:mb-0 relative inline-block text-center flex-shrink-0">
+                Berita Kampus
+                <div className="absolute -bottom-3 left-[10%] right-[10%] h-[4px] bg-[#111827] rounded-full"></div>
+              </h2>
+              <div className="flex-1 flex sm:justify-end">
+                <Link to="/berita" className="inline-flex items-center gap-2 bg-white text-[#0F4C3A] font-bold text-[15px] px-7 py-3 rounded-full shadow-[0_4px_14px_rgba(0,0,0,0.05)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.1)] transition-all hover:-translate-y-0.5 border border-gray-100 group">
+                  Lihat Semua Berita 
+                  <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </div>
+          </ScrollReveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
             { id: 1, img: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=2070&auto=format&fit=crop", badge: "Akademik", date: "24 Okt 2026", title: "Pelepasan Alumni Gelombang II Tahun 2026 Berlangsung Khidmat", desc: "Rektor UNUHA secara resmi melepas 850 wisudawan dalam acara yang digelar di Gedung Serbaguna Kampus Pusat." },
             { id: 2, img: "https://images.unsplash.com/photo-1573164713988-8665fc963095?q=80&w=2069&auto=format&fit=crop", badge: "Karir", date: "20 Okt 2026", title: "UNUHA Career Days: Hadirkan 20 Perusahaan Nasional untuk Alumni", desc: "Ribuan alumni dan mahasiswa tingkat akhir memadati area bursa kerja UNUHA Career Days yang diadakan selama dua hari." },
@@ -221,6 +229,7 @@ export function Home() {
               </Link>
             </ScrollReveal>
           ))}
+          </div>
         </div>
       </section>
 
@@ -258,10 +267,9 @@ export function Home() {
               <h2 className="text-[32px] font-bold text-gray-900 mb-2">Lowongan Kerja Terbaru</h2>
               <p className="text-gray-500 text-[15px]">Temukan peluang karir yang sesuai dengan kompetensi Anda.</p>
             </div>
-            <div className="flex gap-3 w-full sm:w-auto">
-              <Button variant="outline" className="flex-1 sm:flex-none text-[14px] px-6 py-2.5 rounded-xl border-gray-200 text-gray-600 bg-white shadow-sm font-semibold">Filter</Button>
-              <Link to="/jobs" className="flex-1 sm:flex-none">
-                <Button variant="primary" className="w-full text-[14px] px-6 py-2.5 rounded-xl shadow-sm bg-[#0F4C3A] hover:bg-[#0a3629] font-semibold text-white">Cari Kerja</Button>
+            <div className="w-full sm:w-auto mt-4 sm:mt-0">
+              <Link to="/jobs" className="block w-full sm:inline-block">
+                <Button variant="primary" className="w-full text-[15px] px-8 py-3 rounded-xl shadow-md bg-[#0F4C3A] hover:bg-[#0a3629] font-bold text-white transition-all hover:-translate-y-0.5">Cari Kerja</Button>
               </Link>
             </div>
           </div>
