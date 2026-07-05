@@ -7,14 +7,29 @@ export function AdminLayout({ children }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const menuItems = [
-    { name: 'Dashboard', icon: LayoutDashboard, path: '/admin/dashboard' },
-    { name: 'Data Alumni', icon: Users, path: '/admin/alumni' },
-    { name: 'Lowongan', icon: Briefcase, path: '/admin/lowongan' },
-    { name: 'Berita', icon: Newspaper, path: '/admin/berita' },
-    { name: 'Info Kampus', icon: Megaphone, path: '/admin/info-kampus' },
-    { name: 'Konten Web', icon: Layout, path: '/admin/konten-web' },
-    { name: 'Pengaturan', icon: Settings, path: '/admin/pengaturan' },
+  const menuGroups = [
+    {
+      title: 'UTAMA',
+      items: [
+        { name: 'Dashboard', icon: LayoutDashboard, path: '/admin/dashboard' },
+        { name: 'Data Alumni', icon: Users, path: '/admin/alumni' },
+      ]
+    },
+    {
+      title: 'MANAJEMEN',
+      items: [
+        { name: 'Lowongan', icon: Briefcase, path: '/admin/lowongan' },
+        { name: 'Berita', icon: Newspaper, path: '/admin/berita' },
+        { name: 'Info Kampus', icon: Megaphone, path: '/admin/info-kampus' },
+        { name: 'Konten Web', icon: Layout, path: '/admin/konten-web' },
+      ]
+    },
+    {
+      title: 'SISTEM',
+      items: [
+        { name: 'Pengaturan', icon: Settings, path: '/admin/pengaturan' },
+      ]
+    }
   ];
 
   const handleLogout = () => navigate('/login');
@@ -40,24 +55,31 @@ export function AdminLayout({ children }) {
           </Link>
           <button className="lg:hidden text-gray-400" onClick={() => setSidebarOpen(false)}><X size={20} /></button>
         </div>
-        <div className="flex-1 overflow-y-auto py-6 px-4 space-y-2">
-          {menuItems.map(item => {
-            const isActive = location.pathname.startsWith(item.path);
-            return (
-              <Link
-                key={item.name}
-                to={item.path}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                  isActive 
-                    ? 'bg-blue-600 text-white font-bold shadow-lg shadow-blue-600/20' 
-                    : 'text-gray-400 hover:bg-gray-800 hover:text-white font-medium'
-                }`}
-              >
-                <item.icon size={20} className={isActive ? 'text-white' : 'text-gray-400'} />
-                {item.name}
-              </Link>
-            );
-          })}
+        <div className="flex-1 overflow-y-auto py-6 px-4 space-y-6">
+          {menuGroups.map((group, idx) => (
+            <div key={idx} className="space-y-1">
+              <p className="px-4 text-[11px] font-bold text-gray-500 tracking-wider uppercase mb-2">
+                {group.title}
+              </p>
+              {group.items.map(item => {
+                const isActive = location.pathname.startsWith(item.path);
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.path}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                      isActive 
+                        ? 'bg-blue-600 text-white font-bold shadow-lg shadow-blue-600/20' 
+                        : 'text-gray-400 hover:bg-gray-800 hover:text-white font-medium'
+                    }`}
+                  >
+                    <item.icon size={20} className={isActive ? 'text-white' : 'text-gray-400'} />
+                    {item.name}
+                  </Link>
+                );
+              })}
+            </div>
+          ))}
         </div>
         <div className="p-4 border-t border-gray-800">
           <button 
