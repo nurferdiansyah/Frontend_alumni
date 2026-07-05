@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, Briefcase, Newspaper, Settings, LogOut, Menu, X, Search, Bell } from 'lucide-react';
+import { LayoutDashboard, Users, Briefcase, Newspaper, Layout, Megaphone, Settings, LogOut, Menu, X, Search, Bell } from 'lucide-react';
 
 export function AdminLayout({ children }) {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -12,6 +12,8 @@ export function AdminLayout({ children }) {
     { name: 'Data Alumni', icon: Users, path: '/admin/alumni' },
     { name: 'Lowongan', icon: Briefcase, path: '/admin/lowongan' },
     { name: 'Berita', icon: Newspaper, path: '/admin/berita' },
+    { name: 'Info Kampus', icon: Megaphone, path: '/admin/info-kampus' },
+    { name: 'Konten Web', icon: Layout, path: '/admin/konten-web' },
     { name: 'Pengaturan', icon: Settings, path: '/admin/pengaturan' },
   ];
 

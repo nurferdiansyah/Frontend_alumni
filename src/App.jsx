@@ -23,6 +23,8 @@ import { DashboardAdmin } from './pages/admin/DashboardAdmin';
 import { DataAlumni } from './pages/admin/DataAlumni';
 import { LowonganAdmin } from './pages/admin/LowonganAdmin';
 import { BeritaAdmin } from './pages/admin/BeritaAdmin';
+import { InfoKampusAdmin } from './pages/admin/InfoKampusAdmin';
+import { KontenWebAdmin } from './pages/admin/KontenWebAdmin';
 import { PengaturanAdmin } from './pages/admin/PengaturanAdmin';
 
 function ScrollToTop() {
@@ -63,6 +65,8 @@ function App() {
         <Route path="/admin/alumni" element={<DataAlumni />} />
         <Route path="/admin/lowongan" element={<LowonganAdmin />} />
         <Route path="/admin/berita" element={<BeritaAdmin />} />
+        <Route path="/admin/info-kampus" element={<InfoKampusAdmin />} />
+        <Route path="/admin/konten-web" element={<KontenWebAdmin />} />
         <Route path="/admin/pengaturan" element={<PengaturanAdmin />} />
       </Routes>
     </Router>
