@@ -3,8 +3,8 @@ import { GraduationCap, Globe, MessageCircle, Hash, Users, Mail, Phone, MapPin }
 
 export function Footer() {
   return (
-    <footer className="bg-[#F7F8FA] pt-16 pb-8 border-t border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <footer className="bg-[#E2E8F0]/60 pt-16 pb-8 border-t border-gray-200">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           <div>
             <div className="flex items-center gap-2 mb-4">
