@@ -4,6 +4,7 @@ import { Jobs } from './pages/Jobs';
 import { Campus } from './pages/Campus';
 import { VisiMisi } from './pages/VisiMisi';
 import { Berita } from './pages/Berita';
+import { Kontak } from './pages/Kontak';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/campus" element={<Campus />} />
         <Route path="/visi-misi" element={<VisiMisi />} />
         <Route path="/berita" element={<Berita />} />
+        <Route path="/kontak" element={<Kontak />} />
       </Routes>
     </Router>
   );
