@@ -198,12 +198,12 @@ export function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
-            { img: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=2070&auto=format&fit=crop", badge: "Akademik", date: "24 Okt 2026", title: "Pelepasan Alumni Gelombang II Tahun 2026 Berlangsung Khidmat", desc: "Rektor UNUHA secara resmi melepas 850 wisudawan dalam acara yang digelar di Gedung Serbaguna Kampus Pusat." },
-            { img: "https://images.unsplash.com/photo-1573164713988-8665fc963095?q=80&w=2069&auto=format&fit=crop", badge: "Karir", date: "20 Okt 2026", title: "UNUHA Career Days: Hadirkan 20 Perusahaan Nasional untuk Alumni", desc: "Ribuan alumni dan mahasiswa tingkat akhir memadati area bursa kerja UNUHA Career Days yang diadakan selama dua hari." },
-            { img: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2070&auto=format&fit=crop", badge: "Prestasi", date: "15 Okt 2026", title: "Dosen Fakultas Teknik UNUHA Raih Penghargaan Peneliti Terbaik", desc: "Inovasi di bidang energi terbarukan membawa dosen UNUHA meraih medali emas dalam simposium di Singapura." }
+            { id: 1, img: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=2070&auto=format&fit=crop", badge: "Akademik", date: "24 Okt 2026", title: "Pelepasan Alumni Gelombang II Tahun 2026 Berlangsung Khidmat", desc: "Rektor UNUHA secara resmi melepas 850 wisudawan dalam acara yang digelar di Gedung Serbaguna Kampus Pusat." },
+            { id: 2, img: "https://images.unsplash.com/photo-1573164713988-8665fc963095?q=80&w=2069&auto=format&fit=crop", badge: "Karir", date: "20 Okt 2026", title: "UNUHA Career Days: Hadirkan 20 Perusahaan Nasional untuk Alumni", desc: "Ribuan alumni dan mahasiswa tingkat akhir memadati area bursa kerja UNUHA Career Days yang diadakan selama dua hari." },
+            { id: 3, img: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2070&auto=format&fit=crop", badge: "Prestasi", date: "15 Okt 2026", title: "Dosen Fakultas Teknik UNUHA Raih Penghargaan Peneliti Terbaik", desc: "Inovasi di bidang energi terbarukan membawa dosen UNUHA meraih medali emas dalam simposium di Singapura." }
           ].map((news, i) => (
             <ScrollReveal key={i} delay={i * 0.1}>
-              <div className="bg-white rounded-[24px] overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg transition-shadow group flex flex-col h-full">
+              <Link to={`/berita/${news.id}`} className="bg-white rounded-[24px] overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg transition-shadow group flex flex-col h-full block">
                 <div className="relative h-56 overflow-hidden">
                   <img src={news.img} alt={news.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   <div className="absolute top-4 left-4 bg-[#0F4C3A] text-white text-[11px] font-bold px-3 py-1.5 rounded-lg tracking-wider">
@@ -214,11 +214,11 @@ export function Home() {
                   <span className="text-[13px] text-gray-400 mb-2 block">{news.date}</span>
                   <h3 className="font-bold text-[18px] text-gray-900 mb-3 leading-snug">{news.title}</h3>
                   <p className="text-[14px] text-gray-500 mb-6 line-clamp-3 leading-relaxed">{news.desc}</p>
-                  <a href="#" className="inline-flex items-center text-gray-900 font-bold hover:text-[#0F4C3A] transition-colors mt-auto text-[14px]">
+                  <div className="inline-flex items-center text-gray-900 font-bold group-hover:text-[#0F4C3A] transition-colors mt-auto text-[14px]">
                     Baca Selengkapnya <ArrowRight className="w-4 h-4 ml-1.5 text-gray-400" />
-                  </a>
+                  </div>
                 </div>
-              </div>
+              </Link>
             </ScrollReveal>
           ))}
         </div>

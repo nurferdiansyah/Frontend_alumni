@@ -121,7 +121,7 @@ export function Berita() {
         {/* Featured News */}
         {newsList.filter(n => n.featured).map((news, idx) => (
           <ScrollReveal key={`featured-${news.id}`}>
-            <div className="bg-white rounded-[32px] overflow-hidden shadow-xl shadow-gray-200/40 border border-gray-100 flex flex-col lg:flex-row group mb-12 cursor-pointer hover:shadow-2xl transition-all duration-500">
+            <Link to={`/berita/${news.id}`} className="bg-white rounded-[32px] overflow-hidden shadow-xl shadow-gray-200/40 border border-gray-100 flex flex-col lg:flex-row group mb-12 block hover:shadow-2xl transition-all duration-500">
               <div className="w-full lg:w-1/2 relative overflow-hidden h-[300px] lg:h-auto">
                 <div className="absolute inset-0 bg-[#0F4C3A]/20 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
                 <img 
@@ -153,7 +153,7 @@ export function Berita() {
                   </div>
                 </div>
               </div>
-            </div>
+            </Link>
           </ScrollReveal>
         ))}
 
@@ -161,7 +161,7 @@ export function Berita() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {newsList.filter(n => !n.featured).map((news, idx) => (
             <ScrollReveal key={news.id} delay={idx * 0.1} className="h-full">
-              <div className="bg-white rounded-[24px] overflow-hidden shadow-lg shadow-gray-200/40 border border-gray-100 flex flex-col h-full group cursor-pointer hover:-translate-y-2 hover:shadow-xl transition-all duration-300">
+              <Link to={`/berita/${news.id}`} className="bg-white rounded-[24px] overflow-hidden shadow-lg shadow-gray-200/40 border border-gray-100 flex flex-col h-full group block hover:-translate-y-2 hover:shadow-xl transition-all duration-300">
                 <div className="relative overflow-hidden h-56">
                   <div className="absolute inset-0 bg-[#0F4C3A]/10 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
                   <img 
@@ -187,7 +187,7 @@ export function Berita() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             </ScrollReveal>
           ))}
         </div>
