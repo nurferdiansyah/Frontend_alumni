@@ -82,7 +82,9 @@ export function Home() {
                 <div className="relative z-10">
                   <h3 className="text-white font-bold text-[22px] mb-3">Informasi Penting</h3>
                   <p className="text-white/80 text-[15px] mb-8 max-w-[400px] leading-relaxed">Akses portal akademik, kalender pendidikan, dan pengumuman rektorat dalam satu pintu.</p>
-                  <Button variant="outlineWhite" className="text-[14px] px-6 py-2.5 rounded-xl bg-white text-gray-900 border-none hover:bg-gray-100 font-semibold shadow-sm">Lihat Selengkapnya</Button>
+                  <Link to="/campus">
+                    <Button variant="outlineWhite" className="text-[14px] px-6 py-2.5 rounded-xl bg-white text-gray-900 border-none hover:bg-gray-100 font-semibold shadow-sm">Lihat Selengkapnya</Button>
+                  </Link>
                 </div>
                 <div className="absolute -right-10 -bottom-10 text-white/5">
                   <Info size={250} strokeWidth={1} />

@@ -10,6 +10,8 @@ export function Navbar() {
   const [hoveredAuth, setHoveredAuth] = useState('register');
   const location = useLocation();
   const isJobsPage = location.pathname === '/jobs';
+  const isCampusPage = location.pathname === '/campus';
+  const isHomePage = location.pathname === '/';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,14 +35,17 @@ export function Navbar() {
 
           <div className="hidden md:flex items-center space-x-10">
             <div className="relative">
-              <Link to="/" className={`font-semibold transition-colors ${!isJobsPage ? 'text-[#0F4C3A]' : 'text-gray-500 hover:text-[#0F4C3A]'}`}>Home</Link>
-              {!isJobsPage && <div className="absolute -bottom-1 left-0 w-full h-[3px] bg-[#0F4C3A] rounded-t-sm"></div>}
+              <Link to="/" className={`font-semibold transition-colors ${isHomePage ? 'text-[#0F4C3A]' : 'text-gray-500 hover:text-[#0F4C3A]'}`}>Home</Link>
+              {isHomePage && <div className="absolute -bottom-1 left-0 w-full h-[3px] bg-[#0F4C3A] rounded-t-sm"></div>}
             </div>
             <div className="relative">
               <Link to="/jobs" className={`font-semibold transition-colors ${isJobsPage ? 'text-[#0F4C3A]' : 'text-gray-500 hover:text-[#0F4C3A]'}`}>Jobs</Link>
               {isJobsPage && <div className="absolute -bottom-1 left-0 w-full h-[3px] bg-[#0F4C3A] rounded-t-sm"></div>}
             </div>
-            <Link to="/#campus" className="text-gray-500 hover:text-[#0F4C3A] font-medium transition-colors">Campus Info</Link>
+            <div className="relative">
+              <Link to="/campus" className={`font-semibold transition-colors ${isCampusPage ? 'text-[#0F4C3A]' : 'text-gray-500 hover:text-[#0F4C3A]'}`}>Campus Info</Link>
+              {isCampusPage && <div className="absolute -bottom-1 left-0 w-full h-[3px] bg-[#0F4C3A] rounded-t-sm"></div>}
+            </div>
           </div>
 
           <div 
@@ -80,9 +85,9 @@ export function Navbar() {
       {isMobileMenuOpen && (
         <div className="md:hidden bg-white border-b border-gray-100 absolute w-full shadow-lg">
           <div className="px-4 pt-2 pb-4 space-y-1">
-            <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className={`block px-3 py-2 text-base font-medium rounded-md ${!isJobsPage ? 'text-[#0F4C3A] bg-gray-50' : 'text-gray-700 hover:text-[#0F4C3A] hover:bg-gray-50'}`}>Home</Link>
+            <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className={`block px-3 py-2 text-base font-medium rounded-md ${isHomePage ? 'text-[#0F4C3A] bg-gray-50' : 'text-gray-700 hover:text-[#0F4C3A] hover:bg-gray-50'}`}>Home</Link>
             <Link to="/jobs" onClick={() => setIsMobileMenuOpen(false)} className={`block px-3 py-2 text-base font-medium rounded-md ${isJobsPage ? 'text-[#0F4C3A] bg-gray-50' : 'text-gray-700 hover:text-[#0F4C3A] hover:bg-gray-50'}`}>Jobs</Link>
-            <Link to="/#campus" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-[#0F4C3A] hover:bg-gray-50 rounded-md">Campus Info</Link>
+            <Link to="/campus" onClick={() => setIsMobileMenuOpen(false)} className={`block px-3 py-2 text-base font-medium rounded-md ${isCampusPage ? 'text-[#0F4C3A] bg-gray-50' : 'text-gray-700 hover:text-[#0F4C3A] hover:bg-gray-50'}`}>Campus Info</Link>
             <div className="mt-4 pt-4 border-t border-gray-100 flex flex-col gap-3 px-3">
               <Button variant="outline" className="w-full">Login</Button>
               <Button variant="primary" className="w-full">Register</Button>
