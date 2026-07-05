@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Navbar } from '../components/Navbar';
-import { Footer } from '../components/Footer';
-import { ScrollReveal } from '../components/ScrollReveal';
+import { Navbar } from '../../components/Navbar';
+import { Footer } from '../../components/Footer';
+import { ScrollReveal } from '../../components/ScrollReveal';
 import { motion } from 'framer-motion';
 import { Calendar, User, ArrowLeft, Tag, Share2 } from 'lucide-react';
 

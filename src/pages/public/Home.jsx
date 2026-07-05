@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Navbar } from '../components/Navbar';
-import { Footer } from '../components/Footer';
-import { Button } from '../components/Button';
-import { CardInfo } from '../components/CardInfo';
-import { JobListItem } from '../components/JobListItem';
-import { ScrollReveal } from '../components/ScrollReveal';
+import { Navbar } from '../../components/Navbar';
+import { Footer } from '../../components/Footer';
+import { Button } from '../../components/Button';
+import { CardInfo } from '../../components/CardInfo';
+import { JobListItem } from '../../components/JobListItem';
+import { ScrollReveal } from '../../components/ScrollReveal';
 import { BookOpen, Award, Building, Users, Briefcase, GraduationCap, CheckCircle2, Info, ChevronRight, Laptop, FileText, ArrowRight, BookMarked } from 'lucide-react';
 import { Link } from 'react-router-dom';
 

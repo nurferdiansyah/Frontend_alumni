@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
-import { Button } from '../components/Button';
+import { Button } from '../../components/Button';
 import { Camera, MapPin, Briefcase, GraduationCap, ChevronRight, ChevronLeft, Check, Building2, BookOpen, Clock } from 'lucide-react';
 
 const faculties = {

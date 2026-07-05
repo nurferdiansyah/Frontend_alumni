@@ -1,11 +1,11 @@
 import React, { useState, useMemo } from 'react';
-import { Navbar } from '../components/Navbar';
-import { Footer } from '../components/Footer';
-import { Button } from '../components/Button';
-import { JobListItem } from '../components/JobListItem';
+import { Navbar } from '../../components/Navbar';
+import { Footer } from '../../components/Footer';
+import { Button } from '../../components/Button';
+import { JobListItem } from '../../components/JobListItem';
 import { Search, MapPin, Briefcase } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { ScrollReveal } from '../components/ScrollReveal';
+import { ScrollReveal } from '../../components/ScrollReveal';
 import { motion } from 'framer-motion';
 
 const initialJobs = [

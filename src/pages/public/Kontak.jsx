@@ -1,8 +1,8 @@
 import React from 'react';
-import { Navbar } from '../components/Navbar';
-import { Footer } from '../components/Footer';
-import { Button } from '../components/Button';
-import { ScrollReveal } from '../components/ScrollReveal';
+import { Navbar } from '../../components/Navbar';
+import { Footer } from '../../components/Footer';
+import { Button } from '../../components/Button';
+import { ScrollReveal } from '../../components/ScrollReveal';
 import { motion } from 'framer-motion';
 import { MapPin, Phone, Mail, Clock, Send } from 'lucide-react';
 

@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Navbar } from '../components/Navbar';
-import { Footer } from '../components/Footer';
-import { ScrollReveal } from '../components/ScrollReveal';
+import { Navbar } from '../../components/Navbar';
+import { Footer } from '../../components/Footer';
+import { ScrollReveal } from '../../components/ScrollReveal';
 import { ArrowLeft, MapPin, Calendar, Building, Briefcase } from 'lucide-react';
-import { Button } from '../components/Button';
+import { Button } from '../../components/Button';
 
 export function DetailLowongan() {
   const { id } = useParams();

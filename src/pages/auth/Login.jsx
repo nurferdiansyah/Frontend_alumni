@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Button } from '../components/Button';
+import { Button } from '../../components/Button';
 import { useNavigate } from 'react-router-dom';
 
 export function Login() {

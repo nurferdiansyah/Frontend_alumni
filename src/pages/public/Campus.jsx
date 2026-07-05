@@ -1,10 +1,10 @@
 import React from 'react';
-import { Navbar } from '../components/Navbar';
-import { Footer } from '../components/Footer';
-import { Button } from '../components/Button';
+import { Navbar } from '../../components/Navbar';
+import { Footer } from '../../components/Footer';
+import { Button } from '../../components/Button';
 import { BookMarked, Calendar, ArrowRight, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { ScrollReveal } from '../components/ScrollReveal';
+import { ScrollReveal } from '../../components/ScrollReveal';
 import { motion } from 'framer-motion';
 export function Campus() {
   return (

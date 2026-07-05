@@ -1,16 +1,16 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
-import { Home } from './pages/Home';
-import { Jobs } from './pages/Jobs';
-import { Campus } from './pages/Campus';
-import { VisiMisi } from './pages/VisiMisi';
-import { Berita } from './pages/Berita';
-import { DetailBerita } from './pages/DetailBerita';
-import { DetailLowongan } from './pages/DetailLowongan';
-import { Kontak } from './pages/Kontak';
-import { Login } from './pages/Login';
-import { LengkapiProfil } from './pages/LengkapiProfil';
-import { Dashboard } from './pages/Dashboard';
+import { Home } from './pages/public/Home';
+import { Berita } from './pages/public/Berita';
+import { Jobs } from './pages/public/Jobs';
+import { Campus } from './pages/public/Campus';
+import { VisiMisi } from './pages/public/VisiMisi';
+import { DetailBerita } from './pages/public/DetailBerita';
+import { DetailLowongan } from './pages/public/DetailLowongan';
+import { Kontak } from './pages/public/Kontak';
+import { Login } from './pages/auth/Login';
+import { LengkapiProfil } from './pages/student/LengkapiProfil';
+import { Dashboard } from './pages/student/Dashboard';
 
 function ScrollToTop() {
   const { pathname } = useLocation();

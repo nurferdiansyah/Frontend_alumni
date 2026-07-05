@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
-import { Button } from '../components/Button';
-import { JobListItem } from '../components/JobListItem';
-import { Home, User, Settings, Bell, LogOut, Menu, X, Search, CheckCircle, Download } from 'lucide-react';
+import { Button } from '../../components/Button';
+import { JobListItem } from '../../components/JobListItem';
+import { Home, User, Briefcase, Settings, Bell, LogOut, Menu, X, Search, CheckCircle, Download } from 'lucide-react';
 
 export function Dashboard() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -12,6 +12,7 @@ export function Dashboard() {
   const menuItems = [
     { name: 'Dashboard', icon: Home, active: true },
     { name: 'Profil Saya', icon: User, active: false },
+    { name: 'Lowongan', icon: Briefcase, active: false },
     { name: 'Pengaturan', icon: Settings, active: false },
   ];
 
