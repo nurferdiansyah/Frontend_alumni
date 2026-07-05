@@ -5,14 +5,21 @@ import { Button } from '../components/Button';
 import { JobListItem } from '../components/JobListItem';
 import { Search, MapPin, Briefcase } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
+import { ScrollReveal } from '../components/ScrollReveal';
+import { motion } from 'framer-motion';
 export function Jobs() {
   return (
     <div className="min-h-screen bg-white font-sans text-gray-800 flex flex-col">
       <Navbar />
 
-      <section className="bg-[#0F4C3A] text-white pt-36 pb-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-[1200px] mx-auto text-center">
+      <section className="bg-[#0F4C3A] text-white pt-36 pb-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '40px 40px' }}></div>
+        <motion.div 
+          className="max-w-[1200px] mx-auto text-center relative z-10"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
           <h1 className="text-4xl md:text-5xl font-bold mb-4 text-[#7FE0B0]">Temukan Pekerjaan Impianmu</h1>
           <p className="text-white/80 text-[16px] max-w-2xl mx-auto mb-10 leading-relaxed">Jelajahi ratusan lowongan kerja dari perusahaan mitra Universitas Nurul Huda khusus untuk alumni.</p>
           
@@ -28,14 +35,14 @@ export function Jobs() {
             </div>
             <Button variant="primary" className="bg-[#7FE0B0] hover:bg-[#66c698] text-[#0F4C3A] font-bold rounded-xl px-8 py-3.5 shadow-md">Cari Lowongan</Button>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-[1200px] mx-auto flex-grow w-full">
         <div className="flex flex-col md:flex-row gap-8">
           
           {/* Sidebar Filter */}
-          <div className="w-full md:w-1/4">
+          <ScrollReveal className="w-full md:w-1/4">
             <div className="bg-gray-50/80 rounded-[20px] p-6 border border-gray-100 sticky top-28">
               <div className="flex justify-between items-center mb-6 border-b border-gray-200 pb-4">
                 <h3 className="font-bold text-[18px] text-gray-900">Filter Pencarian</h3>
@@ -70,31 +77,45 @@ export function Jobs() {
                 </div>
               </div>
             </div>
-          </div>
+          </ScrollReveal>
           
           {/* Job List */}
           <div className="w-full md:w-3/4 flex flex-col gap-4">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4 bg-white p-2">
-              <h2 className="font-bold text-[20px] text-gray-900">Menampilkan 156 Lowongan</h2>
-              <div className="flex items-center gap-3">
-                <span className="text-[13px] text-gray-500 font-medium">Urutkan:</span>
-                <select className="bg-gray-50 border border-gray-200 font-medium text-gray-700 text-[13px] rounded-lg px-4 py-2.5 outline-none cursor-pointer">
-                  <option>Paling Relevan</option>
-                  <option>Terbaru Dipublikasi</option>
-                  <option>Gaji Tertinggi</option>
-                </select>
+            <ScrollReveal>
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4 bg-white p-2">
+                <h2 className="font-bold text-[20px] text-gray-900">Menampilkan 156 Lowongan</h2>
+                <div className="flex items-center gap-3">
+                  <span className="text-[13px] text-gray-500 font-medium">Urutkan:</span>
+                  <select className="bg-gray-50 border border-gray-200 font-medium text-gray-700 text-[13px] rounded-lg px-4 py-2.5 outline-none cursor-pointer">
+                    <option>Paling Relevan</option>
+                    <option>Terbaru Dipublikasi</option>
+                    <option>Gaji Tertinggi</option>
+                  </select>
+                </div>
               </div>
-            </div>
+            </ScrollReveal>
             
-            <JobListItem position="Senior Software Engineer" company="PT. Teknologi Maju Bersama" location="Jakarta Selatan" deadline="20 Nov 2026" logo="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png" />
-            <JobListItem position="Management Trainee" company="Bank Mandiri (Persero) Tbk" location="Palembang" deadline="15 Nov 2026" logo="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_of_Bank_Mandiri.svg/1200px-Logo_of_Bank_Mandiri.svg.png" />
-            <JobListItem position="Tenaga Pengajar (Dosen)" company="Yayasan Nurul Huda" location="OKU Timur" deadline="10 Nov 2026" />
-            <JobListItem position="UI/UX Designer" company="Gojek Indonesia" location="Remote" deadline="30 Nov 2026" logo="https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Gojek_logo_2019.svg/1200px-Gojek_logo_2019.svg.png" />
-            <JobListItem position="Data Analyst" company="PT. Telekomunikasi Indonesia" location="Bandung" deadline="25 Nov 2026" logo="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Telkom_Indonesia_2013.svg/1200px-Telkom_Indonesia_2013.svg.png" />
+            <ScrollReveal delay={0.1}>
+              <JobListItem position="Senior Software Engineer" company="PT. Teknologi Maju Bersama" location="Jakarta Selatan" deadline="20 Nov 2026" logo="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png" />
+            </ScrollReveal>
+            <ScrollReveal delay={0.2}>
+              <JobListItem position="Management Trainee" company="Bank Mandiri (Persero) Tbk" location="Palembang" deadline="15 Nov 2026" logo="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_of_Bank_Mandiri.svg/1200px-Logo_of_Bank_Mandiri.svg.png" />
+            </ScrollReveal>
+            <ScrollReveal delay={0.3}>
+              <JobListItem position="Tenaga Pengajar (Dosen)" company="Yayasan Nurul Huda" location="OKU Timur" deadline="10 Nov 2026" />
+            </ScrollReveal>
+            <ScrollReveal delay={0.4}>
+              <JobListItem position="UI/UX Designer" company="Gojek Indonesia" location="Remote" deadline="30 Nov 2026" logo="https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Gojek_logo_2019.svg/1200px-Gojek_logo_2019.svg.png" />
+            </ScrollReveal>
+            <ScrollReveal delay={0.5}>
+              <JobListItem position="Data Analyst" company="PT. Telekomunikasi Indonesia" location="Bandung" deadline="25 Nov 2026" logo="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Telkom_Indonesia_2013.svg/1200px-Telkom_Indonesia_2013.svg.png" />
+            </ScrollReveal>
             
-            <div className="mt-10 flex justify-center pb-8">
-              <Button variant="outline" className="rounded-xl px-8 py-3.5 font-bold text-gray-700 bg-white border-2 border-gray-200 hover:border-[#0F4C3A] hover:text-[#0F4C3A] transition-colors">Muat Lebih Banyak</Button>
-            </div>
+            <ScrollReveal delay={0.6}>
+              <div className="mt-10 flex justify-center pb-8">
+                <Button variant="outline" className="rounded-xl px-8 py-3.5 font-bold text-gray-700 bg-white border-2 border-gray-200 hover:border-[#0F4C3A] hover:text-[#0F4C3A] transition-colors">Muat Lebih Banyak</Button>
+              </div>
+            </ScrollReveal>
           </div>
         </div>
       </section>
