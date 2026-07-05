@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { Button } from '../components/Button';
@@ -9,6 +9,21 @@ import { BookOpen, Award, Building, Users, Briefcase, GraduationCap, CheckCircle
 import { Link } from 'react-router-dom';
 
 export function Home() {
+  const heroImages = [
+    "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2070&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=2070&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1573164713988-8665fc963095?q=80&w=2069&auto=format&fit=crop"
+  ];
+  
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
+    }, 4000); // geser otomatis setiap 4 detik
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <div className="min-h-screen bg-white font-sans text-gray-800">
       <Navbar />
@@ -29,13 +44,32 @@ export function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-5">
               <Button variant="accent" className="text-base px-8 py-3.5 rounded-xl font-bold shadow-lg shadow-[#7FE0B0]/20 text-[#0F4C3A] bg-[#7FE0B0] hover:bg-[#66c698]">Eksplorasi Karir</Button>
-              <Button variant="outlineWhite" className="text-base px-8 py-3.5 rounded-xl font-bold border-2 border-white/30 hover:border-white hover:bg-white/10 text-white">Tentang Kami</Button>
+              <Button variant="outlineWhite" className="text-base px-8 py-3.5 rounded-xl font-bold border-2 border-white/30 hover:border-[#7FE0B0] hover:bg-[#7FE0B0] hover:text-[#0F4C3A] text-white">Tentang Kami</Button>
             </div>
           </ScrollReveal>
           
           <ScrollReveal delay={0.2} className="relative h-full min-h-[500px] hidden lg:block">
-            <div className="absolute top-0 right-0 w-[95%] h-[550px] rounded-[32px] overflow-hidden shadow-2xl z-10 border-[6px] border-white/10">
-              <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2070&auto=format&fit=crop" alt="Wisudawan UNUHA" className="w-full h-full object-cover object-top" />
+            <div className="absolute top-0 right-0 w-[95%] h-[550px] rounded-[32px] overflow-hidden shadow-2xl z-10 border-[6px] border-white/10 group">
+              {heroImages.map((img, idx) => (
+                <img 
+                  key={idx}
+                  src={img} 
+                  alt={`Hero ${idx + 1}`} 
+                  className={`absolute inset-0 w-full h-full object-cover object-top transition-opacity duration-1000 ${currentImageIndex === idx ? 'opacity-100 z-10' : 'opacity-0 z-0'}`} 
+                />
+              ))}
+              
+              {/* Indikator Titik (Pagination Dots) */}
+              <div className="absolute bottom-6 left-0 right-0 z-20 flex justify-center gap-2">
+                {heroImages.map((_, idx) => (
+                  <button 
+                    key={idx} 
+                    onClick={() => setCurrentImageIndex(idx)}
+                    className={`h-2.5 rounded-full transition-all duration-300 ${currentImageIndex === idx ? 'bg-[#7FE0B0] w-8' : 'bg-white/60 hover:bg-white w-2.5'}`}
+                    aria-label={`Go to slide ${idx + 1}`}
+                  />
+                ))}
+              </div>
             </div>
           </ScrollReveal>
         </div>
@@ -187,24 +221,28 @@ export function Home() {
       </section>
 
       {/* 6. Stats Bar */}
-      <section className="bg-[#0F4C3A] py-14 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left relative">
-          <div className="hidden md:block absolute left-1/3 top-0 bottom-0 w-px bg-white/10"></div>
-          <div className="hidden md:block absolute left-2/3 top-0 bottom-0 w-px bg-white/10"></div>
+      <section className="pb-20 px-6 md:px-12 lg:px-16 w-full max-w-[1150px] mx-auto">
+        <div className="bg-[#0F4C3A] rounded-[32px] py-12 px-8 shadow-2xl relative overflow-hidden">
+          <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '32px 32px' }}></div>
           
-          {[
-            { num: "12,450+", label: "TOTAL ALUMNI", icon: Users },
-            { num: "8", label: "TOTAL FAKULTAS", icon: Building },
-            { num: "156", label: "LOWONGAN AKTIF", icon: Briefcase }
-          ].map((stat, i) => (
-            <ScrollReveal key={i} delay={i * 0.1} className="flex items-center justify-center md:justify-start gap-6 px-4">
-              <stat.icon className="w-12 h-12 text-white/50 flex-shrink-0" />
-              <div>
-                <div className="text-[40px] font-bold text-white leading-none mb-1">{stat.num}</div>
-                <div className="text-[12px] font-bold text-[#7FE0B0] tracking-[0.2em]">{stat.label}</div>
-              </div>
-            </ScrollReveal>
-          ))}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left relative z-10">
+            <div className="hidden md:block absolute left-1/3 top-2 bottom-2 w-px bg-white/10"></div>
+            <div className="hidden md:block absolute left-2/3 top-2 bottom-2 w-px bg-white/10"></div>
+            
+            {[
+              { num: "12,450+", label: "TOTAL ALUMNI", icon: Users },
+              { num: "3", label: "TOTAL FAKULTAS", icon: Building },
+              { num: "156", label: "LOWONGAN AKTIF", icon: Briefcase }
+            ].map((stat, i) => (
+              <ScrollReveal key={i} delay={i * 0.1} className="flex flex-col items-center justify-center gap-3 px-4 text-center">
+                <stat.icon className="w-[48px] h-[48px] text-white/50" strokeWidth={1.5} />
+                <div className="flex flex-col gap-1.5">
+                  <div className="text-[12px] font-bold text-[#7FE0B0] tracking-[0.2em] uppercase">{stat.label}</div>
+                  <div className="text-[46px] font-extrabold text-white leading-none">{stat.num}</div>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
         </div>
       </section>
 

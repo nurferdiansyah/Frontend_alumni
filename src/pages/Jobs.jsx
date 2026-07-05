@@ -13,7 +13,7 @@ export function Jobs() {
 
       <section className="bg-[#0F4C3A] text-white pt-36 pb-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-[1200px] mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Temukan Pekerjaan Impianmu</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-[#7FE0B0]">Temukan Pekerjaan Impianmu</h1>
           <p className="text-white/80 text-[16px] max-w-2xl mx-auto mb-10 leading-relaxed">Jelajahi ratusan lowongan kerja dari perusahaan mitra Universitas Nurul Huda khusus untuk alumni.</p>
           
           <div className="bg-white p-2.5 rounded-2xl flex flex-col md:flex-row gap-2 max-w-4xl mx-auto shadow-2xl">
