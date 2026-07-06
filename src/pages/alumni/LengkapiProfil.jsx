@@ -12,15 +12,12 @@ const faculties = {
 };
 
 const locations = {
-  "Indonesia": {
-    "Sumatera Selatan": ["OKU Timur", "Palembang", "Ogan Ilir", "Ogan Komering Ulu"],
-    "Lampung": ["Bandar Lampung", "Metro", "Way Kanan"],
-    "Jawa Barat": ["Bandung", "Bogor", "Depok"],
-    "DKI Jakarta": ["Jakarta Selatan", "Jakarta Pusat", "Jakarta Barat"]
-  },
   "Malaysia": {
     "Kuala Lumpur": ["Bukit Bintang", "Cheras"],
     "Selangor": ["Petaling Jaya", "Shah Alam"]
+  },
+  "Singapura": {
+    "Singapura": ["Central Area", "Jurong East", "Woodlands"]
   }
 };
 
@@ -41,6 +38,13 @@ export function LengkapiProfil() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
+
+  const [provinces, setProvinces] = useState([]);
+  const [regencies, setRegencies] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  
+  const [selectedProvId, setSelectedProvId] = useState('');
+  const [selectedRegId, setSelectedRegId] = useState('');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -81,15 +85,75 @@ export function LengkapiProfil() {
   };
 
   const handleNegaraChange = (e) => {
-    updateForm('negara', e.target.value);
+    const val = e.target.value;
+    updateForm('negara', val);
     updateForm('provinsi', '');
     updateForm('kabupaten', '');
+    updateForm('kecamatan', '');
+    setSelectedProvId('');
+    setSelectedRegId('');
   };
 
   const handleProvinsiChange = (e) => {
-    updateForm('provinsi', e.target.value);
+    if (formData.negara === 'Indonesia') {
+      const [id, name] = e.target.value.split('|');
+      setSelectedProvId(id);
+      updateForm('provinsi', name);
+    } else {
+      updateForm('provinsi', e.target.value);
+    }
     updateForm('kabupaten', '');
+    updateForm('kecamatan', '');
+    setSelectedRegId('');
   };
+
+  const handleKabupatenChange = (e) => {
+    if (formData.negara === 'Indonesia') {
+      const [id, name] = e.target.value.split('|');
+      setSelectedRegId(id);
+      updateForm('kabupaten', name);
+    } else {
+      updateForm('kabupaten', e.target.value);
+    }
+    updateForm('kecamatan', '');
+  };
+
+  const handleKecamatanChange = (e) => {
+    if (formData.negara === 'Indonesia') {
+      const [, name] = e.target.value.split('|');
+      updateForm('kecamatan', name);
+    } else {
+      updateForm('kecamatan', e.target.value);
+    }
+  };
+
+  useEffect(() => {
+    if (formData.negara === 'Indonesia') {
+      fetch('https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json')
+        .then(res => res.json())
+        .then(data => setProvinces(data));
+    }
+  }, [formData.negara]);
+
+  useEffect(() => {
+    if (selectedProvId) {
+      fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${selectedProvId}.json`)
+        .then(res => res.json())
+        .then(data => setRegencies(data));
+    } else {
+      setRegencies([]);
+    }
+  }, [selectedProvId]);
+
+  useEffect(() => {
+    if (selectedRegId) {
+      fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/districts/${selectedRegId}.json`)
+        .then(res => res.json())
+        .then(data => setDistricts(data));
+    } else {
+      setDistricts([]);
+    }
+  }, [selectedRegId]);
 
   const nextStep = () => {
     if (step < 3) setStep(step + 1);
@@ -298,29 +362,51 @@ export function LengkapiProfil() {
                         <label className="block text-sm font-bold text-gray-700 mb-2">Negara</label>
                         <select className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all text-gray-800 cursor-pointer" value={formData.negara} onChange={handleNegaraChange}>
                           <option value="">Pilih Negara...</option>
+                          <option value="Indonesia">Indonesia</option>
                           {Object.keys(locations).map(negara => <option key={negara} value={negara}>{negara}</option>)}
                         </select>
                       </div>
                       <div>
                         <label className="block text-sm font-bold text-gray-700 mb-2">Provinsi</label>
-                        <select className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all text-gray-800 cursor-pointer disabled:opacity-50" value={formData.provinsi} onChange={handleProvinsiChange} disabled={!formData.negara}>
-                          <option value="">{formData.negara ? 'Pilih Provinsi...' : 'Pilih Negara Terlebih Dahulu'}</option>
-                          {formData.negara && Object.keys(locations[formData.negara]).map(prov => <option key={prov} value={prov}>{prov}</option>)}
-                        </select>
+                        {formData.negara === 'Indonesia' ? (
+                          <select className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all text-gray-800 cursor-pointer disabled:opacity-50" value={selectedProvId ? `${selectedProvId}|${formData.provinsi}` : ''} onChange={handleProvinsiChange} disabled={!formData.negara}>
+                            <option value="">Pilih Provinsi...</option>
+                            {provinces.map(prov => <option key={prov.id} value={`${prov.id}|${prov.name}`}>{prov.name}</option>)}
+                          </select>
+                        ) : (
+                          <select className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all text-gray-800 cursor-pointer disabled:opacity-50" value={formData.provinsi} onChange={handleProvinsiChange} disabled={!formData.negara}>
+                            <option value="">{formData.negara ? 'Pilih Provinsi...' : 'Pilih Negara Terlebih Dahulu'}</option>
+                            {formData.negara && locations[formData.negara] && Object.keys(locations[formData.negara]).map(prov => <option key={prov} value={prov}>{prov}</option>)}
+                          </select>
+                        )}
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-bold text-gray-700 mb-2">Kabupaten/Kota</label>
-                        <select className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all text-gray-800 cursor-pointer disabled:opacity-50" value={formData.kabupaten} onChange={e => updateForm('kabupaten', e.target.value)} disabled={!formData.provinsi}>
-                          <option value="">{formData.provinsi ? 'Pilih Kabupaten/Kota...' : 'Pilih Provinsi Terlebih Dahulu'}</option>
-                          {formData.provinsi && locations[formData.negara][formData.provinsi].map(kab => <option key={kab} value={kab}>{kab}</option>)}
-                        </select>
+                        {formData.negara === 'Indonesia' ? (
+                          <select className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all text-gray-800 cursor-pointer disabled:opacity-50" value={selectedRegId ? `${selectedRegId}|${formData.kabupaten}` : ''} onChange={handleKabupatenChange} disabled={!formData.provinsi}>
+                            <option value="">{formData.provinsi ? 'Pilih Kabupaten/Kota...' : 'Pilih Provinsi Terlebih Dahulu'}</option>
+                            {regencies.map(reg => <option key={reg.id} value={`${reg.id}|${reg.name}`}>{reg.name}</option>)}
+                          </select>
+                        ) : (
+                          <select className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all text-gray-800 cursor-pointer disabled:opacity-50" value={formData.kabupaten} onChange={handleKabupatenChange} disabled={!formData.provinsi}>
+                            <option value="">{formData.provinsi ? 'Pilih Kabupaten/Kota...' : 'Pilih Provinsi Terlebih Dahulu'}</option>
+                            {formData.provinsi && locations[formData.negara] && locations[formData.negara][formData.provinsi] && locations[formData.negara][formData.provinsi].map(kab => <option key={kab} value={kab}>{kab}</option>)}
+                          </select>
+                        )}
                       </div>
                       <div>
                         <label className="block text-sm font-bold text-gray-700 mb-2">Kecamatan</label>
-                        <input type="text" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all text-gray-800" placeholder="Ketik nama kecamatan" value={formData.kecamatan} onChange={e => updateForm('kecamatan', e.target.value)} />
+                        {formData.negara === 'Indonesia' ? (
+                          <select className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all text-gray-800 cursor-pointer disabled:opacity-50" onChange={handleKecamatanChange} disabled={!formData.kabupaten}>
+                            <option value="">{formData.kabupaten ? 'Pilih Kecamatan...' : 'Pilih Kabupaten/Kota Terlebih Dahulu'}</option>
+                            {districts.map(dist => <option key={dist.id} value={`${dist.id}|${dist.name}`} selected={formData.kecamatan === dist.name}>{dist.name}</option>)}
+                          </select>
+                        ) : (
+                          <input type="text" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all text-gray-800" placeholder="Ketik nama kecamatan" value={formData.kecamatan} onChange={e => updateForm('kecamatan', e.target.value)} />
+                        )}
                       </div>
                     </div>
 

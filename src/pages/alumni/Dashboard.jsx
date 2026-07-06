@@ -37,7 +37,7 @@ export function Dashboard() {
             
             <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
               <div>
-                <h1 className="text-3xl font-bold mb-2">Selamat datang, {profileName}! 👋</h1>
+                <h1 className="text-3xl font-bold mb-2 text-white">Selamat datang, <span className="text-[#7FE0B0]">{profileName}</span>! 👋</h1>
                 <p className="text-white/80">Profil Anda sudah 100% lengkap. Terima kasih telah memperbarui data diri Anda.</p>
               </div>
             </div>

@@ -5,6 +5,19 @@ import { motion } from 'framer-motion';
 import { Button } from '../../components/Button';
 import axiosInstance from '../../api/axiosInstance';
 
+const prodiList = [
+  { id: 1, name: "Pendidikan Agama Islam" },
+  { id: 2, name: "Pendidikan Guru Madrasah Ibtidaiyah" },
+  { id: 3, name: "Pendidikan Fisika" },
+  { id: 4, name: "Pendidikan Ekonomi" },
+  { id: 5, name: "Pendidikan Bahasa Inggris" },
+  { id: 6, name: "Pendidikan Bahasa dan Sastra Indonesia" },
+  { id: 7, name: "Pendidikan Teknologi Informasi" },
+  { id: 8, name: "Informatika" },
+  { id: 9, name: "Matematika" },
+  { id: 10, name: "Sains Pertanian" }
+];
+
 export function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
@@ -16,7 +29,7 @@ export function Register() {
     email: '',
     password: '',
     password_confirmation: '',
-    id_prodi: '1', // Default, should ideally be fetched from API
+    id_prodi: '',
     nim: '',
     nama_lengkap: '',
     angkatan: '',
@@ -72,7 +85,7 @@ export function Register() {
   return (
     <div className="min-h-screen flex bg-white font-sans text-gray-800">
       {/* Left Side - Image & Branding (Hidden on mobile) */}
-      <div className="hidden lg:flex w-1/2 bg-[#0F4C3A] relative overflow-hidden items-center justify-center flex-col p-16 fixed top-0 bottom-0 left-0">
+      <div className="hidden lg:flex w-1/2 bg-[#0F4C3A] relative overflow-hidden items-center justify-center flex-col p-16 sticky top-0 h-screen">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#7FE0B0]/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#18755C]/40 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3 pointer-events-none"></div>
         
@@ -102,7 +115,7 @@ export function Register() {
       </div>
 
       {/* Right Side - Register Form */}
-      <div className="w-full lg:w-1/2 lg:ml-[50%] flex items-center justify-center p-6 sm:p-12 relative min-h-screen overflow-y-auto">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 relative min-h-screen">
         <div className="absolute top-8 left-8 lg:hidden">
           <Link to="/" className="inline-flex items-center gap-2 text-gray-500 hover:text-[#0F4C3A] font-medium transition-colors group">
             <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
@@ -209,17 +222,23 @@ export function Register() {
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">Program Studi (ID)</label>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Program Studi</label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-[#0F4C3A] transition-colors">
                     <Building size={18} />
                   </div>
-                  <input 
-                    type="number" name="id_prodi" value={formData.id_prodi} onChange={handleChange}
-                    placeholder="ID Prodi" 
-                    className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all text-gray-800 text-sm"
+                  <select 
+                    name="id_prodi" 
+                    value={formData.id_prodi} 
+                    onChange={handleChange}
+                    className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all text-gray-800 text-sm appearance-none cursor-pointer"
                     required
-                  />
+                  >
+                    <option value="" disabled>Pilih Program Studi</option>
+                    {prodiList.map(prodi => (
+                      <option key={prodi.id} value={prodi.id}>{prodi.name}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
