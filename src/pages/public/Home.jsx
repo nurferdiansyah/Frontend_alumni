@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getNews, getJobs } from '../../api/publicService';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 import { Button } from '../../components/Button';
@@ -17,11 +18,31 @@ export function Home() {
   
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+  const [newsList, setNewsList] = useState([]);
+  const [jobsList, setJobsList] = useState([]);
+
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
     }, 4000); // geser otomatis setiap 4 detik
     return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [newsRes, jobsRes] = await Promise.all([getNews(), getJobs()]);
+        const fetchedNews = newsRes.data.data || newsRes.data;
+        const fetchedJobs = jobsRes.data.data || jobsRes.data;
+        
+        setNewsList(Array.isArray(fetchedNews) ? fetchedNews.slice(0, 3) : []);
+        setJobsList(Array.isArray(fetchedJobs) ? fetchedJobs.slice(0, 3) : []);
+      } catch (err) {
+        console.error('Gagal mengambil data dari API', err);
+        // Fallback or leave empty
+      }
+    };
+    fetchData();
   }, []);
 
   return (
@@ -205,30 +226,29 @@ export function Home() {
           </ScrollReveal>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[
-            { id: 1, img: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=2070&auto=format&fit=crop", badge: "Akademik", date: "24 Okt 2026", title: "Pelepasan Alumni Gelombang II Tahun 2026 Berlangsung Khidmat", desc: "Rektor UNUHA secara resmi melepas 850 wisudawan dalam acara yang digelar di Gedung Serbaguna Kampus Pusat." },
-            { id: 2, img: "https://images.unsplash.com/photo-1573164713988-8665fc963095?q=80&w=2069&auto=format&fit=crop", badge: "Karir", date: "20 Okt 2026", title: "UNUHA Career Days: Hadirkan 20 Perusahaan Nasional untuk Alumni", desc: "Ribuan alumni dan mahasiswa tingkat akhir memadati area bursa kerja UNUHA Career Days yang diadakan selama dua hari." },
-            { id: 3, img: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2070&auto=format&fit=crop", badge: "Prestasi", date: "15 Okt 2026", title: "Dosen Fakultas Teknik UNUHA Raih Penghargaan Peneliti Terbaik", desc: "Inovasi di bidang energi terbarukan membawa dosen UNUHA meraih medali emas dalam simposium di Singapura." }
-          ].map((news, i) => (
-            <ScrollReveal key={i} delay={i * 0.1}>
+          {newsList.length > 0 ? newsList.map((news, i) => (
+            <ScrollReveal key={news.id || i} delay={i * 0.1}>
               <Link to={`/berita/${news.id}`} className="bg-white rounded-[24px] overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg transition-shadow group flex flex-col h-full block">
                 <div className="relative h-56 overflow-hidden">
-                  <img src={news.img} alt={news.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  {/* Gunakan placeholder jika API belum ada field gambar (sementara) */}
+                  <img src={news.image || "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=2070&auto=format&fit=crop"} alt={news.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   <div className="absolute top-4 left-4 bg-[#0F4C3A] text-white text-[11px] font-bold px-3 py-1.5 rounded-lg tracking-wider">
-                    {news.badge}
+                    {news.category || "Kampus"}
                   </div>
                 </div>
                 <div className="p-7 flex flex-col flex-grow">
-                  <span className="text-[13px] text-gray-400 mb-2 block">{news.date}</span>
+                  <span className="text-[13px] text-gray-400 mb-2 block">{news.created_at ? new Date(news.created_at).toLocaleDateString('id-ID') : '-'}</span>
                   <h3 className="font-bold text-[18px] text-gray-900 mb-3 leading-snug">{news.title}</h3>
-                  <p className="text-[14px] text-gray-500 mb-6 line-clamp-3 leading-relaxed">{news.desc}</p>
+                  <p className="text-[14px] text-gray-500 mb-6 line-clamp-3 leading-relaxed">{news.content ? news.content.replace(/<[^>]*>?/gm, '') : ''}</p>
                   <div className="inline-flex items-center text-gray-900 font-bold group-hover:text-[#0F4C3A] transition-colors mt-auto text-[14px]">
                     Baca Selengkapnya <ArrowRight className="w-4 h-4 ml-1.5 text-gray-400" />
                   </div>
                 </div>
               </Link>
             </ScrollReveal>
-          ))}
+          )) : (
+            <div className="col-span-1 md:col-span-3 text-center py-8 text-gray-500">Belum ada berita.</div>
+          )}
           </div>
         </div>
       </section>
@@ -276,30 +296,19 @@ export function Home() {
         </ScrollReveal>
 
         <div className="flex flex-col gap-4">
-          <ScrollReveal delay={0.1}>
-            <JobListItem 
-              position="Senior Software Engineer" 
-              company="PT. Teknologi Maju Bersama" 
-              location="Jakarta Selatan" 
-              deadline="20 Nov 2026"
-            />
-          </ScrollReveal>
-          <ScrollReveal delay={0.2}>
-            <JobListItem 
-              position="Management Trainee" 
-              company="Bank Mandiri (Persero) Tbk" 
-              location="Palembang" 
-              deadline="15 Nov 2026"
-            />
-          </ScrollReveal>
-          <ScrollReveal delay={0.3}>
-            <JobListItem 
-              position="Tenaga Pengajar (Dosen)" 
-              company="Yayasan Nurul Huda" 
-              location="OKU Timur" 
-              deadline="10 Nov 2026"
-            />
-          </ScrollReveal>
+          {jobsList.length > 0 ? jobsList.map((job, i) => (
+            <ScrollReveal key={job.id || i} delay={i * 0.1}>
+              <JobListItem 
+                position={job.title} 
+                company={job.company_name} 
+                location={job.location || "Indonesia"} 
+                deadline={job.deadline ? new Date(job.deadline).toLocaleDateString('id-ID') : '-'}
+                id={job.id}
+              />
+            </ScrollReveal>
+          )) : (
+            <div className="text-center py-8 text-gray-500">Belum ada lowongan terbaru.</div>
+          )}
         </div>
       </section>
 

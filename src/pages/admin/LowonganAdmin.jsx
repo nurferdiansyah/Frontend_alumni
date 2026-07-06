@@ -1,14 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AdminLayout } from '../../components/AdminLayout';
 import { Search, Plus, Filter, MoreVertical, Edit, Trash2 } from 'lucide-react';
 import { Button } from '../../components/Button';
+import { getJobs } from '../../api/publicService';
 
 export function LowonganAdmin() {
-  const [jobs] = useState([
-    { id: 1, posisi: 'Senior Software Engineer', perusahaan: 'PT. Teknologi Maju Bersama', tipe: 'Penuh Waktu', deadline: '20 Nov 2026', status: 'Aktif', statusColor: 'bg-emerald-100 text-emerald-700' },
-    { id: 2, posisi: 'Management Trainee', perusahaan: 'Bank Mandiri', tipe: 'Penuh Waktu', deadline: '15 Nov 2026', status: 'Aktif', statusColor: 'bg-emerald-100 text-emerald-700' },
-    { id: 3, posisi: 'Data Analyst', perusahaan: 'PT. Telekomunikasi Indonesia', tipe: 'Magang', deadline: '10 Nov 2026', status: 'Tutup', statusColor: 'bg-gray-100 text-gray-700' },
-  ]);
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchJobs();
+  }, []);
+
+  const fetchJobs = async () => {
+    try {
+      const response = await getJobs();
+      const data = response.data.data || response.data;
+      setJobs(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Error fetching jobs:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <AdminLayout>
@@ -52,31 +66,45 @@ export function LowonganAdmin() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {jobs.map((job) => (
-                  <tr key={job.id} className="hover:bg-blue-50/30 transition-colors group">
-                    <td className="px-6 py-4">
-                      <p className="font-bold text-gray-900 text-sm">{job.posisi}</p>
-                      <p className="text-xs text-gray-500 mt-0.5">{job.perusahaan}</p>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{job.tipe}</td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{job.deadline}</td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-block px-3 py-1 rounded-lg text-xs font-bold ${job.statusColor}`}>
-                        {job.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <button className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-                          <Edit size={18} />
-                        </button>
-                        <button className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                    </td>
+                {loading ? (
+                  <tr>
+                    <td colSpan="5" className="px-6 py-8 text-center text-gray-500">Memuat data...</td>
                   </tr>
-                ))}
+                ) : jobs.length === 0 ? (
+                  <tr>
+                    <td colSpan="5" className="px-6 py-8 text-center text-gray-500">Belum ada lowongan.</td>
+                  </tr>
+                ) : (
+                  jobs.map((job) => {
+                    const status = job.status || 'Aktif'; // Asumsi jika tidak ada status
+                    const statusColor = status.toLowerCase() === 'aktif' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-700';
+                    return (
+                      <tr key={job.id} className="hover:bg-blue-50/30 transition-colors group">
+                        <td className="px-6 py-4">
+                          <p className="font-bold text-gray-900 text-sm">{job.title}</p>
+                          <p className="text-xs text-gray-500 mt-0.5">{job.company_name}</p>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-600">{job.type || 'Penuh Waktu'}</td>
+                        <td className="px-6 py-4 text-sm text-gray-600">{job.deadline ? new Date(job.deadline).toLocaleDateString('id-ID') : '-'}</td>
+                        <td className="px-6 py-4">
+                          <span className={`inline-block px-3 py-1 rounded-lg text-xs font-bold ${statusColor}`}>
+                            {status}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <button className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                              <Edit size={18} />
+                            </button>
+                            <button className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                              <Trash2 size={18} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
               </tbody>
             </table>
           </div>

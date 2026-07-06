@@ -1,11 +1,40 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { StudentLayout } from '../../components/StudentLayout';
 import { Button } from '../../components/Button';
 import { MapPin, Briefcase, GraduationCap, Edit, Phone, Building2 } from 'lucide-react';
+import { getProfile } from '../../api/alumniService';
 
 export function ProfilSaya() {
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await getProfile();
+        // Asumsi data berada di response.data.data atau response.data
+        setProfile(response.data.data || response.data);
+      } catch (error) {
+        console.error('Failed to fetch profile', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProfile();
+  }, []);
+
+  if (loading) {
+    return (
+      <StudentLayout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-gray-500">Memuat profil...</div>
+        </div>
+      </StudentLayout>
+    );
+  }
+
   return (
     <StudentLayout>
       <div className="p-6 md:p-8">
@@ -20,13 +49,13 @@ export function ProfilSaya() {
             <div className="px-8 pb-8 relative">
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 -mt-16 mb-4">
                 <div className="flex flex-col md:flex-row gap-6 items-center md:items-end">
-                  <div className="w-32 h-32 rounded-full border-4 border-white bg-[#7FE0B0] flex items-center justify-center text-4xl font-bold text-[#0F4C3A] shadow-md z-10 relative overflow-hidden">
-                    BS
+                  <div className="w-32 h-32 rounded-full border-4 border-white bg-[#7FE0B0] flex items-center justify-center text-4xl font-bold text-[#0F4C3A] shadow-md z-10 relative overflow-hidden uppercase">
+                    {profile?.nama_lengkap ? profile.nama_lengkap.substring(0, 2) : 'AL'}
                     {/* If photo exists: <img src="..." className="w-full h-full object-cover" /> */}
                   </div>
                   <div className="text-center md:text-left pb-2">
-                    <h1 className="text-2xl font-bold text-gray-900">Budi Santoso, S.Kom</h1>
-                    <p className="text-gray-500 font-medium">NIM: 20123456</p>
+                    <h1 className="text-2xl font-bold text-gray-900">{profile?.nama_lengkap || 'Nama Belum Diisi'}</h1>
+                    <p className="text-gray-500 font-medium">NIM: {profile?.nim || '-'}</p>
                   </div>
                 </div>
                 
@@ -56,21 +85,21 @@ export function ProfilSaya() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-8">
                   <div>
                     <p className="text-sm text-gray-500 mb-1">Fakultas</p>
-                    <p className="font-bold text-gray-900">Fakultas Sains dan Teknologi</p>
+                    <p className="font-bold text-gray-900">{profile?.prodi?.fakultas?.nama_fakultas || '-'}</p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500 mb-1">Program Studi</p>
-                    <p className="font-bold text-gray-900">Informatika</p>
+                    <p className="font-bold text-gray-900">{profile?.prodi?.nama_prodi || '-'}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500 mb-1">Tahun Lulus</p>
-                    <p className="font-bold text-gray-900">2026</p>
+                    <p className="text-sm text-gray-500 mb-1">Angkatan</p>
+                    <p className="font-bold text-gray-900">{profile?.angkatan || '-'}</p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500 mb-1">Nomor WhatsApp</p>
                     <p className="font-bold text-gray-900 flex items-center gap-2">
                       <Phone size={14} className="text-green-600" />
-                      0812-3456-7890
+                      {profile?.nomor_telepon || '-'}
                     </p>
                   </div>
                 </div>
@@ -111,21 +140,9 @@ export function ProfilSaya() {
                 
                 <div className="space-y-4">
                   <div>
-                    <p className="text-sm text-gray-500 mb-1">Negara & Provinsi</p>
-                    <p className="font-bold text-gray-900">Indonesia, DKI Jakarta</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500 mb-1">Kabupaten/Kota</p>
-                    <p className="font-bold text-gray-900">Jakarta Selatan</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500 mb-1">Kecamatan</p>
-                    <p className="font-bold text-gray-900">Kebayoran Baru</p>
-                  </div>
-                  <div>
                     <p className="text-sm text-gray-500 mb-1">Detail Alamat</p>
                     <p className="font-medium text-gray-900 text-sm leading-relaxed">
-                      Jl. Jend. Sudirman Kav 52-53, Gedung Karya, Lt. 12
+                      {profile?.alamat || 'Belum diisi'}
                     </p>
                   </div>
                 </div>
