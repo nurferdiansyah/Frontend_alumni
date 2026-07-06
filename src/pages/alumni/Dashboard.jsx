@@ -55,7 +55,10 @@ export function Dashboard() {
   };
 
   const handleUpload = async () => {
-    if (!selectedFile) return;
+    if (!selectedFile) {
+      showModal('error', 'Silakan pilih file PDF terlebih dahulu (wajib diisi).');
+      return;
+    }
     setUploading(true);
     const formData = new FormData();
     formData.append('surat_file', selectedFile);
@@ -123,6 +126,16 @@ export function Dashboard() {
                   <h3 className="font-bold text-gray-900">Langkah 2: Unggah Dokumen</h3>
                   <p className="text-sm text-gray-500 mt-1">Unggah PDF yang sudah diisi dan ditandatangani.</p>
                   
+                  {suratState && suratState.file_path && (
+                    <div className="mt-4 mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-between">
+                      <div className="flex flex-col">
+                        <span className="text-sm text-blue-800 font-bold">Dokumen telah diunggah</span>
+                        <span className="text-xs text-blue-600 mt-0.5">File tersimpan di sistem</span>
+                      </div>
+                      <a href={`http://localhost:8000/${suratState.file_path}`} target="_blank" rel="noreferrer" className="text-sm px-3 py-1.5 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition-colors">Lihat File</a>
+                    </div>
+                  )}
+
                   {(!suratState || suratState.status === 'Ditolak' || suratState.status === 'Menunggu Upload') && (
                     <div className="mt-4">
                       <input 
@@ -131,7 +144,7 @@ export function Dashboard() {
                         onChange={(e) => setSelectedFile(e.target.files[0])}
                         className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-[#0F4C3A] file:text-white hover:file:bg-[#0a3629] mb-3"
                       />
-                      <Button variant="primary" onClick={handleUpload} disabled={!selectedFile || uploading} className="w-full bg-[#0F4C3A] hover:bg-[#0a3629]">
+                      <Button variant="primary" onClick={handleUpload} disabled={uploading} className="w-full bg-[#0F4C3A] hover:bg-[#0a3629]">
                         {uploading ? 'Mengunggah...' : 'Unggah Sekarang'}
                       </Button>
                     </div>

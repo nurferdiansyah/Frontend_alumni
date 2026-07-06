@@ -44,12 +44,27 @@ export function StudentLayout({ children }) {
     checkProfileCompleteness();
   }, [navigate]);
 
-  const menuItems = [
-    { name: 'Dashboard', icon: Home, path: '/dashboard' },
-    { name: 'Profil Saya', icon: User, path: '/profil-saya' },
-    { name: 'Lowongan', icon: Briefcase, path: '/dashboard/lowongan' },
-    { name: 'Notifikasi', icon: Bell, path: '/dashboard/notifikasi' },
-    { name: 'Pengaturan', icon: Settings, path: '/dashboard/pengaturan' },
+  const menuGroups = [
+    {
+      title: 'UTAMA',
+      items: [
+        { name: 'Dashboard', icon: Home, path: '/dashboard' },
+        { name: 'Profil Saya', icon: User, path: '/profil-saya' },
+      ]
+    },
+    {
+      title: 'MANAJEMEN',
+      items: [
+        { name: 'Lowongan', icon: Briefcase, path: '/dashboard/lowongan' },
+        { name: 'Notifikasi', icon: Bell, path: '/dashboard/notifikasi' },
+      ]
+    },
+    {
+      title: 'SISTEM',
+      items: [
+        { name: 'Pengaturan', icon: Settings, path: '/dashboard/pengaturan' },
+      ]
+    }
   ];
 
   const handleLogout = () => navigate('/login');
@@ -70,16 +85,23 @@ export function StudentLayout({ children }) {
           </Link>
           <button className="lg:hidden text-gray-500" onClick={() => setSidebarOpen(false)}><X size={20} /></button>
         </div>
-        <div className="flex-1 overflow-y-auto py-6 px-4 space-y-2">
-          {menuItems.map(item => {
-            const isActive = location.pathname === item.path || (location.pathname === '/' && item.path === '/dashboard');
-            return (
-              <Link key={item.name} to={item.path} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${isActive ? 'bg-[#0F4C3A]/10 text-[#0F4C3A] font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900 font-medium'}`}>
-                <item.icon size={20} className={isActive ? 'text-[#0F4C3A]' : 'text-gray-400'} />
-                {item.name}
-              </Link>
-            );
-          })}
+        <div className="flex-1 overflow-y-auto py-6 px-4 space-y-6">
+          {menuGroups.map((group, idx) => (
+            <div key={idx} className="space-y-1">
+              <p className="px-4 text-[11px] font-bold text-gray-400 tracking-wider uppercase mb-2">
+                {group.title}
+              </p>
+              {group.items.map(item => {
+                const isActive = location.pathname === item.path || (location.pathname === '/' && item.path === '/dashboard');
+                return (
+                  <Link key={item.name} to={item.path} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${isActive ? 'bg-[#0F4C3A]/10 text-[#0F4C3A] font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900 font-medium'}`}>
+                    <item.icon size={20} className={isActive ? 'text-[#0F4C3A]' : 'text-gray-400'} />
+                    {item.name}
+                  </Link>
+                );
+              })}
+            </div>
+          ))}
         </div>
         <div className="p-4 border-t border-gray-100">
           <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-red-500 hover:bg-red-50 transition-colors font-medium">

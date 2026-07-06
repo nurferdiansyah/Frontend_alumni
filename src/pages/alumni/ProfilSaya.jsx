@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { StudentLayout } from '../../components/StudentLayout';
 import { Button } from '../../components/Button';
-import { MapPin, Briefcase, GraduationCap, Edit, Phone, Building2 } from 'lucide-react';
+import { MapPin, Briefcase, GraduationCap, Edit, Phone, Building2, BookOpen, Clock } from 'lucide-react';
 import { getProfile } from '../../api/alumniService';
 
 export function ProfilSaya() {
@@ -92,7 +92,7 @@ export function ProfilSaya() {
                     <p className="font-bold text-gray-900">{profile?.prodi?.nama_prodi || '-'}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500 mb-1">Angkatan</p>
+                    <p className="text-sm text-gray-500 mb-1">Tahun Lulus</p>
                     <p className="font-bold text-gray-900">{profile?.angkatan || '-'}</p>
                   </div>
                   <div>
@@ -116,12 +116,24 @@ export function ProfilSaya() {
                 
                 <div className="flex items-start gap-4 p-4 border border-gray-100 rounded-xl bg-gray-50">
                   <div className="p-3 bg-white text-[#0F4C3A] rounded-xl shadow-sm">
-                    <Building2 size={24} />
+                    {profile?.tracer_study?.job_status === 'studi' ? <BookOpen size={24} /> : 
+                     profile?.tracer_study?.job_status === 'belum_bekerja' ? <Clock size={24} /> : 
+                     <Building2 size={24} />}
                   </div>
                   <div>
-                    <h3 className="font-bold text-gray-900">Bekerja</h3>
-                    <p className="text-sm text-gray-500 mt-1">PT. Teknologi Nusantara</p>
-                    <p className="text-sm text-gray-500">Frontend Developer</p>
+                    <h3 className="font-bold text-gray-900">
+                      {profile?.tracer_study?.job_status === 'bekerja' ? 'Bekerja' :
+                       profile?.tracer_study?.job_status === 'wirausaha' ? 'Wirausaha' :
+                       profile?.tracer_study?.job_status === 'studi' ? 'Lanjut Studi' :
+                       profile?.tracer_study?.job_status === 'belum_bekerja' ? 'Belum Bekerja' :
+                       'Belum Diisi'}
+                    </h3>
+                    {profile?.tracer_study && profile.tracer_study.job_status !== 'belum_bekerja' && (
+                      <p className="text-sm text-gray-500 mt-1">{profile.tracer_study.company}</p>
+                    )}
+                    {profile?.tracer_study && (
+                      <p className="text-sm text-gray-500">{profile.tracer_study.job_title}</p>
+                    )}
                   </div>
                 </div>
               </motion.div>

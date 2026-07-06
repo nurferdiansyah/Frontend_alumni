@@ -4,6 +4,7 @@ import { Search, Plus, Filter, Edit, Trash2, Eye } from 'lucide-react';
 import { Button } from '../../components/Button';
 import { getNews } from '../../api/publicService';
 import { createNews, updateNews, deleteNews } from '../../api/adminService';
+import Swal from 'sweetalert2';
 
 export function BeritaAdmin() {
   const [news, setNews] = useState([]);
@@ -75,20 +76,30 @@ export function BeritaAdmin() {
       handleCloseModal();
     } catch (error) {
       console.error('Failed to save news:', error);
-      alert('Gagal menyimpan berita!');
+      Swal.fire('Informasi', 'Gagal menyimpan berita!', 'info');
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Yakin ingin menghapus berita ini?')) {
+    const result = await Swal.fire({
+      title: 'Konfirmasi',
+      text: 'Yakin ingin menghapus berita ini?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#0F4C3A',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya, Lanjutkan',
+      cancelButtonText: 'Batal'
+    });
+    if (result.isConfirmed) {
       try {
         await deleteNews(id);
         fetchNews();
       } catch (error) {
         console.error('Failed to delete:', error);
-        alert('Gagal menghapus berita!');
+        Swal.fire('Informasi', 'Gagal menghapus berita!', 'info');
       }
     }
   };

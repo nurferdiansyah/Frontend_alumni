@@ -3,6 +3,7 @@ import { AdminLayout } from '../../components/AdminLayout';
 import { Search, Filter, Download, MoreVertical, Eye, Trash2, Edit } from 'lucide-react';
 import { Button } from '../../components/Button';
 import { getAlumni, updateAlumni, deleteAlumni } from '../../api/adminService';
+import Swal from 'sweetalert2';
 
 export function DataAlumni() {
   const [alumniData, setAlumniData] = useState([]);
@@ -66,20 +67,30 @@ export function DataAlumni() {
       handleCloseModal();
     } catch (error) {
       console.error('Failed to save:', error);
-      alert('Gagal mengupdate data alumni!');
+      Swal.fire('Informasi', 'Gagal mengupdate data alumni!', 'info');
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Yakin ingin menghapus alumni ini secara permanen? Akunnya juga akan terhapus.')) {
+    const result = await Swal.fire({
+      title: 'Konfirmasi',
+      text: 'Yakin ingin menghapus alumni ini secara permanen? Akunnya juga akan terhapus.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#0F4C3A',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya, Lanjutkan',
+      cancelButtonText: 'Batal'
+    });
+    if (result.isConfirmed) {
       try {
         await deleteAlumni(id);
         fetchAlumni();
       } catch (error) {
         console.error('Failed to delete:', error);
-        alert('Gagal menghapus alumni!');
+        Swal.fire('Informasi', 'Gagal menghapus alumni!', 'info');
       }
     }
   };
@@ -211,7 +222,7 @@ export function DataAlumni() {
                 </div>
                 <div className="grid grid-cols-2 gap-y-4 gap-x-8 bg-gray-50 p-5 rounded-xl border border-gray-100">
                   <div>
-                    <p className="text-xs text-gray-500 uppercase tracking-wide font-bold mb-1">Angkatan</p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wide font-bold mb-1">Tahun Lulus</p>
                     <p className="font-medium text-gray-900">{selectedAlumni.angkatan || '-'}</p>
                   </div>
                   <div>
@@ -247,7 +258,7 @@ export function DataAlumni() {
                     <input type="text" name="nim" value={formData.nim} onChange={handleChange} required className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none" />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Angkatan (Tahun Lulus) <span className="text-red-500">*</span></label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Tahun Lulus <span className="text-red-500">*</span></label>
                     <input type="number" name="angkatan" value={formData.angkatan} onChange={handleChange} required className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none" />
                   </div>
                   <div>

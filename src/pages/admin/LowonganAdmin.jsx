@@ -4,6 +4,7 @@ import { Search, Plus, Filter, MoreVertical, Edit, Trash2 } from 'lucide-react';
 import { Button } from '../../components/Button';
 import { getJobs } from '../../api/publicService';
 import { createJob, updateJob, deleteJob } from '../../api/adminService';
+import Swal from 'sweetalert2';
 
 export function LowonganAdmin() {
   const [jobs, setJobs] = useState([]);
@@ -81,20 +82,30 @@ export function LowonganAdmin() {
       handleCloseModal();
     } catch (error) {
       console.error('Failed to save job:', error);
-      alert('Gagal menyimpan lowongan! Pastikan semua kolom wajib diisi.');
+      Swal.fire('Informasi', 'Gagal menyimpan lowongan! Pastikan semua kolom wajib diisi.', 'info');
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Yakin ingin menghapus lowongan ini?')) {
+    const result = await Swal.fire({
+      title: 'Konfirmasi',
+      text: 'Yakin ingin menghapus lowongan ini?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#0F4C3A',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya, Lanjutkan',
+      cancelButtonText: 'Batal'
+    });
+    if (result.isConfirmed) {
       try {
         await deleteJob(id);
         fetchJobs();
       } catch (error) {
         console.error('Failed to delete:', error);
-        alert('Gagal menghapus lowongan!');
+        Swal.fire('Informasi', 'Gagal menghapus lowongan!', 'info');
       }
     }
   };

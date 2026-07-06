@@ -206,7 +206,7 @@ export function Register() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">Angkatan</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Tahun Lulus</label>
                   <div className="relative group">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-[#0F4C3A] transition-colors">
                       <Calendar size={18} />

@@ -4,6 +4,7 @@ import { Search, Plus, Filter, Edit, Trash2, Eye } from 'lucide-react';
 import { Button } from '../../components/Button';
 import { getInfo } from '../../api/publicService';
 import { createInfo, updateInfo, deleteInfo } from '../../api/adminService';
+import Swal from 'sweetalert2';
 
 export function InfoKampusAdmin() {
   const [infoList, setInfoList] = useState([]);
@@ -73,20 +74,30 @@ export function InfoKampusAdmin() {
       handleCloseModal();
     } catch (error) {
       console.error('Failed to save info:', error);
-      alert('Gagal menyimpan info kampus!');
+      Swal.fire('Informasi', 'Gagal menyimpan info kampus!', 'info');
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Yakin ingin menghapus informasi ini?')) {
+    const result = await Swal.fire({
+      title: 'Konfirmasi',
+      text: 'Yakin ingin menghapus informasi ini?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#0F4C3A',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya, Lanjutkan',
+      cancelButtonText: 'Batal'
+    });
+    if (result.isConfirmed) {
       try {
         await deleteInfo(id);
         fetchInfo();
       } catch (error) {
         console.error('Failed to delete:', error);
-        alert('Gagal menghapus info kampus!');
+        Swal.fire('Informasi', 'Gagal menghapus info kampus!', 'info');
       }
     }
   };

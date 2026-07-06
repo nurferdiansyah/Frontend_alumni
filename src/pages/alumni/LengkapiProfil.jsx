@@ -162,6 +162,23 @@ export function LengkapiProfil() {
     if (step > 1) setStep(step - 1);
   };
 
+  const isStepComplete = () => {
+    if (step === 1) {
+      return formData.nama && formData.nim && formData.fakultas && formData.prodi && formData.tahunLulus && formData.noWa;
+    }
+    if (step === 2) {
+      return formData.negara && formData.provinsi && formData.kabupaten && formData.alamatDetail;
+    }
+    if (step === 3) {
+      if (!formData.statusKarir) return false;
+      if (formData.statusKarir === 'bekerja') return formData.namaPerusahaan && formData.jabatan;
+      if (formData.statusKarir === 'wirausaha') return formData.namaUsaha && formData.bidangUsaha;
+      if (formData.statusKarir === 'studi') return formData.universitasLanjut && formData.jurusanLanjut;
+      if (formData.statusKarir === 'belum_bekerja') return formData.minatKerja;
+    }
+    return false;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -551,11 +568,11 @@ export function LengkapiProfil() {
                 </Button>
                 
                 {step < 3 ? (
-                  <Button type="button" variant="primary" onClick={nextStep} className="flex items-center gap-2 bg-[#0F4C3A] hover:bg-[#0a3629]">
+                  <Button type="button" variant="primary" onClick={nextStep} disabled={!isStepComplete()} className="flex items-center gap-2 bg-[#0F4C3A] hover:bg-[#0a3629] disabled:opacity-50 disabled:cursor-not-allowed transition-all">
                     Selanjutnya <ChevronRight size={16} />
                   </Button>
                 ) : (
-                  <Button type="submit" disabled={!formData.statusKarir || saving} variant="primary" className="flex items-center gap-2 bg-[#7FE0B0] hover:bg-[#66c698] text-[#0F4C3A] font-bold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                  <Button type="submit" disabled={!isStepComplete() || saving} variant="primary" className="flex items-center gap-2 bg-[#7FE0B0] hover:bg-[#66c698] text-[#0F4C3A] font-bold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all">
                     {saving ? 'Menyimpan...' : 'Simpan Profil'} <Check size={18} />
                   </Button>
                 )}

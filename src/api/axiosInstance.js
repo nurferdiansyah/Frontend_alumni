@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const axiosInstance = axios.create({
   baseURL: 'http://localhost:8000/api',
@@ -36,7 +37,7 @@ axiosInstance.interceptors.response.use(
       
       // 403 Forbidden
       if (error.response.status === 403) {
-        alert('Akses Ditolak: Anda tidak memiliki izin untuk halaman ini.');
+        Swal.fire('Informasi', 'Akses Ditolak: Anda tidak memiliki izin untuk halaman ini.', 'info');
       }
 
       // 422 Unprocessable Entity - biarkan komponen yang menangani (via catch)

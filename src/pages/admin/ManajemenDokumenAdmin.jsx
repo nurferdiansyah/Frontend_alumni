@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { AdminLayout } from '../../components/AdminLayout';
 import { Button } from '../../components/Button';
-import { Save, BookOpen, FileCheck } from 'lucide-react';
+import { Save, BookOpen, FileCheck, Check, X as XIcon, Trash2 } from 'lucide-react';
 import { getWebSettings } from '../../api/publicService';
-import { updateWebSettings, getSuratIjazah, verifySuratIjazah } from '../../api/adminService';
+import { updateWebSettings, getSuratIjazah, verifySuratIjazah, deleteSuratIjazah } from '../../api/adminService';
+import Swal from 'sweetalert2';
 
 export function ManajemenDokumenAdmin() {
   const [activeTab, setActiveTab] = useState('template'); // 'template' or 'verifikasi'
@@ -61,7 +62,28 @@ export function ManajemenDokumenAdmin() {
       await verifySuratIjazah(id, { status, catatan });
       fetchSurat();
     } catch (e) {
-      alert('Gagal memverifikasi');
+      Swal.fire('Informasi', 'Gagal memverifikasi', 'info');
+    }
+  };
+
+  const handleDelete = async (id) => {
+    const result = await Swal.fire({
+      title: 'Konfirmasi',
+      text: 'Apakah Anda yakin ingin menghapus dokumen ini?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#0F4C3A',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya, Lanjutkan',
+      cancelButtonText: 'Batal'
+    });
+    if (result.isConfirmed) {
+      try {
+        await deleteSuratIjazah(id);
+        fetchSurat();
+      } catch (e) {
+        Swal.fire('Informasi', 'Gagal menghapus dokumen', 'info');
+      }
     }
   };
 
@@ -80,10 +102,10 @@ export function ManajemenDokumenAdmin() {
       if (formData.template_surat_ijazah) submitData.append('template_surat_ijazah', formData.template_surat_ijazah);
       
       await updateWebSettings(submitData);
-      alert('Berhasil menyimpan template!');
+      Swal.fire('Informasi', 'Berhasil menyimpan template!', 'info');
     } catch (error) {
       console.error('Error updating template:', error);
-      alert('Gagal menyimpan template.');
+      Swal.fire('Informasi', 'Gagal menyimpan template.', 'info');
     } finally {
       setSavingTemplate(false);
     }
@@ -96,7 +118,7 @@ export function ManajemenDokumenAdmin() {
           
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Manajemen Dokumen</h1>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Dokumen</h1>
               <p className="text-gray-500">Kelola template dokumen mahasiswa dan verifikasi kiriman mereka.</p>
             </div>
           </div>
@@ -204,8 +226,29 @@ export function ManajemenDokumenAdmin() {
                             <td className="px-6 py-4 text-right">
                               {statusDisplay === 'Menunggu Verifikasi' ? (
                                 <div className="flex justify-end gap-2">
-                                  <Button size="sm" onClick={() => handleVerify(item.id_ijazah, 'Disetujui', '')} className="bg-green-600 hover:bg-green-700 text-white shadow-sm">Setuju</Button>
-                                  <Button size="sm" onClick={() => handleVerify(item.id_ijazah, 'Ditolak', 'Dokumen tidak valid')} className="bg-red-600 hover:bg-red-700 text-white shadow-sm">Tolak</Button>
+                                  <button 
+                                    onClick={() => handleVerify(item.id_ijazah, 'Disetujui', '')} 
+                                    className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-green-700 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 hover:border-green-300 transition-colors"
+                                  >
+                                    <Check size={14} strokeWidth={2.5} /> Setuju
+                                  </button>
+                                  <button 
+                                    onClick={() => handleVerify(item.id_ijazah, 'Ditolak', 'Dokumen tidak valid')} 
+                                    className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-red-700 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 hover:border-red-300 transition-colors"
+                                  >
+                                    <XIcon size={14} strokeWidth={2.5} /> Tolak
+                                  </button>
+                                </div>
+                              ) : statusDisplay === 'Ditolak' ? (
+                                <div className="flex justify-end items-center gap-3">
+                                  <span className="text-sm text-gray-500 font-medium">Selesai</span>
+                                  <button 
+                                    onClick={() => handleDelete(item.id_ijazah)}
+                                    className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                                    title="Hapus Dokumen"
+                                  >
+                                    <Trash2 size={16} />
+                                  </button>
                                 </div>
                               ) : (
                                 <span className="text-sm text-gray-500 font-medium">Selesai</span>

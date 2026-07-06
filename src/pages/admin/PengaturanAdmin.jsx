@@ -3,6 +3,7 @@ import { AdminLayout } from '../../components/AdminLayout';
 import { Button } from '../../components/Button';
 import { Lock, User, Building, BookOpen, Trash2, Plus } from 'lucide-react';
 import { getFakultas, getProdi, createFakultas, deleteFakultas, createProdi, deleteProdi } from '../../api/adminService';
+import Swal from 'sweetalert2';
 
 export function PengaturanAdmin() {
   const [fakultas, setFakultas] = useState([]);
@@ -33,15 +34,25 @@ export function PengaturanAdmin() {
       await createFakultas({ nama_fakultas: newFakultas });
       setNewFakultas('');
       fetchMasterData();
-    } catch (e) { alert('Gagal menambah fakultas'); }
+    } catch (e) { Swal.fire('Informasi', 'Gagal menambah fakultas', 'info'); }
   };
 
   const handleDeleteFakultas = async (id) => {
-    if (window.confirm('Hapus fakultas ini?')) {
+    const result = await Swal.fire({
+      title: 'Konfirmasi',
+      text: 'Hapus fakultas ini?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#0F4C3A',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya, Lanjutkan',
+      cancelButtonText: 'Batal'
+    });
+    if (result.isConfirmed) {
       try {
         await deleteFakultas(id);
         fetchMasterData();
-      } catch (e) { alert('Gagal menghapus fakultas'); }
+      } catch (e) { Swal.fire('Informasi', 'Gagal menghapus fakultas', 'info'); }
     }
   };
 
@@ -52,15 +63,25 @@ export function PengaturanAdmin() {
       await createProdi({ nama_prodi: newProdi, id_fakultas: selectedFakultasForProdi });
       setNewProdi('');
       fetchMasterData();
-    } catch (e) { alert('Gagal menambah prodi'); }
+    } catch (e) { Swal.fire('Informasi', 'Gagal menambah prodi', 'info'); }
   };
 
   const handleDeleteProdi = async (id) => {
-    if (window.confirm('Hapus prodi ini?')) {
+    const result = await Swal.fire({
+      title: 'Konfirmasi',
+      text: 'Hapus prodi ini?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#0F4C3A',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya, Lanjutkan',
+      cancelButtonText: 'Batal'
+    });
+    if (result.isConfirmed) {
       try {
         await deleteProdi(id);
         fetchMasterData();
-      } catch (e) { alert('Gagal menghapus prodi'); }
+      } catch (e) { Swal.fire('Informasi', 'Gagal menghapus prodi', 'info'); }
     }
   };
   return (

@@ -21,7 +21,7 @@ export function AdminLayout({ children }) {
         { name: 'Lowongan', icon: Briefcase, path: '/admin/lowongan' },
         { name: 'Berita', icon: Newspaper, path: '/admin/berita' },
         { name: 'Info Kampus', icon: Megaphone, path: '/admin/info-kampus' },
-        { name: 'Manajemen Dokumen', icon: BookOpen, path: '/admin/dokumen' },
+        { name: 'Dokumen', icon: BookOpen, path: '/admin/dokumen' },
       ]
     },
     {

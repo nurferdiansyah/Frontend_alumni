@@ -44,3 +44,4 @@ export const getTtd = () => axiosInstance.get('/admin/ttd');
 // Surat Ijazah
 export const getSuratIjazah = () => axiosInstance.get('/admin/surat-ijazah');
 export const verifySuratIjazah = (id, data) => axiosInstance.put(`/admin/surat-ijazah/${id}/verify`, data);
+export const deleteSuratIjazah = (id) => axiosInstance.delete(`/admin/surat-ijazah/${id}`);
