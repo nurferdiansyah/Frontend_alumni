@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 import { Button } from '../../components/Button';
@@ -6,7 +6,26 @@ import { BookMarked, Calendar, ArrowRight, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ScrollReveal } from '../../components/ScrollReveal';
 import { motion } from 'framer-motion';
+import { getInfo } from '../../api/publicService';
+
 export function Campus() {
+  const [infoList, setInfoList] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchInfo = async () => {
+      try {
+        const response = await getInfo();
+        const data = response.data.data || response.data;
+        setInfoList(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error('Error fetching info:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchInfo();
+  }, []);
   return (
     <div className="min-h-screen bg-white font-sans text-gray-800 flex flex-col">
       <Navbar />
@@ -162,27 +181,28 @@ export function Campus() {
             </ScrollReveal>
             
             <div className="flex flex-col gap-4">
-              {[
-                { title: "Jadwal Pelaksanaan Wisuda Gelombang III Tahun 2026", date: "12 Nov 2026", type: "Akademik" },
-                { title: "Penerimaan Mahasiswa Baru Jalur Beasiswa Prestasi Dibuka", date: "05 Nov 2026", type: "Pendaftaran" },
-                { title: "Seminar Nasional Teknologi Informasi dan Komunikasi (SNTIK)", date: "28 Okt 2026", type: "Event" },
-                { title: "Perpanjangan Masa Pengisian Kartu Rencana Studi (KRS)", date: "20 Okt 2026", type: "Akademik" }
-              ].map((item, idx) => (
-                <ScrollReveal key={idx} delay={idx * 0.1}>
-                  <div className="bg-white border border-gray-100 p-6 rounded-[20px] shadow-sm hover:shadow-md transition-all duration-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer group">
-                    <div>
-                      <div className="flex items-center gap-3 mb-2.5">
-                        <span className="bg-[#F8FAFC] text-gray-700 text-[11px] px-3 py-1 rounded-md font-bold border border-gray-100 uppercase tracking-wide">{item.type}</span>
-                        <span className="text-gray-400 text-[12px] flex items-center gap-1.5 font-medium"><Calendar size={12}/> {item.date}</span>
+              {loading ? (
+                <p className="text-gray-500">Memuat pengumuman...</p>
+              ) : infoList.length > 0 ? (
+                infoList.map((item, idx) => (
+                  <ScrollReveal key={item.id || idx} delay={idx * 0.1}>
+                    <div className="bg-white border border-gray-100 p-6 rounded-[20px] shadow-sm hover:shadow-md transition-all duration-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer group">
+                      <div>
+                        <div className="flex items-center gap-3 mb-2.5">
+                          <span className="bg-[#F8FAFC] text-gray-700 text-[11px] px-3 py-1 rounded-md font-bold border border-gray-100 uppercase tracking-wide">{item.type || item.tipe || 'Informasi'}</span>
+                          <span className="text-gray-400 text-[12px] flex items-center gap-1.5 font-medium"><Calendar size={12}/> {item.created_at ? new Date(item.created_at).toLocaleDateString('id-ID') : (item.tanggal || '-')}</span>
+                        </div>
+                        <h4 className="font-bold text-gray-900 text-[16px] group-hover:text-[#0F4C3A] transition-colors">{item.title || item.judul}</h4>
                       </div>
-                      <h4 className="font-bold text-gray-900 text-[16px] group-hover:text-[#0F4C3A] transition-colors">{item.title}</h4>
+                      <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-[#0F4C3A] transition-colors flex-shrink-0">
+                        <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
+                      </div>
                     </div>
-                    <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-[#0F4C3A] transition-colors flex-shrink-0">
-                      <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
-                    </div>
-                  </div>
-                </ScrollReveal>
-              ))}
+                  </ScrollReveal>
+                ))
+              ) : (
+                <p className="text-gray-500">Belum ada pengumuman kampus saat ini.</p>
+              )}
             </div>
           </div>
           

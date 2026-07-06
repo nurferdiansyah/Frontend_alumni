@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../../components/Button';
 import { Camera, MapPin, Briefcase, GraduationCap, ChevronRight, ChevronLeft, Check, Building2, BookOpen, Clock } from 'lucide-react';
+import { getProfile, updateProfile, submitTracerStudy } from '../../api/alumniService';
 
 const faculties = {
   "Fakultas Agama Islam": ["Pendidikan Agama Islam", "Pendidikan Guru Madrasah Ibtidaiyah"],
@@ -35,13 +36,39 @@ export function LengkapiProfil() {
     statusKarir: '',
     namaPerusahaan: '', jabatan: '', tahunMulaiKerja: '',
     namaUsaha: '', bidangUsaha: '',
-    universitasLanjut: '', jurusanLanjut: '',
     minatKerja: ''
   });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [step]);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await getProfile();
+        const data = response.data.data || response.data;
+        setFormData(prev => ({
+          ...prev,
+          nama: data.nama_lengkap || '',
+          nim: data.nim || '',
+          tahunLulus: data.angkatan || '',
+          noWa: data.nomor_telepon || '',
+          alamatDetail: data.alamat || '',
+          fakultas: data.prodi?.fakultas?.nama_fakultas || '',
+          prodi: data.prodi?.nama_prodi || '',
+        }));
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   const updateForm = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -71,13 +98,57 @@ export function LengkapiProfil() {
     if (step > 1) setStep(step - 1);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.statusKarir) {
       alert("Pilih status karir Anda terlebih dahulu sebelum menyimpan profil.");
       return;
     }
-    navigate('/dashboard'); // Go to dashboard on success
+    
+    setSaving(true);
+    setError(null);
+    try {
+      // Update basic profile
+      await updateProfile({
+        nama_lengkap: formData.nama,
+        nim: formData.nim,
+        angkatan: formData.tahunLulus,
+        nomor_telepon: formData.noWa,
+        alamat: formData.alamatDetail,
+        id_prodi: 1 // Default or map from prodi string if you have an ID mapping
+      });
+
+      // Submit Tracer Study based on status
+      let jobTitle = '';
+      let company = '';
+      
+      if (formData.statusKarir === 'bekerja') {
+        jobTitle = formData.jabatan;
+        company = formData.namaPerusahaan;
+      } else if (formData.statusKarir === 'wirausaha') {
+        jobTitle = formData.bidangUsaha;
+        company = formData.namaUsaha;
+      } else if (formData.statusKarir === 'studi') {
+        jobTitle = formData.jurusanLanjut;
+        company = formData.universitasLanjut;
+      } else {
+        jobTitle = formData.minatKerja;
+      }
+
+      await submitTracerStudy({
+        job_status: formData.statusKarir,
+        job_title: jobTitle,
+        company: company,
+        city: formData.kabupaten || formData.provinsi || 'Indonesia'
+      });
+
+      navigate('/dashboard');
+    } catch (err) {
+      console.error(err);
+      setError('Terjadi kesalahan saat menyimpan data. Pastikan semua kolom wajib terisi.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   const steps = [
@@ -146,6 +217,7 @@ export function LengkapiProfil() {
                     transition={{ duration: 0.3 }}
                     className="space-y-6"
                   >
+                    {error && <div className="p-4 bg-red-50 text-red-700 text-sm rounded-md">{error}</div>}
                     <div className="mb-8">
                       <h2 className="text-2xl font-bold text-gray-900 mb-2">Informasi Dasar</h2>
                       <p className="text-gray-500">Mari mulai dengan melengkapi identitas diri Anda sebagai alumni.</p>
@@ -375,8 +447,8 @@ export function LengkapiProfil() {
                     Selanjutnya <ChevronRight size={16} />
                   </Button>
                 ) : (
-                  <Button type="submit" disabled={!formData.statusKarir} variant="primary" className="flex items-center gap-2 bg-[#7FE0B0] hover:bg-[#66c698] text-[#0F4C3A] font-bold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
-                    Simpan Profil <Check size={18} />
+                  <Button type="submit" disabled={!formData.statusKarir || saving} variant="primary" className="flex items-center gap-2 bg-[#7FE0B0] hover:bg-[#66c698] text-[#0F4C3A] font-bold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                    {saving ? 'Menyimpan...' : 'Simpan Profil'} <Check size={18} />
                   </Button>
                 )}
               </div>

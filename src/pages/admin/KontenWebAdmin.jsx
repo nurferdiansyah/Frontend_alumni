@@ -1,9 +1,55 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { AdminLayout } from '../../components/AdminLayout';
 import { Button } from '../../components/Button';
 import { Layout, Image as ImageIcon, Save, Type } from 'lucide-react';
+import { getWebSettings } from '../../api/publicService';
+import { updateWebSettings } from '../../api/adminService';
 
 export function KontenWebAdmin() {
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [formData, setFormData] = useState({
+    hero_title: 'Membangun Karir, Menghubungkan Alumni.',
+    hero_description: 'Selamat datang di Pusat Pengembangan Karir dan Alumni Universitas Nurul Huda (UNUHA). Kami berkomitmen membantu setiap mahasiswa dan lulusan mencapai potensi karir maksimal mereka melalui jejaring profesional yang kuat.',
+  });
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const response = await getWebSettings();
+        const data = response.data.data || response.data;
+        if (data) {
+          setFormData({
+            hero_title: data.hero_title || formData.hero_title,
+            hero_description: data.hero_description || formData.hero_description,
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching web settings:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSettings();
+  }, []);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await updateWebSettings(formData);
+      alert('Berhasil menyimpan perubahan!');
+    } catch (error) {
+      console.error('Error updating settings:', error);
+      alert('Gagal menyimpan perubahan.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <AdminLayout>
       <div className="p-6 md:p-8 min-h-full">
@@ -14,8 +60,8 @@ export function KontenWebAdmin() {
               <h1 className="text-3xl font-bold text-gray-900 mb-2">Manajemen Konten Web</h1>
               <p className="text-gray-500">Ubah teks dan gambar pada halaman utama portal publik.</p>
             </div>
-            <Button variant="primary" className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 shadow-md">
-              <Save size={18} /> Simpan Perubahan
+            <Button onClick={handleSave} disabled={saving} variant="primary" className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 shadow-md disabled:opacity-50">
+              <Save size={18} /> {saving ? 'Menyimpan...' : 'Simpan Perubahan'}
             </Button>
           </div>
 
@@ -37,8 +83,11 @@ export function KontenWebAdmin() {
                         <Type size={16} className="text-gray-400" /> Judul Utama
                       </label>
                       <textarea 
+                        name="hero_title"
+                        value={formData.hero_title}
+                        onChange={handleChange}
                         className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all bg-gray-50 focus:bg-white h-24 resize-none"
-                        defaultValue="Membangun Karir, Menghubungkan Alumni."
+                        placeholder="Membangun Karir, Menghubungkan Alumni."
                       ></textarea>
                     </div>
                     <div>
@@ -46,8 +95,11 @@ export function KontenWebAdmin() {
                         <Type size={16} className="text-gray-400" /> Deskripsi Paragraf
                       </label>
                       <textarea 
+                        name="hero_description"
+                        value={formData.hero_description}
+                        onChange={handleChange}
                         className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all bg-gray-50 focus:bg-white h-32 resize-none leading-relaxed"
-                        defaultValue="Selamat datang di Pusat Pengembangan Karir dan Alumni Universitas Nurul Huda (UNUHA). Kami berkomitmen membantu setiap mahasiswa dan lulusan mencapai potensi karir maksimal mereka melalui jejaring profesional yang kuat."
+                        placeholder="Selamat datang di Pusat Pengembangan Karir..."
                       ></textarea>
                     </div>
                   </div>
