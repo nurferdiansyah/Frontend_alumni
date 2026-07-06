@@ -27,7 +27,7 @@ import { DataAlumni } from './pages/admin/DataAlumni';
 import { LowonganAdmin } from './pages/admin/LowonganAdmin';
 import { BeritaAdmin } from './pages/admin/BeritaAdmin';
 import { InfoKampusAdmin } from './pages/admin/InfoKampusAdmin';
-import { KontenWebAdmin } from './pages/admin/KontenWebAdmin';
+import { ManajemenDokumenAdmin } from './pages/admin/ManajemenDokumenAdmin';
 import { PengaturanAdmin } from './pages/admin/PengaturanAdmin';
 
 function ScrollToTop() {
@@ -71,7 +71,7 @@ function App() {
         <Route path="/admin/lowongan" element={<ProtectedRoute allowedRole="admin"><LowonganAdmin /></ProtectedRoute>} />
         <Route path="/admin/berita" element={<ProtectedRoute allowedRole="admin"><BeritaAdmin /></ProtectedRoute>} />
         <Route path="/admin/info-kampus" element={<ProtectedRoute allowedRole="admin"><InfoKampusAdmin /></ProtectedRoute>} />
-        <Route path="/admin/konten-web" element={<ProtectedRoute allowedRole="admin"><KontenWebAdmin /></ProtectedRoute>} />
+        <Route path="/admin/dokumen" element={<ProtectedRoute allowedRole="admin"><ManajemenDokumenAdmin /></ProtectedRoute>} />
         <Route path="/admin/pengaturan" element={<ProtectedRoute allowedRole="admin"><PengaturanAdmin /></ProtectedRoute>} />
       </Routes>
     </Router>
