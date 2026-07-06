@@ -4,19 +4,7 @@ import { ArrowLeft, Eye, EyeOff, Mail, Lock, User, Hash, Phone, MapPin, Building
 import { motion } from 'framer-motion';
 import { Button } from '../../components/Button';
 import axiosInstance from '../../api/axiosInstance';
-
-const prodiList = [
-  { id: 1, name: "Pendidikan Agama Islam" },
-  { id: 2, name: "Pendidikan Guru Madrasah Ibtidaiyah" },
-  { id: 3, name: "Pendidikan Fisika" },
-  { id: 4, name: "Pendidikan Ekonomi" },
-  { id: 5, name: "Pendidikan Bahasa Inggris" },
-  { id: 6, name: "Pendidikan Bahasa dan Sastra Indonesia" },
-  { id: 7, name: "Pendidikan Teknologi Informasi" },
-  { id: 8, name: "Informatika" },
-  { id: 9, name: "Matematika" },
-  { id: 10, name: "Sains Pertanian" }
-];
+import { getFakultas, getProdi } from '../../api/publicService';
 
 export function Register() {
   const [showPassword, setShowPassword] = useState(false);
@@ -37,10 +25,25 @@ export function Register() {
     alamat: ''
   });
 
+  const [dbFakultas, setDbFakultas] = useState([]);
+  const [dbProdi, setDbProdi] = useState([]);
+  const [selectedFakultas, setSelectedFakultas] = useState('');
+
   const navigate = useNavigate();
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    const fetchMasterData = async () => {
+      try {
+        const resF = await getFakultas();
+        const resP = await getProdi();
+        setDbFakultas(resF.data.data || resF.data);
+        setDbProdi(resP.data.data || resP.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchMasterData();
   }, []);
 
   const handleChange = (e) => {
@@ -221,24 +224,50 @@ export function Register() {
                 </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">Program Studi</label>
-                <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-[#0F4C3A] transition-colors">
-                    <Building size={18} />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Fakultas</label>
+                  <div className="relative group">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-[#0F4C3A] transition-colors">
+                      <Building size={18} />
+                    </div>
+                    <select 
+                      value={selectedFakultas} 
+                      onChange={(e) => {
+                        setSelectedFakultas(e.target.value);
+                        setFormData(prev => ({ ...prev, id_prodi: '' }));
+                      }}
+                      className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all text-gray-800 text-sm appearance-none cursor-pointer"
+                      required
+                    >
+                      <option value="" disabled>Pilih Fakultas</option>
+                      {dbFakultas.map(fak => (
+                        <option key={fak.id_fakultas} value={fak.id_fakultas}>{fak.nama_fakultas}</option>
+                      ))}
+                    </select>
                   </div>
-                  <select 
-                    name="id_prodi" 
-                    value={formData.id_prodi} 
-                    onChange={handleChange}
-                    className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all text-gray-800 text-sm appearance-none cursor-pointer"
-                    required
-                  >
-                    <option value="" disabled>Pilih Program Studi</option>
-                    {prodiList.map(prodi => (
-                      <option key={prodi.id} value={prodi.id}>{prodi.name}</option>
-                    ))}
-                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Program Studi</label>
+                  <div className="relative group">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-[#0F4C3A] transition-colors">
+                      <Building size={18} />
+                    </div>
+                    <select 
+                      name="id_prodi" 
+                      value={formData.id_prodi} 
+                      onChange={handleChange}
+                      className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all text-gray-800 text-sm appearance-none cursor-pointer disabled:opacity-50"
+                      required
+                      disabled={!selectedFakultas}
+                    >
+                      <option value="" disabled>{selectedFakultas ? 'Pilih Program Studi' : 'Pilih Fakultas Dulu'}</option>
+                      {dbProdi.filter(p => p.id_fakultas == selectedFakultas).map(prodi => (
+                        <option key={prodi.id_prodi} value={prodi.id_prodi}>{prodi.nama_prodi}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
               </div>
 

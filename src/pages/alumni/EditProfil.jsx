@@ -4,25 +4,7 @@ import { StudentLayout } from '../../components/StudentLayout';
 import { Button } from '../../components/Button';
 import { ArrowLeft, Save, Camera } from 'lucide-react';
 import { getProfile, updateProfile } from '../../api/alumniService';
-
-const faculties = {
-  "Fakultas Agama Islam": ["Pendidikan Agama Islam", "Pendidikan Guru Madrasah Ibtidaiyah"],
-  "Fakultas Pendidikan": ["Pendidikan Fisika", "Pendidikan Ekonomi", "Pendidikan Bahasa Inggris", "Pendidikan Bahasa dan Sastra Indonesia", "Pendidikan Teknologi Informasi"],
-  "Fakultas Sains dan Teknologi": ["Informatika", "Matematika", "Sains Pertanian"]
-};
-
-const prodiMap = {
-  "Pendidikan Agama Islam": 1,
-  "Pendidikan Guru Madrasah Ibtidaiyah": 2,
-  "Pendidikan Fisika": 3,
-  "Pendidikan Ekonomi": 4,
-  "Pendidikan Bahasa Inggris": 5,
-  "Pendidikan Bahasa dan Sastra Indonesia": 6,
-  "Pendidikan Teknologi Informasi": 7,
-  "Informatika": 8,
-  "Matematika": 9,
-  "Sains Pertanian": 10
-};
+import { getProdi, getFakultas } from '../../api/publicService';
 
 const locations = {
   "Indonesia": {
@@ -42,29 +24,39 @@ export function EditProfil() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
+  const [dbFakultas, setDbFakultas] = useState([]);
+  const [dbProdis, setDbProdis] = useState([]);
   const [formData, setFormData] = useState({
-    nama: '', nim: '', fakultas: '', prodi: '', tahunLulus: '', noWa: '',
+    nama: '', nim: '', id_fakultas: '', id_prodi: '', tahunLulus: '', noWa: '',
     negara: 'Indonesia', provinsi: '', kabupaten: '', kecamatan: '', alamatDetail: '',
     statusKarir: '',
-    namaPerusahaan: '', jabatan: '',
-    id_prodi: ''
+    namaPerusahaan: '', jabatan: ''
   });
 
   useEffect(() => {
+    const fetchMasterData = async () => {
+      try {
+        const resF = await getFakultas();
+        const resP = await getProdi();
+        setDbFakultas(resF.data.data || resF.data);
+        setDbProdis(resP.data.data || resP.data);
+      } catch (e) { console.error('Error fetching master data', e); }
+    };
+    fetchMasterData();
+
     const fetchProfile = async () => {
       try {
         const response = await getProfile();
         const data = response.data.data || response.data;
         setFormData(prev => ({
           ...prev,
-          nama: data.nama_lengkap || '',
+          nama: data.nama_lengkap || data.nama || '',
           nim: data.nim || '',
-          tahunLulus: data.angkatan || '',
+          tahunLulus: data.angkatan || data.tahun_lulus || '',
           noWa: data.nomor_telepon || '',
           alamatDetail: data.alamat || '',
+          id_fakultas: data.prodi?.id_fakultas || '',
           id_prodi: data.id_prodi || '',
-          fakultas: data.prodi?.fakultas?.nama_fakultas || '',
-          prodi: data.prodi?.nama_prodi || '',
         }));
       } catch (error) {
         console.error('Error fetching profile:', error);
@@ -100,14 +92,13 @@ export function EditProfil() {
     setSaving(true);
     setError(null);
     try {
-      const mappedId = prodiMap[formData.prodi] || formData.id_prodi || 1;
       await updateProfile({
         nama_lengkap: formData.nama,
         nim: formData.nim,
         angkatan: formData.tahunLulus,
         nomor_telepon: formData.noWa,
         alamat: formData.alamatDetail,
-        id_prodi: mappedId,
+        id_prodi: formData.id_prodi,
       });
       navigate('/profil-saya');
     } catch (err) {
@@ -179,14 +170,30 @@ export function EditProfil() {
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2">Fakultas</label>
-                  <select className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] transition-all text-gray-800" value={formData.fakultas} onChange={handleFakultasChange}>
-                    {Object.keys(faculties).map(fak => <option key={fak} value={fak}>{fak}</option>)}
+                  <select 
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] transition-all text-gray-800" 
+                    value={formData.id_fakultas} 
+                    onChange={e => {
+                      updateForm('id_fakultas', e.target.value);
+                      updateForm('id_prodi', '');
+                    }}
+                  >
+                    <option value="" disabled>Pilih Fakultas</option>
+                    {dbFakultas.map(fak => <option key={fak.id_fakultas} value={fak.id_fakultas}>{fak.nama_fakultas}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2">Program Studi</label>
-                  <select className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] transition-all text-gray-800" value={formData.prodi} onChange={e => updateForm('prodi', e.target.value)} disabled={!formData.fakultas}>
-                    {formData.fakultas && faculties[formData.fakultas].map(prodi => <option key={prodi} value={prodi}>{prodi}</option>)}
+                  <select 
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] transition-all text-gray-800 disabled:opacity-50" 
+                    value={formData.id_prodi} 
+                    onChange={e => updateForm('id_prodi', e.target.value)} 
+                    disabled={!formData.id_fakultas}
+                  >
+                    <option value="" disabled>{formData.id_fakultas ? 'Pilih Program Studi' : 'Pilih Fakultas Dulu'}</option>
+                    {dbProdis.filter(p => p.id_fakultas == formData.id_fakultas).map(prodi => (
+                      <option key={prodi.id_prodi} value={prodi.id_prodi}>{prodi.nama_prodi}</option>
+                    ))}
                   </select>
                 </div>
                 <div>

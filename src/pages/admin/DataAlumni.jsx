@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { AdminLayout } from '../../components/AdminLayout';
-import { Search, Filter, MoreVertical, Eye, Trash2, Edit } from 'lucide-react';
+import { Search, MoreVertical, Eye, Trash2, Edit } from 'lucide-react';
 import { Button } from '../../components/Button';
 import { getAlumni, updateAlumni, deleteAlumni } from '../../api/adminService';
+import { getProdi } from '../../api/publicService';
 import Swal from 'sweetalert2';
 
 export function DataAlumni() {
@@ -19,6 +20,9 @@ export function DataAlumni() {
     alamat: ''
   });
   const [submitting, setSubmitting] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedProdi, setSelectedProdi] = useState('');
+  const [dbProdis, setDbProdis] = useState([]);
 
   const fetchAlumni = async () => {
     try {
@@ -34,6 +38,16 @@ export function DataAlumni() {
 
   useEffect(() => {
     fetchAlumni();
+    const fetchMasterData = async () => {
+      try {
+        const response = await getProdi();
+        const data = response.data.data || response.data;
+        setDbProdis(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error('Error fetching prodi:', error);
+      }
+    };
+    fetchMasterData();
   }, []);
 
   const handleOpenModal = (mode, item) => {
@@ -95,6 +109,33 @@ export function DataAlumni() {
     }
   };
 
+  const filteredAlumni = alumniData.filter(item => {
+    const name = (item.nama_lengkap || item.nama || '').toLowerCase();
+    const nim = (item.nim || '').toLowerCase();
+    const search = searchTerm.toLowerCase();
+    
+    const matchSearch = name.includes(search) || nim.includes(search);
+    
+    const itemProdiId = item.id_prodi || (item.prodi && item.prodi.id_prodi);
+    
+    let matchProdi = true;
+    if (selectedProdi !== '') {
+      if (itemProdiId) {
+         matchProdi = itemProdiId.toString() === selectedProdi.toString();
+      } else {
+         const itemProdiName = (item.prodi?.nama_prodi || item.prodi || '').toString().toLowerCase();
+         const prodiObj = dbProdis.find(p => p.id_prodi.toString() === selectedProdi.toString());
+         if (prodiObj) {
+            matchProdi = itemProdiName === prodiObj.nama_prodi.toLowerCase();
+         } else {
+            matchProdi = false;
+         }
+      }
+    }
+    
+    return matchSearch && matchProdi;
+  });
+
   return (
     <AdminLayout>
       <div className="p-6 lg:p-8">
@@ -114,18 +155,26 @@ export function DataAlumni() {
               <div className="flex items-center gap-3 w-full sm:w-auto">
                 <div className="flex items-center gap-3 px-4 py-2 bg-gray-50 border border-gray-100 rounded-xl w-full sm:w-72 focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-blue-500 transition-all">
                   <Search size={18} className="text-gray-400" />
-                  <input type="text" placeholder="Cari nama atau NIM..." className="bg-transparent border-none outline-none w-full text-sm" />
+                  <input 
+                    type="text" 
+                    placeholder="Cari nama atau NIM..." 
+                    className="bg-transparent border-none outline-none w-full text-sm" 
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
                 </div>
               </div>
               <div className="flex gap-2">
-                <select className="bg-white border border-gray-200 text-sm rounded-xl px-4 py-2.5 outline-none font-medium text-gray-700 hover:bg-gray-50 cursor-pointer">
-                  <option>Semua Fakultas</option>
-                  <option>Fakultas Sains dan Teknologi</option>
-                  <option>Fakultas Pendidikan</option>
+                <select 
+                  className="bg-white border border-gray-200 text-sm rounded-xl px-4 py-2.5 outline-none font-medium text-gray-700 hover:bg-gray-50 cursor-pointer"
+                  value={selectedProdi}
+                  onChange={(e) => setSelectedProdi(e.target.value)}
+                >
+                  <option value="">Semua Program Studi</option>
+                  {dbProdis.map(prodi => (
+                    <option key={prodi.id_prodi} value={prodi.id_prodi}>{prodi.nama_prodi}</option>
+                  ))}
                 </select>
-                <Button variant="outline" className="px-4 border-gray-200 text-gray-600 bg-white hover:bg-[#0F4C3A] hover:text-white hover:border-[#0F4C3A] rounded-xl flex items-center gap-2 transition-colors">
-                  <Filter size={16} /> Filter
-                </Button>
               </div>
             </div>
 
@@ -144,11 +193,11 @@ export function DataAlumni() {
                 <tbody className="divide-y divide-gray-50">
                   {loading ? (
                     <tr><td colSpan="5" className="px-6 py-8 text-center text-gray-500">Memuat data alumni...</td></tr>
-                  ) : alumniData.length === 0 ? (
+                  ) : filteredAlumni.length === 0 ? (
                     <tr><td colSpan="5" className="px-6 py-8 text-center text-gray-500">Belum ada data alumni.</td></tr>
                   ) : (
-                    alumniData.map((item) => (
-                      <tr key={item.id} className="hover:bg-blue-50/30 transition-colors group">
+                    filteredAlumni.map((item) => (
+                      <tr key={item.id_alumni || item.id} className="hover:bg-blue-50/30 transition-colors group">
                         <td className="px-6 py-4">
                           <p className="font-bold text-gray-900 text-sm">{item.nama_lengkap || item.nama}</p>
                           <p className="text-xs text-gray-500 mt-0.5">{item.nim}</p>

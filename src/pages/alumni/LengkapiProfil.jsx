@@ -4,25 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../../components/Button';
 import { Camera, MapPin, Briefcase, GraduationCap, ChevronRight, ChevronLeft, Check, Building2, BookOpen, Clock } from 'lucide-react';
 import { getProfile, updateProfile, submitTracerStudy } from '../../api/alumniService';
-
-const faculties = {
-  "Fakultas Agama Islam": ["Pendidikan Agama Islam", "Pendidikan Guru Madrasah Ibtidaiyah"],
-  "Fakultas Pendidikan": ["Pendidikan Fisika", "Pendidikan Ekonomi", "Pendidikan Bahasa Inggris", "Pendidikan Bahasa dan Sastra Indonesia", "Pendidikan Teknologi Informasi"],
-  "Fakultas Sains dan Teknologi": ["Informatika", "Matematika", "Sains Pertanian"]
-};
-
-const prodiMap = {
-  "Pendidikan Agama Islam": 1,
-  "Pendidikan Guru Madrasah Ibtidaiyah": 2,
-  "Pendidikan Fisika": 3,
-  "Pendidikan Ekonomi": 4,
-  "Pendidikan Bahasa Inggris": 5,
-  "Pendidikan Bahasa dan Sastra Indonesia": 6,
-  "Pendidikan Teknologi Informasi": 7,
-  "Informatika": 8,
-  "Matematika": 9,
-  "Sains Pertanian": 10
-};
+import { getProdi, getFakultas } from '../../api/publicService';
 
 const locations = {
   "Malaysia": {
@@ -37,16 +19,20 @@ const locations = {
 export function LengkapiProfil() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
+  const [dbFakultas, setDbFakultas] = useState([]);
+  const [dbProdis, setDbProdis] = useState([]);
   const [formData, setFormData] = useState({
     // Step 1
-    nama: '', nim: '', fakultas: '', prodi: '', tahunLulus: '', noWa: '',
+    nama: '', nim: '', id_fakultas: '', id_prodi: '', tahunLulus: '', noWa: '',
     // Step 2
     negara: '', provinsi: '', kabupaten: '', kecamatan: '', alamatDetail: '',
     // Step 3
     statusKarir: '',
     namaPerusahaan: '', jabatan: '', tahunMulaiKerja: '',
     namaUsaha: '', bidangUsaha: '',
-    minatKerja: ''
+    minatKerja: '',
+    universitasLanjut: '',
+    jurusanLanjut: ''
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -58,6 +44,18 @@ export function LengkapiProfil() {
   
   const [selectedProvId, setSelectedProvId] = useState('');
   const [selectedRegId, setSelectedRegId] = useState('');
+
+  useEffect(() => {
+    const fetchMasterData = async () => {
+      try {
+        const resF = await getFakultas();
+        const resP = await getProdi();
+        setDbFakultas(resF.data.data || resF.data);
+        setDbProdis(resP.data.data || resP.data);
+      } catch (e) { console.error('Error fetching master data', e); }
+    };
+    fetchMasterData();
+  }, []);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -76,7 +74,8 @@ export function LengkapiProfil() {
           noWa: data.nomor_telepon || '',
           alamatDetail: data.alamat || '',
           fakultas: data.prodi?.fakultas?.nama_fakultas || '',
-          prodi: data.prodi?.nama_prodi || '',
+          id_fakultas: data.prodi?.id_fakultas || '',
+          id_prodi: data.id_prodi || '',
         }));
       } catch (error) {
         console.error('Error fetching profile:', error);
@@ -93,8 +92,8 @@ export function LengkapiProfil() {
 
   // Reset dependent fields when parent changes
   const handleFakultasChange = (e) => {
-    updateForm('fakultas', e.target.value);
-    updateForm('prodi', '');
+    updateForm('id_fakultas', e.target.value);
+    updateForm('id_prodi', '');
   };
 
   const handleNegaraChange = (e) => {
@@ -223,7 +222,6 @@ export function LengkapiProfil() {
     setSaving(true);
     setError(null);
     try {
-      const mappedId = prodiMap[formData.prodi] || 1;
       // Update basic profile
       await updateProfile({
         nama_lengkap: formData.nama,
@@ -231,7 +229,7 @@ export function LengkapiProfil() {
         angkatan: formData.tahunLulus,
         nomor_telepon: formData.noWa,
         alamat: formData.alamatDetail,
-        id_prodi: mappedId
+        id_prodi: formData.id_prodi
       });
 
       // Submit Tracer Study based on status
@@ -365,16 +363,18 @@ export function LengkapiProfil() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-bold text-gray-700 mb-2">Fakultas <span className="text-red-500">*</span></label>
-                        <select className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all text-gray-800 cursor-pointer" value={formData.fakultas} onChange={handleFakultasChange}>
+                        <select className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all text-gray-800 cursor-pointer" value={formData.id_fakultas} onChange={handleFakultasChange}>
                           <option value="">Pilih Fakultas...</option>
-                          {Object.keys(faculties).map(fak => <option key={fak} value={fak}>{fak}</option>)}
+                          {dbFakultas.map(fak => <option key={fak.id_fakultas} value={fak.id_fakultas}>{fak.nama_fakultas}</option>)}
                         </select>
                       </div>
                       <div>
                         <label className="block text-sm font-bold text-gray-700 mb-2">Program Studi <span className="text-red-500">*</span></label>
-                        <select className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all text-gray-800 cursor-pointer disabled:opacity-50" value={formData.prodi} onChange={e => updateForm('prodi', e.target.value)} disabled={!formData.fakultas}>
-                          <option value="">{formData.fakultas ? 'Pilih Program Studi...' : 'Pilih Fakultas Terlebih Dahulu'}</option>
-                          {formData.fakultas && faculties[formData.fakultas].map(prodi => <option key={prodi} value={prodi}>{prodi}</option>)}
+                        <select className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all text-gray-800 cursor-pointer disabled:opacity-50" value={formData.id_prodi} onChange={e => updateForm('id_prodi', e.target.value)} disabled={!formData.id_fakultas}>
+                          <option value="">{formData.id_fakultas ? 'Pilih Program Studi...' : 'Pilih Fakultas Terlebih Dahulu'}</option>
+                          {dbProdis.filter(p => p.id_fakultas == formData.id_fakultas).map(prodi => (
+                            <option key={prodi.id_prodi} value={prodi.id_prodi}>{prodi.nama_prodi}</option>
+                          ))}
                         </select>
                       </div>
                     </div>

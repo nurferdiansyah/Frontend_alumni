@@ -20,6 +20,7 @@ const initialJobs = [
 export function Jobs() {
   const [allJobs, setAllJobs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [sortBy, setSortBy] = useState('Terbaru Dipublikasi');
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -27,14 +28,16 @@ export function Jobs() {
         const response = await getJobs();
         const data = response.data.data || response.data;
         setAllJobs(Array.isArray(data) ? data.map(job => ({
-          id: job.id,
+          id: job.id_lowongan || job.id,
           position: job.title,
-          company: job.company_name,
+          company: job.company || job.company_name,
           location: job.location || 'Indonesia',
           deadline: job.deadline ? new Date(job.deadline).toLocaleDateString('id-ID') : '-',
           logo: job.logo || null,
           type: job.type || 'Penuh Waktu',
-          experience: job.experience || 'Fresh Graduate'
+          experience: job.experience || 'Fresh Graduate',
+          rawDeadline: job.deadline ? new Date(job.deadline).getTime() : 0,
+          rawCreatedAt: job.created_at ? new Date(job.created_at).getTime() : 0
         })) : []);
       } catch (error) {
         console.error('Error fetching jobs:', error);
@@ -82,12 +85,26 @@ export function Jobs() {
     const activeTypes = Object.keys(selectedTypes).filter(k => selectedTypes[k]);
     const activeExps = Object.keys(selectedExperiences).filter(k => selectedExperiences[k]);
 
-    return allJobs.filter(job => {
+    let result = allJobs.filter(job => {
       const typeMatch = activeTypes.length === 0 || activeTypes.includes(job.type);
       const expMatch = activeExps.length === 0 || activeExps.includes(job.experience);
       return typeMatch && expMatch;
     });
-  }, [selectedTypes, selectedExperiences, allJobs]);
+
+    if (sortBy === 'Terbaru Dipublikasi') {
+      result.sort((a, b) => b.rawCreatedAt - a.rawCreatedAt);
+    } else if (sortBy === 'Terlama Dipublikasi') {
+      result.sort((a, b) => a.rawCreatedAt - b.rawCreatedAt);
+    } else if (sortBy === 'Tenggat Waktu Terdekat') {
+      result.sort((a, b) => {
+        if (!a.rawDeadline) return 1;
+        if (!b.rawDeadline) return -1;
+        return a.rawDeadline - b.rawDeadline;
+      });
+    }
+
+    return result;
+  }, [selectedTypes, selectedExperiences, allJobs, sortBy]);
 
   return (
     <div className="min-h-screen bg-white font-sans text-gray-800 flex flex-col">
@@ -167,12 +184,16 @@ export function Jobs() {
             <ScrollReveal>
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4 bg-white p-2">
                 <h2 className="font-bold text-[20px] text-gray-900">{loading ? 'Memuat...' : `Menampilkan ${filteredJobs.length} Lowongan`}</h2>
-                <div className="flex items-center gap-3">
-                  <span className="text-[13px] text-gray-500 font-medium">Urutkan:</span>
-                  <select className="bg-gray-50 border border-gray-200 font-medium text-gray-700 text-[13px] rounded-lg px-4 py-2.5 outline-none cursor-pointer">
-                    <option>Paling Relevan</option>
-                    <option>Terbaru Dipublikasi</option>
-                    <option>Gaji Tertinggi</option>
+                <div className="flex items-center gap-3 w-full sm:w-auto">
+                  <span className="text-[13px] text-gray-500 font-medium whitespace-nowrap">Urutkan:</span>
+                  <select 
+                    className="w-full sm:w-auto bg-white border border-gray-200 font-medium text-gray-700 text-[13px] rounded-lg px-4 py-2.5 outline-none cursor-pointer"
+                    value={sortBy}
+                    onChange={e => setSortBy(e.target.value)}
+                  >
+                    <option value="Terbaru Dipublikasi">Terbaru Dipublikasi</option>
+                    <option value="Terlama Dipublikasi">Terlama Dipublikasi</option>
+                    <option value="Tenggat Waktu Terdekat">Tenggat Waktu Terdekat</option>
                   </select>
                 </div>
               </div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, Briefcase, Newspaper, Layout, Megaphone, Settings, LogOut, Menu, X, Search, Bell, BookOpen } from 'lucide-react';
+import { LayoutDashboard, Users, Briefcase, Newspaper, Layout, Megaphone, Settings, LogOut, Menu, X, Bell, BookOpen, Database } from 'lucide-react';
 
 export function AdminLayout({ children }) {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -22,11 +22,13 @@ export function AdminLayout({ children }) {
         { name: 'Berita', icon: Newspaper, path: '/admin/berita' },
         { name: 'Info Kampus', icon: Megaphone, path: '/admin/info-kampus' },
         { name: 'Dokumen', icon: BookOpen, path: '/admin/dokumen' },
+        { name: 'Master Data', icon: Database, path: '/admin/master-data' },
       ]
     },
     {
       title: 'SISTEM',
       items: [
+        { name: 'Notifikasi', icon: Bell, path: '/admin/notifikasi' },
         { name: 'Pengaturan', icon: Settings, path: '/admin/pengaturan' },
       ]
     }
@@ -99,16 +101,12 @@ export function AdminLayout({ children }) {
             <button className="lg:hidden p-2 text-gray-500 hover:bg-gray-100 rounded-lg" onClick={() => setSidebarOpen(true)}>
               <Menu size={24} />
             </button>
-            <div className="hidden md:flex items-center gap-3 px-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl w-72 focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-blue-500 transition-all">
-              <Search size={18} className="text-gray-400" />
-              <input type="text" placeholder="Cari data alumni..." className="bg-transparent border-none outline-none w-full text-sm" />
-            </div>
           </div>
           <div className="flex items-center gap-4">
-            <button className="relative p-2 text-gray-400 hover:text-blue-600 transition-colors rounded-full hover:bg-blue-50">
+            <Link to="/admin/notifikasi" className="relative p-2 text-gray-400 hover:text-blue-600 transition-colors rounded-full hover:bg-blue-50">
               <Bell size={20} />
               <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
-            </button>
+            </Link>
             <div className="h-8 w-px bg-gray-200 mx-1 md:mx-2"></div>
             <div className="flex items-center gap-3">
               <div className="text-right hidden sm:block">

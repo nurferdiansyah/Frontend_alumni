@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { AdminLayout } from '../../components/AdminLayout';
-import { Search, Plus, Filter, Edit, Trash2, Eye } from 'lucide-react';
+import { Search, Plus, Edit, Trash2, Eye } from 'lucide-react';
 import { Button } from '../../components/Button';
 import { getNews } from '../../api/publicService';
 import { createNews, updateNews, deleteNews } from '../../api/adminService';
@@ -9,6 +9,8 @@ import Swal from 'sweetalert2';
 export function BeritaAdmin() {
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedKategori, setSelectedKategori] = useState('Semua Kategori');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState('add');
   const [selectedNews, setSelectedNews] = useState(null);
@@ -104,6 +106,19 @@ export function BeritaAdmin() {
     }
   };
 
+  const filteredNews = useMemo(() => {
+    return news.filter(item => {
+      const title = (item.judul || item.title || '').toLowerCase();
+      const search = searchTerm.toLowerCase();
+      const matchSearch = title.includes(search);
+      
+      const category = item.kategori || item.category || '';
+      const matchCategory = selectedKategori === 'Semua Kategori' || category === selectedKategori;
+      
+      return matchSearch && matchCategory;
+    });
+  }, [news, searchTerm, selectedKategori]);
+
   return (
     <AdminLayout>
       <div className="p-6 lg:p-8">
@@ -125,18 +140,25 @@ export function BeritaAdmin() {
           <div className="p-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3 px-4 py-2 bg-gray-50 border border-gray-100 rounded-xl w-full sm:w-72 focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-blue-500 transition-all">
               <Search size={18} className="text-gray-400" />
-              <input type="text" placeholder="Cari judul berita..." className="bg-transparent border-none outline-none w-full text-sm" />
+              <input 
+                type="text" 
+                placeholder="Cari judul berita..." 
+                className="bg-transparent border-none outline-none w-full text-sm"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
             <div className="flex gap-2">
-              <select className="bg-white border border-gray-200 text-sm rounded-xl px-4 py-2.5 outline-none font-medium text-gray-700 cursor-pointer">
-                <option>Semua Kategori</option>
-                <option>Akademik</option>
-                <option>Karir</option>
-                <option>Acara</option>
+              <select 
+                className="bg-white border border-gray-200 text-sm rounded-xl px-4 py-2.5 outline-none font-medium text-gray-700 cursor-pointer"
+                value={selectedKategori}
+                onChange={(e) => setSelectedKategori(e.target.value)}
+              >
+                <option value="Semua Kategori">Semua Kategori</option>
+                <option value="Akademik">Akademik</option>
+                <option value="Karir">Karir</option>
+                <option value="Acara">Acara</option>
               </select>
-              <Button variant="outline" className="px-4 border-gray-200 text-gray-600 bg-white hover:bg-[#0F4C3A] hover:text-white hover:border-[#0F4C3A] rounded-xl flex items-center gap-2 transition-colors">
-                <Filter size={16} /> Filter
-              </Button>
             </div>
           </div>
 
@@ -153,11 +175,15 @@ export function BeritaAdmin() {
               </thead>
               <tbody className="divide-y divide-gray-50">
                 {loading ? (
-                  <tr><td colSpan="5" className="px-6 py-8 text-center text-gray-500">Memuat data berita...</td></tr>
-                ) : news.length === 0 ? (
-                  <tr><td colSpan="5" className="px-6 py-8 text-center text-gray-500">Belum ada berita.</td></tr>
+                  <tr>
+                    <td colSpan="5" className="px-6 py-8 text-center text-gray-500">Memuat data...</td>
+                  </tr>
+                ) : filteredNews.length === 0 ? (
+                  <tr>
+                    <td colSpan="5" className="px-6 py-8 text-center text-gray-500">Belum ada berita.</td>
+                  </tr>
                 ) : (
-                  news.map((item) => (
+                  filteredNews.map((item) => (
                     <tr key={item.id} className="hover:bg-blue-50/30 transition-colors group">
                       <td className="px-6 py-4">
                         <p className="font-bold text-gray-900 text-sm max-w-md truncate">{item.judul || item.title}</p>

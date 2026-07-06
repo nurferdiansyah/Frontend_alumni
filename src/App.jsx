@@ -29,6 +29,8 @@ import { BeritaAdmin } from './pages/admin/BeritaAdmin';
 import { InfoKampusAdmin } from './pages/admin/InfoKampusAdmin';
 import { ManajemenDokumenAdmin } from './pages/admin/ManajemenDokumenAdmin';
 import { PengaturanAdmin } from './pages/admin/PengaturanAdmin';
+import { MasterDataAdmin } from './pages/admin/MasterDataAdmin';
+import { NotifikasiAdmin } from './pages/admin/NotifikasiAdmin';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -72,6 +74,8 @@ function App() {
         <Route path="/admin/berita" element={<ProtectedRoute allowedRole="admin"><BeritaAdmin /></ProtectedRoute>} />
         <Route path="/admin/info-kampus" element={<ProtectedRoute allowedRole="admin"><InfoKampusAdmin /></ProtectedRoute>} />
         <Route path="/admin/dokumen" element={<ProtectedRoute allowedRole="admin"><ManajemenDokumenAdmin /></ProtectedRoute>} />
+        <Route path="/admin/master-data" element={<ProtectedRoute allowedRole="admin"><MasterDataAdmin /></ProtectedRoute>} />
+        <Route path="/admin/notifikasi" element={<ProtectedRoute allowedRole="admin"><NotifikasiAdmin /></ProtectedRoute>} />
         <Route path="/admin/pengaturan" element={<ProtectedRoute allowedRole="admin"><PengaturanAdmin /></ProtectedRoute>} />
       </Routes>
     </Router>

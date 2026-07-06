@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { AdminLayout } from '../../components/AdminLayout';
-import { Search, Plus, Filter, Edit, Trash2, Eye } from 'lucide-react';
+import { Search, Plus, Edit, Trash2, Eye } from 'lucide-react';
 import { Button } from '../../components/Button';
 import { getInfo } from '../../api/publicService';
 import { createInfo, updateInfo, deleteInfo } from '../../api/adminService';
@@ -9,6 +9,8 @@ import Swal from 'sweetalert2';
 export function InfoKampusAdmin() {
   const [infoList, setInfoList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedTipe, setSelectedTipe] = useState('Semua Tipe');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState('add');
   const [selectedInfo, setSelectedInfo] = useState(null);
@@ -102,6 +104,19 @@ export function InfoKampusAdmin() {
     }
   };
 
+  const filteredInfoList = useMemo(() => {
+    return infoList.filter(item => {
+      const title = (item.judul || item.title || '').toLowerCase();
+      const search = searchTerm.toLowerCase();
+      const matchSearch = title.includes(search);
+      
+      const type = item.tipe || item.type || '';
+      const matchType = selectedTipe === 'Semua Tipe' || type === selectedTipe;
+      
+      return matchSearch && matchType;
+    });
+  }, [infoList, searchTerm, selectedTipe]);
+
   return (
     <AdminLayout>
       <div className="p-6 lg:p-8">
@@ -123,18 +138,25 @@ export function InfoKampusAdmin() {
           <div className="p-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3 px-4 py-2 bg-gray-50 border border-gray-100 rounded-xl w-full sm:w-72 focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-blue-500 transition-all">
               <Search size={18} className="text-gray-400" />
-              <input type="text" placeholder="Cari info kampus..." className="bg-transparent border-none outline-none w-full text-sm" />
+              <input 
+                type="text" 
+                placeholder="Cari info kampus..." 
+                className="bg-transparent border-none outline-none w-full text-sm"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
             <div className="flex gap-2">
-              <select className="bg-white border border-gray-200 text-sm rounded-xl px-4 py-2.5 outline-none font-medium text-gray-700 cursor-pointer">
-                <option>Semua Tipe</option>
-                <option>Pengumuman</option>
-                <option>Panduan</option>
-                <option>Informasi</option>
+              <select 
+                className="bg-white border border-gray-200 text-sm rounded-xl px-4 py-2.5 outline-none font-medium text-gray-700 cursor-pointer"
+                value={selectedTipe}
+                onChange={(e) => setSelectedTipe(e.target.value)}
+              >
+                <option value="Semua Tipe">Semua Tipe</option>
+                <option value="Pengumuman">Pengumuman</option>
+                <option value="Panduan">Panduan</option>
+                <option value="Informasi">Informasi</option>
               </select>
-              <Button variant="outline" className="px-4 border-gray-200 text-gray-600 bg-white hover:bg-[#0F4C3A] hover:text-white hover:border-[#0F4C3A] rounded-xl flex items-center gap-2 transition-colors">
-                <Filter size={16} /> Filter
-              </Button>
             </div>
           </div>
 
@@ -151,11 +173,15 @@ export function InfoKampusAdmin() {
               </thead>
               <tbody className="divide-y divide-gray-50">
                 {loading ? (
-                  <tr><td colSpan="5" className="px-6 py-8 text-center text-gray-500">Memuat data info...</td></tr>
-                ) : infoList.length === 0 ? (
-                  <tr><td colSpan="5" className="px-6 py-8 text-center text-gray-500">Belum ada info kampus.</td></tr>
+                  <tr>
+                    <td colSpan="5" className="px-6 py-8 text-center text-gray-500">Memuat data...</td>
+                  </tr>
+                ) : filteredInfoList.length === 0 ? (
+                  <tr>
+                    <td colSpan="5" className="px-6 py-8 text-center text-gray-500">Belum ada info kampus.</td>
+                  </tr>
                 ) : (
-                  infoList.map((item) => (
+                  filteredInfoList.map((item) => (
                     <tr key={item.id} className="hover:bg-blue-50/30 transition-colors group">
                       <td className="px-6 py-4">
                         <p className="font-bold text-gray-900 text-sm max-w-md truncate">{item.judul || item.title}</p>

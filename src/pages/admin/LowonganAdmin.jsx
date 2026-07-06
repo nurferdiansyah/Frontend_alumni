@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { AdminLayout } from '../../components/AdminLayout';
-import { Search, Plus, Filter, MoreVertical, Edit, Trash2 } from 'lucide-react';
+import { Search, Plus, MoreVertical, Edit, Trash2 } from 'lucide-react';
 import { Button } from '../../components/Button';
 import { getJobs } from '../../api/publicService';
 import { createJob, updateJob, deleteJob } from '../../api/adminService';
@@ -9,6 +9,8 @@ import Swal from 'sweetalert2';
 export function LowonganAdmin() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortBy, setSortBy] = useState('Terbaru Dipublikasi');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState('add');
   const [selectedJob, setSelectedJob] = useState(null);
@@ -110,6 +112,39 @@ export function LowonganAdmin() {
     }
   };
 
+  const filteredJobs = useMemo(() => {
+    let result = jobs.filter(job => {
+      const search = searchTerm.toLowerCase();
+      const title = (job.title || '').toLowerCase();
+      const company = (job.company || job.company_name || '').toLowerCase();
+      return title.includes(search) || company.includes(search);
+    });
+
+    if (sortBy === 'Terbaru Dipublikasi') {
+      result.sort((a, b) => {
+        const timeA = a.created_at ? new Date(a.created_at).getTime() : 0;
+        const timeB = b.created_at ? new Date(b.created_at).getTime() : 0;
+        return timeB - timeA;
+      });
+    } else if (sortBy === 'Terlama Dipublikasi') {
+      result.sort((a, b) => {
+        const timeA = a.created_at ? new Date(a.created_at).getTime() : 0;
+        const timeB = b.created_at ? new Date(b.created_at).getTime() : 0;
+        return timeA - timeB;
+      });
+    } else if (sortBy === 'Tenggat Waktu Terdekat') {
+      result.sort((a, b) => {
+        const timeA = a.deadline ? new Date(a.deadline).getTime() : 0;
+        const timeB = b.deadline ? new Date(b.deadline).getTime() : 0;
+        if (!timeA) return 1;
+        if (!timeB) return -1;
+        return timeA - timeB;
+      });
+    }
+
+    return result;
+  }, [jobs, searchTerm, sortBy]);
+
   return (
     <AdminLayout>
       <div className="p-6 lg:p-8">
@@ -131,12 +166,24 @@ export function LowonganAdmin() {
           <div className="p-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3 px-4 py-2 bg-gray-50 border border-gray-100 rounded-xl w-full sm:w-72 focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-blue-500 transition-all">
               <Search size={18} className="text-gray-400" />
-              <input type="text" placeholder="Cari posisi atau perusahaan..." className="bg-transparent border-none outline-none w-full text-sm" />
+              <input 
+                type="text" 
+                placeholder="Cari posisi atau perusahaan..." 
+                className="bg-transparent border-none outline-none w-full text-sm" 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" className="px-4 border-gray-200 text-gray-600 bg-white hover:bg-[#0F4C3A] hover:text-white hover:border-[#0F4C3A] rounded-xl flex items-center gap-2 transition-colors">
-                <Filter size={16} /> Filter
-              </Button>
+              <select 
+                className="bg-white border border-gray-200 text-sm rounded-xl px-4 py-2.5 outline-none font-medium text-gray-700 hover:bg-gray-50 cursor-pointer"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+              >
+                <option value="Terbaru Dipublikasi">Terbaru Dipublikasi</option>
+                <option value="Terlama Dipublikasi">Terlama Dipublikasi</option>
+                <option value="Tenggat Waktu Terdekat">Tenggat Waktu Terdekat</option>
+              </select>
             </div>
           </div>
 
@@ -156,16 +203,16 @@ export function LowonganAdmin() {
                   <tr>
                     <td colSpan="5" className="px-6 py-8 text-center text-gray-500">Memuat data...</td>
                   </tr>
-                ) : jobs.length === 0 ? (
+                ) : filteredJobs.length === 0 ? (
                   <tr>
-                    <td colSpan="5" className="px-6 py-8 text-center text-gray-500">Belum ada lowongan.</td>
+                    <td colSpan="5" className="px-6 py-8 text-center text-gray-500">Belum ada data lowongan.</td>
                   </tr>
                 ) : (
-                  jobs.map((job) => {
-                    const status = job.status || 'Aktif'; // Asumsi jika tidak ada status
+                  filteredJobs.map((job) => {
+                    const status = job.status || 'Aktif'; 
                     const statusColor = status.toLowerCase() === 'aktif' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-700';
                     return (
-                      <tr key={job.id} className="hover:bg-blue-50/30 transition-colors group">
+                      <tr key={job.id_lowongan || job.id} className="hover:bg-blue-50/30 transition-colors group">
                         <td className="px-6 py-4">
                           <p className="font-bold text-gray-900 text-sm">{job.title}</p>
                           <p className="text-xs text-gray-500 mt-0.5">{job.company || job.company_name}</p>

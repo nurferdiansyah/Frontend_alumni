@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Home, User, Briefcase, Settings, LogOut, Menu, X, Search, Bell, CheckCircle } from 'lucide-react';
+import { Home, User, Briefcase, Settings, LogOut, Menu, X, Bell, CheckCircle } from 'lucide-react';
 import { getProfile } from '../api/alumniService';
 
 export function StudentLayout({ children }) {
@@ -116,10 +116,6 @@ export function StudentLayout({ children }) {
         <header className="bg-white border-b border-gray-100 h-20 px-6 flex items-center justify-between flex-shrink-0">
           <div className="flex items-center gap-4">
             <button className="lg:hidden text-gray-500" onClick={() => setSidebarOpen(true)}><Menu size={24} /></button>
-            <div className="hidden md:flex items-center bg-gray-50 px-4 py-2.5 rounded-xl border border-gray-200 focus-within:border-[#7FE0B0] focus-within:ring-4 focus-within:ring-[#7FE0B0]/10 transition-all w-80">
-              <Search size={18} className="text-gray-400 mr-3" />
-              <input type="text" placeholder="Cari..." className="bg-transparent border-none outline-none w-full text-sm" />
-            </div>
           </div>
           <div className="flex items-center gap-2 md:gap-4 relative">
             <div className="h-8 w-px bg-gray-200 mx-1 md:mx-2"></div>

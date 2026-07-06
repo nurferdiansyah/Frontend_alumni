@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { AdminLayout } from '../../components/AdminLayout';
 import { Button } from '../../components/Button';
 import { Save, BookOpen, FileCheck, Check, X as XIcon, Trash2 } from 'lucide-react';
@@ -22,6 +22,7 @@ export function ManajemenDokumenAdmin() {
   // State for Surat Verifikasi
   const [suratData, setSuratData] = useState([]);
   const [loadingSurat, setLoadingSurat] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState('Semua Status');
 
   const fetchSettings = async () => {
     try {
@@ -111,6 +112,18 @@ export function ManajemenDokumenAdmin() {
     }
   };
 
+  const filteredSuratData = useMemo(() => {
+    return suratData.filter(item => {
+      let statusDisplay = item.status;
+      if ((item.status === 'Menunggu Upload' || item.status === 'Menunggu Validasi') && item.file_path) {
+        statusDisplay = 'Menunggu Verifikasi';
+      }
+
+      if (selectedStatus === 'Semua Status') return true;
+      return statusDisplay === selectedStatus;
+    });
+  }, [suratData, selectedStatus]);
+
   return (
     <AdminLayout>
       <div className="p-6 md:p-8 min-h-full">
@@ -173,10 +186,20 @@ export function ManajemenDokumenAdmin() {
 
             {activeTab === 'verifikasi' && (
               <div className="bg-white rounded-[24px] shadow-sm border border-gray-100 overflow-hidden">
-                <div className="p-6 border-b border-gray-100">
+                <div className="p-6 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
                   <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
                     <FileCheck size={20} className="text-blue-600" /> Verifikasi Dokumen Mahasiswa
                   </h2>
+                  <select 
+                    className="bg-gray-50 border border-gray-200 text-sm rounded-xl px-4 py-2.5 outline-none font-medium text-gray-700 cursor-pointer w-full sm:w-auto"
+                    value={selectedStatus}
+                    onChange={(e) => setSelectedStatus(e.target.value)}
+                  >
+                    <option value="Semua Status">Semua Status</option>
+                    <option value="Menunggu Verifikasi">Menunggu Verifikasi</option>
+                    <option value="Disetujui">Disetujui</option>
+                    <option value="Ditolak">Ditolak</option>
+                  </select>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
@@ -192,10 +215,10 @@ export function ManajemenDokumenAdmin() {
                     <tbody className="divide-y divide-gray-50">
                       {loadingSurat ? (
                         <tr><td colSpan="5" className="px-6 py-8 text-center text-gray-500">Memuat data dokumen...</td></tr>
-                      ) : suratData.length === 0 ? (
+                      ) : filteredSuratData.length === 0 ? (
                         <tr><td colSpan="5" className="px-6 py-8 text-center text-gray-500">Belum ada dokumen yang diunggah.</td></tr>
                       ) : (
-                        suratData.map((item) => {
+                        filteredSuratData.map((item) => {
                           let statusDisplay = item.status;
                           if ((item.status === 'Menunggu Upload' || item.status === 'Menunggu Validasi') && item.file_path) {
                             statusDisplay = 'Menunggu Verifikasi';
