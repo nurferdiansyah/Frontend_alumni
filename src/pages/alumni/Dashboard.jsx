@@ -1,10 +1,27 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '../../components/Button';
 import { CheckCircle, Download } from 'lucide-react';
 import { StudentLayout } from '../../components/StudentLayout';
+import { getProfile } from '../../api/alumniService';
 
 export function Dashboard() {
+  const [profileName, setProfileName] = useState('');
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await getProfile();
+        const data = response.data.data || response.data;
+        setProfileName(data.nama_lengkap || 'Alumni');
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+        setProfileName('Alumni');
+      }
+    };
+    fetchProfile();
+  }, []);
+
   return (
     <StudentLayout>
       <div className="p-6 md:p-8">
@@ -20,7 +37,7 @@ export function Dashboard() {
             
             <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
               <div>
-                <h1 className="text-3xl font-bold mb-2">Selamat pagi, Budi! 👋</h1>
+                <h1 className="text-3xl font-bold mb-2">Selamat datang, {profileName}! 👋</h1>
                 <p className="text-white/80">Profil Anda sudah 100% lengkap. Terima kasih telah memperbarui data diri Anda.</p>
               </div>
             </div>

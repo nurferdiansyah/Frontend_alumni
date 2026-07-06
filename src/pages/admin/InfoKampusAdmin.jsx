@@ -1,14 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AdminLayout } from '../../components/AdminLayout';
 import { Search, Plus, Filter, Edit, Trash2, Eye } from 'lucide-react';
 import { Button } from '../../components/Button';
+import { getInfo } from '../../api/publicService';
 
 export function InfoKampusAdmin() {
-  const [infoList] = useState([
-    { id: 1, judul: 'Penerimaan Mahasiswa Baru (PMB) Tahun 2027', tipe: 'Pengumuman', tanggal: '01 Nov 2026', status: 'Aktif', statusColor: 'bg-emerald-100 text-emerald-700' },
-    { id: 2, judul: 'Panduan Registrasi Semester Genap', tipe: 'Panduan', tanggal: '25 Okt 2026', status: 'Aktif', statusColor: 'bg-emerald-100 text-emerald-700' },
-    { id: 3, judul: 'Jadwal Libur Nasional Semester Ini', tipe: 'Informasi', tanggal: '15 Okt 2026', status: 'Tidak Aktif', statusColor: 'bg-gray-100 text-gray-700' },
-  ]);
+  const [infoList, setInfoList] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchInfo = async () => {
+      try {
+        const response = await getInfo();
+        const data = response.data.data || response.data;
+        setInfoList(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error('Error fetching info:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchInfo();
+  }, []);
 
   return (
     <AdminLayout>
@@ -58,33 +71,39 @@ export function InfoKampusAdmin() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {infoList.map((item) => (
-                  <tr key={item.id} className="hover:bg-blue-50/30 transition-colors group">
-                    <td className="px-6 py-4">
-                      <p className="font-bold text-gray-900 text-sm max-w-md truncate">{item.judul}</p>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{item.tipe}</td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{item.tanggal}</td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-block px-3 py-1 rounded-lg text-xs font-bold ${item.statusColor}`}>
-                        {item.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <button className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors tooltip relative">
-                          <Eye size={18} />
-                        </button>
-                        <button className="p-2 text-orange-500 hover:bg-orange-50 rounded-lg transition-colors">
-                          <Edit size={18} />
-                        </button>
-                        <button className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                {loading ? (
+                  <tr><td colSpan="5" className="px-6 py-8 text-center text-gray-500">Memuat data info...</td></tr>
+                ) : infoList.length === 0 ? (
+                  <tr><td colSpan="5" className="px-6 py-8 text-center text-gray-500">Belum ada info kampus.</td></tr>
+                ) : (
+                  infoList.map((item) => (
+                    <tr key={item.id} className="hover:bg-blue-50/30 transition-colors group">
+                      <td className="px-6 py-4">
+                        <p className="font-bold text-gray-900 text-sm max-w-md truncate">{item.title || item.judul}</p>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-600">{item.type || item.tipe || '-'}</td>
+                      <td className="px-6 py-4 text-sm text-gray-600">{item.created_at ? new Date(item.created_at).toLocaleDateString('id-ID') : '-'}</td>
+                      <td className="px-6 py-4">
+                        <span className="inline-block px-3 py-1 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-700">
+                          Aktif
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <button className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors tooltip relative">
+                            <Eye size={18} />
+                          </button>
+                          <button className="p-2 text-orange-500 hover:bg-orange-50 rounded-lg transition-colors">
+                            <Edit size={18} />
+                          </button>
+                          <button className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

@@ -1,9 +1,10 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { StudentLayout } from '../../components/StudentLayout';
 import { Button } from '../../components/Button';
 import { JobListItem } from '../../components/JobListItem';
 import { Search, MapPin } from 'lucide-react';
 import { ScrollReveal } from '../../components/ScrollReveal';
+import { getJobs } from '../../api/publicService';
 
 const initialJobs = [
   { id: 1, position: "Senior Software Engineer", company: "PT. Teknologi Maju Bersama", location: "Jakarta Selatan", deadline: "20 Nov 2026", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png", type: "Penuh Waktu", experience: "3+ Tahun" },
@@ -14,6 +15,33 @@ const initialJobs = [
 ];
 
 export function Lowongan() {
+  const [allJobs, setAllJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const response = await getJobs();
+        const data = response.data.data || response.data;
+        setAllJobs(Array.isArray(data) ? data.map(job => ({
+          id: job.id,
+          position: job.title,
+          company: job.company_name,
+          location: job.location || 'Indonesia',
+          deadline: job.deadline ? new Date(job.deadline).toLocaleDateString('id-ID') : '-',
+          logo: job.logo || null,
+          type: job.type || 'Penuh Waktu',
+          experience: job.experience || 'Fresh Graduate'
+        })) : []);
+      } catch (error) {
+        console.error('Error fetching jobs:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchJobs();
+  }, []);
+
   const [selectedTypes, setSelectedTypes] = useState({
     "Penuh Waktu": true,
     "Paruh Waktu": true,
@@ -51,7 +79,7 @@ export function Lowongan() {
     const activeTypes = Object.keys(selectedTypes).filter(k => selectedTypes[k]);
     const activeExps = Object.keys(selectedExperiences).filter(k => selectedExperiences[k]);
 
-    return initialJobs.filter(job => {
+    return allJobs.filter(job => {
       const typeMatch = activeTypes.length === 0 || activeTypes.includes(job.type);
       const expMatch = activeExps.length === 0 || activeExps.includes(job.experience);
       return typeMatch && expMatch;
@@ -112,7 +140,7 @@ export function Lowongan() {
             <div className="w-full md:w-3/4 flex flex-col gap-4">
               <ScrollReveal>
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-4">
-                  <h2 className="font-bold text-[18px] text-gray-900">Menampilkan {filteredJobs.length} Lowongan</h2>
+                  <h2 className="font-bold text-[18px] text-gray-900">{loading ? 'Memuat...' : `Menampilkan ${filteredJobs.length} Lowongan`}</h2>
                   <div className="flex items-center gap-3">
                     <span className="text-[13px] text-gray-500 font-medium">Urutkan:</span>
                     <select className="bg-white border border-gray-200 font-medium text-gray-700 text-[13px] rounded-lg px-4 py-2.5 outline-none cursor-pointer">

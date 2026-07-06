@@ -1,17 +1,51 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 import { ScrollReveal } from '../../components/ScrollReveal';
 import { ArrowLeft, MapPin, Calendar, Building, Briefcase } from 'lucide-react';
 import { Button } from '../../components/Button';
+import { getJobById } from '../../api/publicService';
 
 export function DetailLowongan() {
   const { id } = useParams();
+  const [job, setJob] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    const fetchJob = async () => {
+      try {
+        const response = await getJobById(id);
+        setJob(response.data.data || response.data);
+      } catch (error) {
+        console.error('Error fetching job detail:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchJob();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#F4F7FA] font-sans text-gray-800 flex flex-col">
+        <Navbar />
+        <div className="flex-grow flex items-center justify-center"><p className="text-gray-500">Memuat lowongan...</p></div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!job) {
+    return (
+      <div className="min-h-screen bg-[#F4F7FA] font-sans text-gray-800 flex flex-col">
+        <Navbar />
+        <div className="flex-grow flex items-center justify-center"><p className="text-gray-500">Lowongan tidak ditemukan.</p></div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#F4F7FA] font-sans text-gray-800 flex flex-col">
@@ -31,18 +65,18 @@ export function DetailLowongan() {
                   <Building size={40} className="text-gray-400" />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-extrabold text-gray-900 mb-2">Senior Software Engineer</h1>
-                  <p className="text-xl text-gray-600 mb-6">PT. Teknologi Maju Bersama</p>
+                  <h1 className="text-3xl font-extrabold text-gray-900 mb-2">{job.title}</h1>
+                  <p className="text-xl text-gray-600 mb-6">{job.company_name}</p>
                   
                   <div className="flex flex-wrap gap-4">
                     <div className="flex items-center text-gray-600 text-[14px] bg-[#F8FAFC] px-4 py-2.5 rounded-xl border border-gray-100 font-medium">
-                      <MapPin className="w-4 h-4 mr-2 text-gray-400" /> Jakarta Selatan
+                      <MapPin className="w-4 h-4 mr-2 text-gray-400" /> {job.location || 'Indonesia'}
                     </div>
                     <div className="flex items-center text-[#E11D48] text-[14px] font-medium bg-[#FFF1F2] px-4 py-2.5 rounded-xl border border-[#FFE4E6]">
-                      <Calendar className="w-4 h-4 mr-2" /> Tutup: 20 Nov 2026
+                      <Calendar className="w-4 h-4 mr-2" /> Tutup: {job.deadline ? new Date(job.deadline).toLocaleDateString('id-ID') : '-'}
                     </div>
                     <div className="flex items-center text-[#0F4C3A] text-[14px] font-medium bg-[#7FE0B0]/20 px-4 py-2.5 rounded-xl border border-[#7FE0B0]/30">
-                      <Briefcase className="w-4 h-4 mr-2" /> Full-Time
+                      <Briefcase className="w-4 h-4 mr-2" /> {job.type || 'Full-Time'}
                     </div>
                   </div>
                 </div>
@@ -51,18 +85,15 @@ export function DetailLowongan() {
               <div className="space-y-8">
                 <section>
                   <h3 className="text-xl font-bold text-gray-900 mb-4">Deskripsi Pekerjaan</h3>
-                  <p className="text-gray-600 leading-relaxed text-[15px]">Kami mencari individu yang kompeten dan berpengalaman untuk bergabung dengan tim kami. Anda akan bertanggung jawab untuk berkolaborasi dalam lingkungan yang dinamis, memberikan solusi yang efektif, dan berkontribusi langsung pada pencapaian tujuan perusahaan.</p>
+                  <div className="text-gray-600 leading-relaxed text-[15px]" dangerouslySetInnerHTML={{ __html: job.description || 'Deskripsi belum tersedia.' }}></div>
                 </section>
                 
-                <section>
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">Persyaratan</h3>
-                  <ul className="list-disc list-inside text-gray-600 space-y-2 text-[15px]">
-                    <li>Minimal pengalaman 2-3 tahun di posisi yang relevan.</li>
-                    <li>Memiliki kemampuan komunikasi dan kerja sama tim yang baik.</li>
-                    <li>Lulusan S1 atau setara dari universitas terkemuka.</li>
-                    <li>Proaktif, disiplin, dan mampu bekerja di bawah tekanan.</li>
-                  </ul>
-                </section>
+                {job.requirements && (
+                  <section>
+                    <h3 className="text-xl font-bold text-gray-900 mb-4">Persyaratan</h3>
+                    <div className="text-gray-600 leading-relaxed text-[15px]" dangerouslySetInnerHTML={{ __html: job.requirements }}></div>
+                  </section>
+                )}
               </div>
             </div>
           </ScrollReveal>

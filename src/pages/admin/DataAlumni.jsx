@@ -1,16 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AdminLayout } from '../../components/AdminLayout';
 import { Search, Filter, Download, MoreVertical, Eye, Trash2, Edit } from 'lucide-react';
 import { Button } from '../../components/Button';
+import { getAlumni } from '../../api/adminService';
 
 export function DataAlumni() {
-  const [alumniData] = useState([
-    { id: 1, nama: 'Budi Santoso', nim: '20123456', prodi: 'Informatika', tahun: '2026', status: 'Bekerja', statusColor: 'bg-emerald-100 text-emerald-700' },
-    { id: 2, nama: 'Siti Aminah', nim: '20123457', prodi: 'Pendidikan Agama Islam', tahun: '2026', status: 'Lanjut Studi', statusColor: 'bg-purple-100 text-purple-700' },
-    { id: 3, nama: 'Ahmad Faisal', nim: '20123458', prodi: 'Agroteknologi', tahun: '2025', status: 'Wirausaha', statusColor: 'bg-blue-100 text-blue-700' },
-    { id: 4, nama: 'Diana Putri', nim: '20123459', prodi: 'Pendidikan Bahasa Inggris', tahun: '2026', status: 'Belum Bekerja', statusColor: 'bg-gray-100 text-gray-700' },
-    { id: 5, nama: 'Reza Rahadian', nim: '20123460', prodi: 'Matematika', tahun: '2025', status: 'Bekerja', statusColor: 'bg-emerald-100 text-emerald-700' },
-  ]);
+  const [alumniData, setAlumniData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAlumni = async () => {
+      try {
+        const response = await getAlumni();
+        const data = response.data.data || response.data;
+        setAlumniData(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error('Error fetching alumni:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAlumni();
+  }, []);
 
   return (
     <AdminLayout>
@@ -63,41 +74,41 @@ export function DataAlumni() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {alumniData.map((alumni) => (
-                  <tr key={alumni.id} className="hover:bg-blue-50/30 transition-colors group">
-                    <td className="px-6 py-4">
-                      <p className="font-bold text-gray-900 text-sm">{alumni.nama}</p>
-                      <p className="text-xs text-gray-500 mt-0.5">{alumni.nim}</p>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{alumni.prodi}</td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{alumni.tahun}</td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-block px-3 py-1 rounded-lg text-xs font-bold ${alumni.statusColor}`}>
-                        {alumni.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <button className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors tooltip relative">
-                          <Eye size={18} />
-                        </button>
-                        <button className="p-2 text-orange-500 hover:bg-orange-50 rounded-lg transition-colors">
-                          <Edit size={18} />
-                        </button>
-                        <button className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                {loading ? (
+                  <tr><td colSpan="5" className="px-6 py-8 text-center text-gray-500">Memuat data alumni...</td></tr>
+                ) : alumniData.length === 0 ? (
+                  <tr><td colSpan="5" className="px-6 py-8 text-center text-gray-500">Belum ada data alumni.</td></tr>
+                ) : (
+                  alumniData.map((alumni) => (
+                    <tr key={alumni.id} className="hover:bg-blue-50/30 transition-colors group">
+                      <td className="px-6 py-4">
+                        <p className="font-bold text-gray-900 text-sm">{alumni.nama_lengkap || alumni.nama}</p>
+                        <p className="text-xs text-gray-500 mt-0.5">{alumni.nim}</p>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-600">{alumni.prodi?.nama_prodi || alumni.prodi || '-'}</td>
+                      <td className="px-6 py-4 text-sm text-gray-600">{alumni.angkatan || alumni.tahun || '-'}</td>
+                      <td className="px-6 py-4">
+                        <span className="inline-block px-3 py-1 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-700">
+                          Terdaftar
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <button className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors tooltip relative">
+                            <Eye size={18} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
           
           {/* Pagination Placeholder */}
           <div className="p-5 border-t border-gray-100 flex items-center justify-between text-sm text-gray-500">
-            <p>Menampilkan 1 hingga 5 dari 1,245 data</p>
+            <p>Menampilkan {alumniData.length} data alumni</p>
             <div className="flex gap-1">
               <button className="px-3 py-1 border border-gray-200 rounded hover:bg-gray-50">Prev</button>
               <button className="px-3 py-1 bg-blue-600 text-white rounded font-medium">1</button>

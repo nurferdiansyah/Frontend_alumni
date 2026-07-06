@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { StudentLayout } from '../../components/StudentLayout';
 import { Button } from '../../components/Button';
 import { ArrowLeft, Save, Camera } from 'lucide-react';
+import { getProfile, updateProfile } from '../../api/alumniService';
 
 const faculties = {
   "Fakultas Agama Islam": ["Pendidikan Agama Islam", "Pendidikan Guru Madrasah Ibtidaiyah"],
@@ -25,12 +26,41 @@ const locations = {
 
 export function EditProfil() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
-    nama: 'Budi Santoso, S.Kom', nim: '20123456', fakultas: 'Fakultas Sains dan Teknologi', prodi: 'Informatika', tahunLulus: '2026', noWa: '081234567890',
-    negara: 'Indonesia', provinsi: 'DKI Jakarta', kabupaten: 'Jakarta Selatan', kecamatan: 'Kebayoran Baru', alamatDetail: 'Jl. Jend. Sudirman Kav 52-53, Gedung Karya, Lt. 12',
-    statusKarir: 'bekerja',
-    namaPerusahaan: 'PT. Teknologi Nusantara', jabatan: 'Frontend Developer'
+    nama: '', nim: '', fakultas: '', prodi: '', tahunLulus: '', noWa: '',
+    negara: 'Indonesia', provinsi: '', kabupaten: '', kecamatan: '', alamatDetail: '',
+    statusKarir: '',
+    namaPerusahaan: '', jabatan: '',
+    id_prodi: ''
   });
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await getProfile();
+        const data = response.data.data || response.data;
+        setFormData(prev => ({
+          ...prev,
+          nama: data.nama_lengkap || '',
+          nim: data.nim || '',
+          tahunLulus: data.angkatan || '',
+          noWa: data.nomor_telepon || '',
+          alamatDetail: data.alamat || '',
+          id_prodi: data.id_prodi || '',
+          fakultas: data.prodi?.fakultas?.nama_fakultas || '',
+          prodi: data.prodi?.nama_prodi || '',
+        }));
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   const updateForm = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -52,9 +82,29 @@ export function EditProfil() {
     updateForm('kabupaten', '');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate('/profil-saya');
+    setSaving(true);
+    setError(null);
+    try {
+      await updateProfile({
+        nama_lengkap: formData.nama,
+        nim: formData.nim,
+        angkatan: formData.tahunLulus,
+        nomor_telepon: formData.noWa,
+        alamat: formData.alamatDetail,
+        id_prodi: formData.id_prodi || 1,
+      });
+      navigate('/profil-saya');
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.errors) {
+        setError(Object.values(err.response.data.errors).flat().join(', '));
+      } else {
+        setError('Gagal menyimpan profil. Silakan coba lagi.');
+      }
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -70,12 +120,16 @@ export function EditProfil() {
               </Link>
               <h1 className="text-3xl font-bold text-gray-900">Edit Profil</h1>
             </div>
-            <Button onClick={handleSubmit} className="flex items-center gap-2 bg-[#0F4C3A] hover:bg-[#0a3629]">
-              <Save size={18} /> Simpan Perubahan
+            <Button onClick={handleSubmit} disabled={saving} className="flex items-center gap-2 bg-[#0F4C3A] hover:bg-[#0a3629] disabled:opacity-70">
+              <Save size={18} /> {saving ? 'Menyimpan...' : 'Simpan Perubahan'}
             </Button>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-8">
+            
+            {error && (
+              <div className="p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-r-md text-sm">{error}</div>
+            )}
             
             {/* Foto Profil */}
             <div className="bg-white p-6 md:p-8 rounded-[24px] shadow-sm border border-gray-100 flex flex-col md:flex-row items-center gap-6">
