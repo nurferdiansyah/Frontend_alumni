@@ -164,8 +164,29 @@ export function LengkapiProfil() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null);
+
+    const missing = [];
     if (!formData.statusKarir) {
-      alert("Pilih status karir Anda terlebih dahulu sebelum menyimpan profil.");
+      missing.push('Status Karir');
+    } else {
+      if (formData.statusKarir === 'bekerja') {
+        if (!formData.namaPerusahaan) missing.push('Nama Instansi / Perusahaan');
+        if (!formData.jabatan) missing.push('Jabatan / Posisi');
+      } else if (formData.statusKarir === 'wirausaha') {
+        if (!formData.namaUsaha) missing.push('Nama Usaha');
+        if (!formData.bidangUsaha) missing.push('Bidang Usaha');
+      } else if (formData.statusKarir === 'studi') {
+        if (!formData.universitasLanjut) missing.push('Nama Universitas / Institusi');
+        if (!formData.jurusanLanjut) missing.push('Program / Jurusan Studi');
+      } else if (formData.statusKarir === 'belum_bekerja') {
+        if (!formData.minatKerja) missing.push('Bidang Pekerjaan yang Diminati');
+      }
+    }
+
+    if (missing.length > 0) {
+      setError('Harap lengkapi kolom berikut: ' + missing.join(', '));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
     
@@ -268,6 +289,7 @@ export function LengkapiProfil() {
           </div>
 
           <div className="bg-white rounded-[24px] shadow-sm border border-gray-100 p-6 md:p-10">
+            {error && <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm rounded-r-md">{error}</div>}
             <form onSubmit={handleSubmit}>
               <AnimatePresence mode="wait">
                 
@@ -281,7 +303,7 @@ export function LengkapiProfil() {
                     transition={{ duration: 0.3 }}
                     className="space-y-6"
                   >
-                    {error && <div className="p-4 bg-red-50 text-red-700 text-sm rounded-md">{error}</div>}
+                    
                     <div className="mb-8">
                       <h2 className="text-2xl font-bold text-gray-900 mb-2">Informasi Dasar</h2>
                       <p className="text-gray-500">Mari mulai dengan melengkapi identitas diri Anda sebagai alumni.</p>
@@ -311,14 +333,14 @@ export function LengkapiProfil() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-2">Fakultas</label>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Fakultas <span className="text-red-500">*</span></label>
                         <select className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all text-gray-800 cursor-pointer" value={formData.fakultas} onChange={handleFakultasChange}>
                           <option value="">Pilih Fakultas...</option>
                           {Object.keys(faculties).map(fak => <option key={fak} value={fak}>{fak}</option>)}
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-2">Program Studi</label>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Program Studi <span className="text-red-500">*</span></label>
                         <select className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all text-gray-800 cursor-pointer disabled:opacity-50" value={formData.prodi} onChange={e => updateForm('prodi', e.target.value)} disabled={!formData.fakultas}>
                           <option value="">{formData.fakultas ? 'Pilih Program Studi...' : 'Pilih Fakultas Terlebih Dahulu'}</option>
                           {formData.fakultas && faculties[formData.fakultas].map(prodi => <option key={prodi} value={prodi}>{prodi}</option>)}
@@ -328,14 +350,14 @@ export function LengkapiProfil() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-2">Tahun Lulus</label>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Tahun Lulus <span className="text-red-500">*</span></label>
                         <select className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all text-gray-800 cursor-pointer" value={formData.tahunLulus} onChange={e => updateForm('tahunLulus', e.target.value)}>
                           <option value="">Pilih Tahun...</option>
                           {Array.from({length: 15}, (_, i) => 2026 - i).map(year => <option key={year} value={year}>{year}</option>)}
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-2">Nomor WhatsApp Aktif</label>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Nomor WhatsApp Aktif <span className="text-red-500">*</span></label>
                         <input type="tel" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all text-gray-800" placeholder="0812xxxxxx" value={formData.noWa} onChange={e => updateForm('noWa', e.target.value)} />
                       </div>
                     </div>
@@ -359,7 +381,7 @@ export function LengkapiProfil() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-2">Negara</label>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Negara <span className="text-red-500">*</span></label>
                         <select className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all text-gray-800 cursor-pointer" value={formData.negara} onChange={handleNegaraChange}>
                           <option value="">Pilih Negara...</option>
                           <option value="Indonesia">Indonesia</option>
@@ -367,7 +389,7 @@ export function LengkapiProfil() {
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-2">Provinsi</label>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Provinsi <span className="text-red-500">*</span></label>
                         {formData.negara === 'Indonesia' ? (
                           <select className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all text-gray-800 cursor-pointer disabled:opacity-50" value={selectedProvId ? `${selectedProvId}|${formData.provinsi}` : ''} onChange={handleProvinsiChange} disabled={!formData.negara}>
                             <option value="">Pilih Provinsi...</option>
@@ -384,7 +406,7 @@ export function LengkapiProfil() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-2">Kabupaten/Kota</label>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Kabupaten/Kota <span className="text-red-500">*</span></label>
                         {formData.negara === 'Indonesia' ? (
                           <select className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all text-gray-800 cursor-pointer disabled:opacity-50" value={selectedRegId ? `${selectedRegId}|${formData.kabupaten}` : ''} onChange={handleKabupatenChange} disabled={!formData.provinsi}>
                             <option value="">{formData.provinsi ? 'Pilih Kabupaten/Kota...' : 'Pilih Provinsi Terlebih Dahulu'}</option>
@@ -398,7 +420,7 @@ export function LengkapiProfil() {
                         )}
                       </div>
                       <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-2">Kecamatan</label>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Kecamatan <span className="text-red-500">*</span></label>
                         {formData.negara === 'Indonesia' ? (
                           <select className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all text-gray-800 cursor-pointer disabled:opacity-50" onChange={handleKecamatanChange} disabled={!formData.kabupaten}>
                             <option value="">{formData.kabupaten ? 'Pilih Kecamatan...' : 'Pilih Kabupaten/Kota Terlebih Dahulu'}</option>
@@ -411,7 +433,7 @@ export function LengkapiProfil() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Detail Jalan / Blok / Nomor Rumah</label>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Detail Jalan / Blok / Nomor Rumah <span className="text-red-500">*</span></label>
                       <textarea className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all text-gray-800 h-28 resize-none" placeholder="Contoh: Jl. Lintas Sumatera Km 15, RT 01 RW 02, Desa Suka Maju" value={formData.alamatDetail} onChange={e => updateForm('alamatDetail', e.target.value)}></textarea>
                     </div>
                   </motion.div>
@@ -428,7 +450,7 @@ export function LengkapiProfil() {
                     className="space-y-6"
                   >
                     <div className="mb-8">
-                      <h2 className="text-2xl font-bold text-gray-900 mb-2">Status Karir</h2>
+                      <h2 className="text-2xl font-bold text-gray-900 mb-2">Status Karir <span className="text-red-500">*</span></h2>
                       <p className="text-gray-500">Pilih status kegiatan Anda saat ini agar kami dapat memberikan layanan dan informasi yang relevan.</p>
                     </div>
 
@@ -462,12 +484,12 @@ export function LengkapiProfil() {
                         <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="space-y-6 overflow-hidden">
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                              <label className="block text-sm font-bold text-gray-700 mb-2">Nama Instansi / Perusahaan</label>
-                              <input type="text" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all" placeholder="PT. Inovasi Bangsa" />
+                              <label className="block text-sm font-bold text-gray-700 mb-2">Nama Instansi / Perusahaan <span className="text-red-500">*</span></label>
+                              <input type="text" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all" placeholder="PT. Inovasi Bangsa" value={formData.namaPerusahaan} onChange={e => updateForm('namaPerusahaan', e.target.value)} />
                             </div>
                             <div>
-                              <label className="block text-sm font-bold text-gray-700 mb-2">Jabatan / Posisi</label>
-                              <input type="text" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all" placeholder="Software Engineer" />
+                              <label className="block text-sm font-bold text-gray-700 mb-2">Jabatan / Posisi <span className="text-red-500">*</span></label>
+                              <input type="text" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all" placeholder="Software Engineer" value={formData.jabatan} onChange={e => updateForm('jabatan', e.target.value)} />
                             </div>
                           </div>
                         </motion.div>
@@ -477,12 +499,12 @@ export function LengkapiProfil() {
                         <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="space-y-6 overflow-hidden">
                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                              <label className="block text-sm font-bold text-gray-700 mb-2">Nama Usaha</label>
-                              <input type="text" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all" placeholder="Kedai Kopi Kampus" />
+                              <label className="block text-sm font-bold text-gray-700 mb-2">Nama Usaha <span className="text-red-500">*</span></label>
+                              <input type="text" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all" placeholder="Kedai Kopi Kampus" value={formData.namaUsaha} onChange={e => updateForm('namaUsaha', e.target.value)} />
                             </div>
                             <div>
-                              <label className="block text-sm font-bold text-gray-700 mb-2">Bidang Usaha</label>
-                              <input type="text" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all" placeholder="F&B / Kuliner" />
+                              <label className="block text-sm font-bold text-gray-700 mb-2">Bidang Usaha <span className="text-red-500">*</span></label>
+                              <input type="text" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all" placeholder="F&B / Kuliner" value={formData.bidangUsaha} onChange={e => updateForm('bidangUsaha', e.target.value)} />
                             </div>
                           </div>
                         </motion.div>
@@ -492,12 +514,12 @@ export function LengkapiProfil() {
                         <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="space-y-6 overflow-hidden">
                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                              <label className="block text-sm font-bold text-gray-700 mb-2">Nama Universitas / Institusi</label>
-                              <input type="text" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all" placeholder="Universitas Indonesia" />
+                              <label className="block text-sm font-bold text-gray-700 mb-2">Nama Universitas / Institusi <span className="text-red-500">*</span></label>
+                              <input type="text" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all" placeholder="Universitas Indonesia" value={formData.universitasLanjut} onChange={e => updateForm('universitasLanjut', e.target.value)} />
                             </div>
                             <div>
-                              <label className="block text-sm font-bold text-gray-700 mb-2">Program / Jurusan Studi</label>
-                              <input type="text" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all" placeholder="Magister Ilmu Komputer" />
+                              <label className="block text-sm font-bold text-gray-700 mb-2">Program / Jurusan Studi <span className="text-red-500">*</span></label>
+                              <input type="text" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all" placeholder="Magister Ilmu Komputer" value={formData.jurusanLanjut} onChange={e => updateForm('jurusanLanjut', e.target.value)} />
                             </div>
                           </div>
                         </motion.div>
@@ -506,8 +528,8 @@ export function LengkapiProfil() {
                       {formData.statusKarir === 'belum_bekerja' && (
                         <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="space-y-6 overflow-hidden">
                            <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-2">Bidang Pekerjaan yang Diminati</label>
-                            <input type="text" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all" placeholder="Contoh: Administrasi, IT, Mengajar" />
+                            <label className="block text-sm font-bold text-gray-700 mb-2">Bidang Pekerjaan yang Diminati <span className="text-red-500">*</span></label>
+                            <input type="text" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all" placeholder="Contoh: Administrasi, IT, Mengajar" value={formData.minatKerja} onChange={e => updateForm('minatKerja', e.target.value)} />
                             <p className="text-xs text-gray-500 mt-2">Kami akan merekomendasikan lowongan sesuai minat Anda.</p>
                           </div>
                         </motion.div>

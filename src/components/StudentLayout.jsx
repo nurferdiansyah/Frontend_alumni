@@ -1,11 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Home, User, Briefcase, Settings, LogOut, Menu, X, Search, Bell, CheckCircle } from 'lucide-react';
+import { getProfile } from '../api/alumniService';
 
 export function StudentLayout({ children }) {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [isCheckingProfile, setIsCheckingProfile] = useState(true);
+  const [userData, setUserData] = useState({ name: 'Alumni', prodi: '', angkatan: '', initials: 'AL' });
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    const checkProfileCompleteness = async () => {
+      try {
+        const response = await getProfile();
+        const data = response.data.data || response.data;
+        
+        if (!data.alamat || !data.angkatan || !data.nomor_telepon || !data.nama_lengkap || !data.nim) {
+          navigate('/lengkapi-profil');
+          return;
+        }
+
+        const name = data.nama_lengkap || 'Alumni';
+        const nameParts = name.split(' ');
+        let initials = nameParts[0].charAt(0);
+        if (nameParts.length > 1) {
+          initials += nameParts[1].charAt(0);
+        }
+
+        setUserData({
+          name: name,
+          prodi: data.prodi?.nama_prodi || '',
+          angkatan: data.angkatan || '',
+          initials: initials.toUpperCase()
+        });
+      } catch (error) {
+        console.error('Gagal mengecek profil:', error);
+      } finally {
+        setIsCheckingProfile(false);
+      }
+    };
+    
+    checkProfileCompleteness();
+  }, [navigate]);
 
   const menuItems = [
     { name: 'Dashboard', icon: Home, path: '/dashboard' },
@@ -66,17 +103,37 @@ export function StudentLayout({ children }) {
             <div className="h-8 w-px bg-gray-200 mx-1 md:mx-2"></div>
             <Link to="/profil-saya" className="flex items-center gap-3 group">
               <div className="text-right hidden sm:block">
-                <p className="text-sm font-bold text-gray-900 group-hover:text-[#0F4C3A] transition-colors">Budi Santoso</p>
-                <p className="text-xs text-gray-500">Informatika 2026</p>
+                {isCheckingProfile ? (
+                  <div className="flex flex-col items-end gap-1.5">
+                    <div className="h-4 w-24 bg-gray-200 rounded animate-pulse"></div>
+                    <div className="h-3 w-16 bg-gray-200 rounded animate-pulse"></div>
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-sm font-bold text-gray-900 group-hover:text-[#0F4C3A] transition-colors">{userData.name}</p>
+                    <p className="text-xs text-gray-500">{userData.prodi} {userData.angkatan}</p>
+                  </>
+                )}
               </div>
-              <div className="w-10 h-10 bg-[#7FE0B0] rounded-full border-2 border-white shadow-sm flex items-center justify-center text-[#0F4C3A] font-bold">BS</div>
+              <div className={`w-10 h-10 ${isCheckingProfile ? 'bg-gray-200 animate-pulse' : 'bg-[#7FE0B0]'} rounded-full border-2 border-white shadow-sm flex items-center justify-center text-[#0F4C3A] font-bold`}>
+                {!isCheckingProfile && userData.initials}
+              </div>
             </Link>
           </div>
         </header>
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto">
-          {children}
+          {isCheckingProfile ? (
+            <div className="h-full flex items-center justify-center">
+              <div className="flex flex-col items-center text-gray-500">
+                <div className="w-8 h-8 border-4 border-[#7FE0B0] border-t-[#0F4C3A] rounded-full animate-spin mb-3"></div>
+                <p className="font-medium text-sm">Memuat data...</p>
+              </div>
+            </div>
+          ) : (
+            children
+          )}
         </div>
       </main>
     </div>
