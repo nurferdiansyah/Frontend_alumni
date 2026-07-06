@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getNews, getJobs, getWebSettings } from '../../api/publicService';
+import { getNews, getJobs, getWebSettings, getStats } from '../../api/publicService';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 import { Button } from '../../components/Button';
@@ -15,6 +15,7 @@ export function Home() {
 
   const [newsList, setNewsList] = useState([]);
   const [jobsList, setJobsList] = useState([]);
+  const [dashboardStats, setDashboardStats] = useState(null);
   const [webSettings, setWebSettings] = useState({
     hero_title: '',
     hero_description: '',
@@ -23,10 +24,11 @@ export function Home() {
     hero_image_3: null,
   });
 
-  const heroImages = [];
-  if (webSettings.hero_image_1 || webSettings.hero_image) heroImages.push(webSettings.hero_image_1 || webSettings.hero_image);
-  if (webSettings.hero_image_2) heroImages.push(webSettings.hero_image_2);
-  if (webSettings.hero_image_3) heroImages.push(webSettings.hero_image_3);
+  const heroImages = [
+    'https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=2086&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2070&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=2070&auto=format&fit=crop'
+  ];
 
   useEffect(() => {
     if (heroImages.length <= 1) return;
@@ -39,16 +41,26 @@ export function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [newsRes, jobsRes, settingsRes] = await Promise.all([
+        const [newsRes, jobsRes, settingsRes, statsRes] = await Promise.all([
           getNews().catch(() => ({ data: [] })), 
           getJobs().catch(() => ({ data: [] })),
-          getWebSettings().catch(() => null)
+          getWebSettings().catch(() => null),
+          getStats().catch(() => null)
         ]);
         const fetchedNews = newsRes.data.data || newsRes.data;
         const fetchedJobs = jobsRes.data.data || jobsRes.data;
         
         setNewsList(Array.isArray(fetchedNews) ? fetchedNews.slice(0, 3) : []);
         setJobsList(Array.isArray(fetchedJobs) ? fetchedJobs.slice(0, 3) : []);
+
+        if (statsRes && statsRes.data) {
+          const statsData = statsRes.data.data || statsRes.data;
+          setDashboardStats({
+            total_alumni: statsData.total_alumni || "0",
+            total_fakultas: statsData.total_fakultas || "0",
+            total_jobs: statsData.total_jobs || "0"
+          });
+        }
 
         if (settingsRes && settingsRes.data) {
           const settingsData = settingsRes.data.data || settingsRes.data;
@@ -81,31 +93,13 @@ export function Home() {
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/20 bg-white/10 text-[11px] font-bold mb-8 text-white/90 tracking-widest uppercase">
               <span className="w-2 h-2 rounded-full bg-[#7FE0B0]"></span> RESMI: CAREER CENTER UNUHA
             </div>
-            {isLoading ? (
-              <div className="animate-pulse mb-10">
-                <div className="h-[56px] bg-white/20 rounded-xl w-3/4 mb-4"></div>
-                <div className="h-[56px] bg-[#7FE0B0]/40 rounded-xl w-1/2 mb-8"></div>
-                <div className="h-4 bg-white/20 rounded-md w-full mb-3"></div>
-                <div className="h-4 bg-white/20 rounded-md w-5/6 mb-3"></div>
-                <div className="h-4 bg-white/20 rounded-md w-4/6"></div>
-              </div>
-            ) : (
-              <>
                 <h1 className="text-4xl md:text-5xl lg:text-[56px] font-bold leading-[1.1] mb-6 tracking-tight">
-                  {webSettings.hero_title.split(',').length > 1 ? (
-                    <>
-                      <span className="block text-white">{webSettings.hero_title.substring(0, webSettings.hero_title.lastIndexOf(','))},</span>
-                      <span className="block text-[#7FE0B0]">{webSettings.hero_title.substring(webSettings.hero_title.lastIndexOf(',') + 1).trim()}</span>
-                    </>
-                  ) : (
-                    <span className="block text-white">{webSettings.hero_title}</span>
-                  )}
+                  <span className="block text-white">Membangun Karir,</span>
+                  <span className="block text-[#7FE0B0]">Menghubungkan Alumni.</span>
                 </h1>
                 <p className="text-white/80 text-[17px] mb-10 max-w-lg leading-relaxed whitespace-pre-line">
-                  {webSettings.hero_description}
+                  Selamat datang di Pusat Pengembangan Karir dan Alumni Universitas Nurul Huda (UNUHA). Kami berkomitmen membantu setiap mahasiswa dan lulusan mencapai potensi karir maksimal mereka melalui jejaring profesional yang kuat.
                 </p>
-              </>
-            )}
             <div className="flex flex-col sm:flex-row gap-5">
               <Link to="/jobs">
                 <Button variant="accent" className="w-full sm:w-auto text-base px-8 py-3.5 rounded-xl font-bold shadow-lg shadow-[#7FE0B0]/20 text-[#0F4C3A] bg-[#7FE0B0] hover:bg-[#66c698]">Eksplorasi Karir</Button>
@@ -118,12 +112,6 @@ export function Home() {
           
           <ScrollReveal delay={0.2} className="relative h-full min-h-[500px] hidden lg:block">
             <div className="absolute top-0 right-0 w-[95%] h-[550px] rounded-[32px] overflow-hidden shadow-2xl z-10 border-[6px] border-white/10 group bg-white/5">
-              {isLoading ? (
-                <div className="w-full h-full animate-pulse flex flex-col items-center justify-center gap-4">
-                   <div className="w-16 h-16 rounded-full border-4 border-[#7FE0B0]/30 border-t-[#7FE0B0] animate-spin"></div>
-                </div>
-              ) : (
-                <>
                   {heroImages.map((img, idx) => (
                     <img 
                       key={idx}
@@ -146,8 +134,6 @@ export function Home() {
                       ))}
                     </div>
                   )}
-                </>
-              )}
             </div>
           </ScrollReveal>
         </div>
@@ -280,19 +266,19 @@ export function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {newsList.length > 0 ? newsList.map((news, i) => (
-            <ScrollReveal key={news.id || i} delay={i * 0.1}>
-              <Link to={`/berita/${news.id}`} className="bg-white rounded-[24px] overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg transition-shadow group flex flex-col h-full block">
+            <ScrollReveal key={news.id_news || news.id || i} delay={i * 0.1}>
+              <Link to={`/berita/${news.id_news || news.id}`} className="bg-white rounded-[24px] overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg transition-shadow group flex flex-col h-full block">
                 <div className="relative h-56 overflow-hidden">
                   {/* Gunakan placeholder jika API belum ada field gambar (sementara) */}
-                  <img src={news.image || "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=2070&auto=format&fit=crop"} alt={news.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <img src={news.gambar_url || news.image || "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=2070&auto=format&fit=crop"} alt={news.judul || news.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   <div className="absolute top-4 left-4 bg-[#0F4C3A] text-white text-[11px] font-bold px-3 py-1.5 rounded-lg tracking-wider">
-                    {news.category || "Kampus"}
+                    {news.kategori || news.category || "Kampus"}
                   </div>
                 </div>
                 <div className="p-7 flex flex-col flex-grow">
-                  <span className="text-[13px] text-gray-400 mb-2 block">{news.created_at ? new Date(news.created_at).toLocaleDateString('id-ID') : '-'}</span>
-                  <h3 className="font-bold text-[18px] text-gray-900 mb-3 leading-snug">{news.title}</h3>
-                  <p className="text-[14px] text-gray-500 mb-6 line-clamp-3 leading-relaxed">{news.content ? news.content.replace(/<[^>]*>?/gm, '') : ''}</p>
+                  <span className="text-[13px] text-gray-400 mb-2 block">{news.published_at || news.created_at ? new Date(news.published_at || news.created_at).toLocaleDateString('id-ID') : '-'}</span>
+                  <h3 className="font-bold text-[18px] text-gray-900 mb-3 leading-snug">{news.judul || news.title}</h3>
+                  <p className="text-[14px] text-gray-500 mb-6 line-clamp-3 leading-relaxed">{(news.konten || news.content) ? (news.konten || news.content).replace(/<[^>]*>?/gm, '') : ''}</p>
                   <div className="inline-flex items-center text-gray-900 font-bold group-hover:text-[#0F4C3A] transition-colors mt-auto text-[14px]">
                     Baca Selengkapnya <ArrowRight className="w-4 h-4 ml-1.5 text-gray-400" />
                   </div>
@@ -315,19 +301,25 @@ export function Home() {
             <div className="hidden md:block absolute left-1/3 top-2 bottom-2 w-px bg-white/10"></div>
             <div className="hidden md:block absolute left-2/3 top-2 bottom-2 w-px bg-white/10"></div>
             
-            {[
-              { num: "12,450+", label: "TOTAL ALUMNI", icon: Users },
-              { num: "3", label: "TOTAL FAKULTAS", icon: Building },
-              { num: "156", label: "LOWONGAN AKTIF", icon: Briefcase }
-            ].map((stat, i) => (
-              <ScrollReveal key={i} delay={i * 0.1} className="flex flex-col items-center justify-center gap-3 px-4 text-center">
-                <stat.icon className="w-[48px] h-[48px] text-white/50" strokeWidth={1.5} />
-                <div className="flex flex-col gap-1.5">
-                  <div className="text-[12px] font-bold text-[#7FE0B0] tracking-[0.2em] uppercase">{stat.label}</div>
-                  <div className="text-[46px] font-extrabold text-white leading-none">{stat.num}</div>
-                </div>
-              </ScrollReveal>
-            ))}
+            {isLoading || !dashboardStats ? (
+              <div className="col-span-1 md:col-span-3 flex justify-center py-6">
+                <div className="w-10 h-10 rounded-full border-4 border-[#7FE0B0]/30 border-t-[#7FE0B0] animate-spin"></div>
+              </div>
+            ) : (
+              [
+                { num: dashboardStats.total_alumni, label: "TOTAL ALUMNI", icon: Users },
+                { num: dashboardStats.total_fakultas, label: "TOTAL FAKULTAS", icon: Building },
+                { num: dashboardStats.total_jobs, label: "LOWONGAN AKTIF", icon: Briefcase }
+              ].map((stat, i) => (
+                <ScrollReveal key={i} delay={i * 0.1} className="flex flex-col items-center justify-center gap-3 px-4 text-center">
+                  <stat.icon className="w-[48px] h-[48px] text-white/50" strokeWidth={1.5} />
+                  <div className="flex flex-col gap-1.5">
+                    <div className="text-[12px] font-bold text-[#7FE0B0] tracking-[0.2em] uppercase">{stat.label}</div>
+                    <div className="text-[46px] font-extrabold text-white leading-none">{stat.num}</div>
+                  </div>
+                </ScrollReveal>
+              ))
+            )}
           </div>
         </div>
       </section>

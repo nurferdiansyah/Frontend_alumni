@@ -10,6 +10,8 @@ export const deleteProdi = (id) => axiosInstance.delete(`/admin/prodi/${id}`);
 
 // Alumni
 export const getAlumni = () => axiosInstance.get('/admin/alumni');
+export const updateAlumni = (id, data) => axiosInstance.put(`/admin/alumni/${id}`, data);
+export const deleteAlumni = (id) => axiosInstance.delete(`/admin/alumni/${id}`);
 
 // Jobs
 export const createJob = (data) => axiosInstance.post('/admin/jobs', data);

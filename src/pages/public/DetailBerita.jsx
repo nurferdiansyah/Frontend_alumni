@@ -64,17 +64,17 @@ export function DetailBerita() {
               Kembali ke Daftar Berita
             </Link>
             
-            <div className="flex items-center gap-3 mb-6">
-              <span className="bg-[#7FE0B0]/20 text-[#0F4C3A] font-bold text-[13px] uppercase tracking-wider px-3 py-1 rounded-md">
-                {news.category || 'Kampus'}
+            <div className="flex items-center gap-4 mb-4">
+              <span className="bg-[#7FE0B0] text-[#0F4C3A] text-[12px] font-bold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-sm">
+                {news.kategori || news.category || 'Kampus'}
               </span>
               <span className="text-gray-400 text-[14px] flex items-center gap-1.5 font-medium">
-                <Calendar size={14} /> {news.created_at ? new Date(news.created_at).toLocaleDateString('id-ID') : '-'}
+                <Calendar size={14} /> {news.published_at || news.created_at ? new Date(news.published_at || news.created_at).toLocaleDateString('id-ID') : '-'}
               </span>
             </div>
 
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-6 leading-tight">
-              {news.title}
+              {news.judul || news.title}
             </h1>
 
             <div className="flex items-center justify-between pb-8 border-b border-gray-100 mb-8">
@@ -94,16 +94,16 @@ export function DetailBerita() {
             </div>
           </ScrollReveal>
 
-          {news.image && (
+          {(news.gambar_url || news.image) && (
             <ScrollReveal delay={0.1}>
               <div className="rounded-[24px] overflow-hidden mb-10 shadow-lg border border-gray-100">
-                <img src={news.image} alt={news.title} className="w-full h-auto max-h-[450px] object-cover" />
+                <img src={news.gambar_url || news.image} alt={news.judul || news.title} className="w-full h-auto max-h-[450px] object-cover" />
               </div>
             </ScrollReveal>
           )}
 
           <ScrollReveal delay={0.2}>
-            <div className="prose prose-lg max-w-none text-gray-600 space-y-6 text-[17px] leading-relaxed" dangerouslySetInnerHTML={{ __html: news.content || '' }}>
+            <div className="prose prose-lg max-w-none text-gray-600 space-y-6 text-[17px] leading-relaxed" dangerouslySetInnerHTML={{ __html: news.konten || news.content || '' }}>
             </div>
 
             <div className="mt-12 pt-8 border-t border-gray-100 flex flex-wrap items-center gap-3">
