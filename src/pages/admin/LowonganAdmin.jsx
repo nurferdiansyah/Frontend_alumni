@@ -24,10 +24,6 @@ export function LowonganAdmin() {
   });
   const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => {
-    fetchJobs();
-  }, []);
-
   const fetchJobs = async () => {
     try {
       const response = await getJobs();
@@ -39,6 +35,10 @@ export function LowonganAdmin() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchJobs();
+  }, []);
 
   const handleOpenModal = (mode, job = null) => {
     setModalMode(mode);

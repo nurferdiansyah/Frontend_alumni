@@ -21,10 +21,6 @@ export function BeritaAdmin() {
   });
   const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => {
-    fetchNews();
-  }, []);
-
   const fetchNews = async () => {
     try {
       const response = await getNews();
@@ -36,6 +32,10 @@ export function BeritaAdmin() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchNews();
+  }, []);
 
   const handleOpenModal = (mode, newsItem = null) => {
     setModalMode(mode);

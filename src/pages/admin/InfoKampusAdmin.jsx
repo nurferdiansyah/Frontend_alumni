@@ -20,10 +20,6 @@ export function InfoKampusAdmin() {
   });
   const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => {
-    fetchInfo();
-  }, []);
-
   const fetchInfo = async () => {
     try {
       const response = await getInfo();
@@ -35,6 +31,10 @@ export function InfoKampusAdmin() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchInfo();
+  }, []);
 
   const handleOpenModal = (mode, item = null) => {
     setModalMode(mode);

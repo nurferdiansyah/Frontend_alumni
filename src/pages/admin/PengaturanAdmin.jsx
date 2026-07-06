@@ -12,10 +12,6 @@ export function PengaturanAdmin() {
   const [newProdi, setNewProdi] = useState('');
   const [selectedFakultasForProdi, setSelectedFakultasForProdi] = useState('');
 
-  useEffect(() => {
-    fetchMasterData();
-  }, []);
-
   const fetchMasterData = async () => {
     try {
       const resF = await getFakultas();
@@ -26,6 +22,10 @@ export function PengaturanAdmin() {
       console.error(e);
     }
   };
+
+  useEffect(() => {
+    fetchMasterData();
+  }, []);
 
   const handleAddFakultas = async (e) => {
     e.preventDefault();

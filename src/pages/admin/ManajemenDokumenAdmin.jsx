@@ -23,11 +23,6 @@ export function ManajemenDokumenAdmin() {
   const [suratData, setSuratData] = useState([]);
   const [loadingSurat, setLoadingSurat] = useState(false);
 
-  useEffect(() => {
-    fetchSettings();
-    fetchSurat();
-  }, []);
-
   const fetchSettings = async () => {
     try {
       const response = await getWebSettings();
@@ -56,6 +51,11 @@ export function ManajemenDokumenAdmin() {
       setLoadingSurat(false);
     }
   };
+
+  useEffect(() => {
+    fetchSettings();
+    fetchSurat();
+  }, []);
 
   const handleVerify = async (id, status, catatan) => {
     try {

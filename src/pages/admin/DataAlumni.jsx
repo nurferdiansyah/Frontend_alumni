@@ -20,10 +20,6 @@ export function DataAlumni() {
   });
   const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => {
-    fetchAlumni();
-  }, []);
-
   const fetchAlumni = async () => {
     try {
       const response = await getAlumni();
@@ -35,6 +31,10 @@ export function DataAlumni() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchAlumni();
+  }, []);
 
   const handleOpenModal = (mode, item) => {
     setModalMode(mode);
