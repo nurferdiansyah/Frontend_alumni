@@ -91,6 +91,12 @@ export function DetailLowongan() {
                     <div className="text-gray-600 leading-relaxed text-[15px]" dangerouslySetInnerHTML={{ __html: job.requirements }}></div>
                   </section>
                 )}
+
+                <div className="pt-8 border-t border-gray-100 flex justify-end">
+                  <a href={job.url || '#'} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-[#0F4C3A] text-white font-bold px-8 py-3.5 rounded-xl hover:bg-emerald-800 transition-colors shadow-lg shadow-[#0F4C3A]/20">
+                    Lamar Sekarang <Briefcase size={18} />
+                  </a>
+                </div>
               </div>
             </div>
           </ScrollReveal>

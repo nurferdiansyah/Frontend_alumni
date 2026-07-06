@@ -174,9 +174,6 @@ export function Campus() {
             <ScrollReveal>
               <div className="flex justify-between items-end mb-6">
                 <h3 className="text-2xl font-bold text-gray-900">Pengumuman Terbaru</h3>
-                <a href="#" className="text-gray-600 font-semibold hover:text-[#0F4C3A] transition-colors flex items-center gap-1 text-[14px]">
-                  Lihat Semua <ArrowRight size={14} />
-                </a>
               </div>
             </ScrollReveal>
             
@@ -185,8 +182,8 @@ export function Campus() {
                 <p className="text-gray-500">Memuat pengumuman...</p>
               ) : infoList.length > 0 ? (
                 infoList.map((item, idx) => (
-                  <ScrollReveal key={item.id || idx} delay={idx * 0.1}>
-                    <div className="bg-white border border-gray-100 p-6 rounded-[20px] shadow-sm hover:shadow-md transition-all duration-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer group">
+                  <ScrollReveal key={item.id_info || item.id || idx} delay={idx * 0.1}>
+                    <Link to={`/campus/${item.id_info || item.id}`} className="bg-white border border-gray-100 p-6 rounded-[20px] shadow-sm hover:shadow-md transition-all duration-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4 group block">
                       <div>
                         <div className="flex items-center gap-3 mb-2.5">
                           <span className="bg-[#F8FAFC] text-gray-700 text-[11px] px-3 py-1 rounded-md font-bold border border-gray-100 uppercase tracking-wide">{item.type || item.tipe || 'Informasi'}</span>
@@ -197,7 +194,7 @@ export function Campus() {
                       <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-[#0F4C3A] transition-colors flex-shrink-0">
                         <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
                       </div>
-                    </div>
+                    </Link>
                   </ScrollReveal>
                 ))
               ) : (

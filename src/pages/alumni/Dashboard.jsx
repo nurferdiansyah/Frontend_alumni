@@ -3,10 +3,11 @@ import { motion } from 'framer-motion';
 import { Button } from '../../components/Button';
 import { CheckCircle, Download } from 'lucide-react';
 import { StudentLayout } from '../../components/StudentLayout';
-import { getProfile } from '../../api/alumniService';
+import { getProfile, requestIjazah } from '../../api/alumniService';
 
 export function Dashboard() {
   const [profileName, setProfileName] = useState('');
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -21,6 +22,34 @@ export function Dashboard() {
     };
     fetchProfile();
   }, []);
+
+  const handleDownloadBukti = async () => {
+    setDownloading(true);
+    try {
+      const response = await requestIjazah();
+      const filePath = response.data?.data?.file_path;
+      if (filePath) {
+        // Trigger download from backend URL
+        const backendUrl = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api', '') : 'http://localhost:8000';
+        const fileUrl = `${backendUrl}/${filePath}`;
+        
+        const a = document.createElement('a');
+        a.href = fileUrl;
+        a.target = '_blank';
+        a.download = filePath.split('/').pop();
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } else {
+        alert('Gagal mengambil jalur file surat.');
+      }
+    } catch (error) {
+      console.error('Error generating document:', error);
+      alert('Terjadi kesalahan saat memproses permintaan.');
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   return (
     <StudentLayout>
@@ -52,9 +81,9 @@ export function Dashboard() {
             <p className="text-gray-500 mb-8 max-w-md">
               Terima kasih, data diri Anda telah berhasil disimpan ke dalam sistem Portal Alumni. Anda dapat mengunduh bukti pendataan sebagai laporan.
             </p>
-            <Button variant="primary" className="flex items-center gap-3 px-8 py-4 rounded-xl font-bold text-[16px] bg-[#0F4C3A] hover:bg-[#0a3629] text-white shadow-lg hover:-translate-y-1 transition-all">
+            <Button variant="primary" onClick={handleDownloadBukti} disabled={downloading} className="flex items-center gap-3 px-8 py-4 rounded-xl font-bold text-[16px] bg-[#0F4C3A] hover:bg-[#0a3629] text-white shadow-lg hover:-translate-y-1 transition-all">
               <Download size={20} />
-              Unduh Bukti Pendataan
+              {downloading ? 'Memproses...' : 'Unduh Bukti Pendataan'}
             </Button>
           </motion.div>
 

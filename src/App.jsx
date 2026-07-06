@@ -5,6 +5,7 @@ import { Home } from './pages/public/Home';
 import { Berita } from './pages/public/Berita';
 import { Jobs } from './pages/public/Jobs';
 import { Campus } from './pages/public/Campus';
+import { DetailCampusInfo } from './pages/public/DetailCampusInfo';
 import { VisiMisi } from './pages/public/VisiMisi';
 import { DetailBerita } from './pages/public/DetailBerita';
 import { DetailLowongan } from './pages/public/DetailLowongan';
@@ -48,6 +49,7 @@ function App() {
         <Route path="/jobs" element={<Jobs />} />
         <Route path="/jobs/:id" element={<DetailLowongan />} />
         <Route path="/campus" element={<Campus />} />
+        <Route path="/campus/:id" element={<DetailCampusInfo />} />
         <Route path="/visi-misi" element={<VisiMisi />} />
         <Route path="/berita" element={<Berita />} />
         <Route path="/berita/:id" element={<DetailBerita />} />

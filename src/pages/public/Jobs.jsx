@@ -46,14 +46,14 @@ export function Jobs() {
   }, []);
 
   const [selectedTypes, setSelectedTypes] = useState({
-    "Penuh Waktu": true,
-    "Paruh Waktu": true,
+    "Penuh Waktu": false,
+    "Paruh Waktu": false,
     "Magang": false
   });
 
   const [selectedExperiences, setSelectedExperiences] = useState({
-    "Fresh Graduate": true,
-    "1 - 3 Tahun": true,
+    "Fresh Graduate": false,
+    "1 - 3 Tahun": false,
     "3+ Tahun": false
   });
 
@@ -87,7 +87,7 @@ export function Jobs() {
       const expMatch = activeExps.length === 0 || activeExps.includes(job.experience);
       return typeMatch && expMatch;
     });
-  }, [selectedTypes, selectedExperiences]);
+  }, [selectedTypes, selectedExperiences, allJobs]);
 
   return (
     <div className="min-h-screen bg-white font-sans text-gray-800 flex flex-col">

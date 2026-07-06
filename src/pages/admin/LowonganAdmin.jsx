@@ -17,7 +17,9 @@ export function LowonganAdmin() {
     location: '',
     description: '',
     url: '',
-    deadline: ''
+    deadline: '',
+    type: 'Penuh Waktu',
+    experience: 'Fresh Graduate'
   });
   const [submitting, setSubmitting] = useState(false);
 
@@ -47,10 +49,12 @@ export function LowonganAdmin() {
         location: job.location || '',
         description: job.description || '',
         url: job.url || '',
-        deadline: job.deadline ? job.deadline.split('T')[0] : ''
+        deadline: job.deadline ? job.deadline.split('T')[0] : '',
+        type: job.type || 'Penuh Waktu',
+        experience: job.experience || 'Fresh Graduate'
       });
     } else {
-      setFormData({ title: '', company: '', location: '', description: '', url: '', deadline: '' });
+      setFormData({ title: '', company: '', location: '', description: '', url: '', deadline: '', type: 'Penuh Waktu', experience: 'Fresh Graduate' });
     }
     setIsModalOpen(true);
   };
@@ -211,6 +215,25 @@ export function LowonganAdmin() {
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Batas Akhir (Deadline)</label>
                   <input type="date" name="deadline" value={formData.deadline} onChange={handleChange} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none" />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Tipe Pekerjaan <span className="text-red-500">*</span></label>
+                  <select name="type" value={formData.type} onChange={handleChange} required className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none bg-white">
+                    <option value="Penuh Waktu">Penuh Waktu</option>
+                    <option value="Paruh Waktu">Paruh Waktu</option>
+                    <option value="Magang">Magang</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Pengalaman <span className="text-red-500">*</span></label>
+                  <select name="experience" value={formData.experience} onChange={handleChange} required className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none bg-white">
+                    <option value="Fresh Graduate">Fresh Graduate</option>
+                    <option value="1 - 3 Tahun">1 - 3 Tahun</option>
+                    <option value="3+ Tahun">3+ Tahun</option>
+                  </select>
                 </div>
               </div>
 

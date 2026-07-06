@@ -43,14 +43,14 @@ export function Lowongan() {
   }, []);
 
   const [selectedTypes, setSelectedTypes] = useState({
-    "Penuh Waktu": true,
-    "Paruh Waktu": true,
+    "Penuh Waktu": false,
+    "Paruh Waktu": false,
     "Magang": false
   });
 
   const [selectedExperiences, setSelectedExperiences] = useState({
-    "Fresh Graduate": true,
-    "1 - 3 Tahun": true,
+    "Fresh Graduate": false,
+    "1 - 3 Tahun": false,
     "3+ Tahun": false
   });
 
@@ -84,7 +84,7 @@ export function Lowongan() {
       const expMatch = activeExps.length === 0 || activeExps.includes(job.experience);
       return typeMatch && expMatch;
     });
-  }, [selectedTypes, selectedExperiences]);
+  }, [selectedTypes, selectedExperiences, allJobs]);
 
   return (
     <StudentLayout>

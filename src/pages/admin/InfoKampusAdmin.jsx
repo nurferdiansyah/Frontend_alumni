@@ -67,7 +67,7 @@ export function InfoKampusAdmin() {
       if (modalMode === 'add') {
         await createInfo(formData);
       } else {
-        await updateInfo(selectedInfo.id_campus_info || selectedInfo.id, formData);
+        await updateInfo(selectedInfo.id_info || selectedInfo.id, formData);
       }
       await fetchInfo();
       handleCloseModal();
@@ -161,7 +161,7 @@ export function InfoKampusAdmin() {
                           <button className="p-2 text-orange-500 hover:bg-orange-50 rounded-lg transition-colors" onClick={() => handleOpenModal('edit', item)}>
                             <Edit size={18} />
                           </button>
-                          <button className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors" onClick={() => handleDelete(item.id_campus_info || item.id)}>
+                          <button className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors" onClick={() => handleDelete(item.id_info || item.id)}>
                             <Trash2 size={18} />
                           </button>
                         </div>
@@ -205,7 +205,7 @@ export function InfoKampusAdmin() {
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Status <span className="text-red-500">*</span></label>
                   <select name="status" value={formData.status} onChange={handleChange} required className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none bg-white">
                     <option value="Aktif">Aktif</option>
-                    <option value="Nonaktif">Nonaktif</option>
+                    <option value="Tidak Aktif">Tidak Aktif</option>
                   </select>
                 </div>
               </div>
