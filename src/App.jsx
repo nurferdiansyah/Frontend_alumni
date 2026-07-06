@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { ProtectedRoute } from './components/ProtectedRoute';
 import { useEffect } from 'react';
 import { Home } from './pages/public/Home';
 import { Berita } from './pages/public/Berita';
@@ -9,14 +10,15 @@ import { DetailBerita } from './pages/public/DetailBerita';
 import { DetailLowongan } from './pages/public/DetailLowongan';
 import { Kontak } from './pages/public/Kontak';
 import { Login } from './pages/auth/Login';
-import { LengkapiProfil } from './pages/student/LengkapiProfil';
-import { Dashboard } from './pages/student/Dashboard';
-import { ProfilSaya } from './pages/student/ProfilSaya';
-import { Lowongan } from './pages/student/Lowongan';
-import { DetailLowongan as StudentDetailLowongan } from './pages/student/DetailLowongan';
-import { Pengaturan } from './pages/student/Pengaturan';
-import { Notifikasi } from './pages/student/Notifikasi';
-import { EditProfil } from './pages/student/EditProfil';
+import { Register } from './pages/auth/Register';
+import { LengkapiProfil } from './pages/alumni/LengkapiProfil';
+import { Dashboard } from './pages/alumni/Dashboard';
+import { ProfilSaya } from './pages/alumni/ProfilSaya';
+import { Lowongan } from './pages/alumni/Lowongan';
+import { DetailLowongan as StudentDetailLowongan } from './pages/alumni/DetailLowongan';
+import { Pengaturan } from './pages/alumni/Pengaturan';
+import { Notifikasi } from './pages/alumni/Notifikasi';
+import { EditProfil } from './pages/alumni/EditProfil';
 
 // Admin Pages
 import { DashboardAdmin } from './pages/admin/DashboardAdmin';
@@ -51,23 +53,24 @@ function App() {
         <Route path="/berita/:id" element={<DetailBerita />} />
         <Route path="/kontak" element={<Kontak />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/lengkapi-profil" element={<LengkapiProfil />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/profil-saya" element={<ProfilSaya />} />
-        <Route path="/dashboard/lowongan" element={<Lowongan />} />
-        <Route path="/dashboard/lowongan/:id" element={<StudentDetailLowongan />} />
-        <Route path="/dashboard/notifikasi" element={<Notifikasi />} />
-        <Route path="/dashboard/pengaturan" element={<Pengaturan />} />
-        <Route path="/dashboard/edit-profil" element={<EditProfil />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/lengkapi-profil" element={<ProtectedRoute allowedRole="alumni"><LengkapiProfil /></ProtectedRoute>} />
+        <Route path="/dashboard" element={<ProtectedRoute allowedRole="alumni"><Dashboard /></ProtectedRoute>} />
+        <Route path="/profil-saya" element={<ProtectedRoute allowedRole="alumni"><ProfilSaya /></ProtectedRoute>} />
+        <Route path="/dashboard/lowongan" element={<ProtectedRoute allowedRole="alumni"><Lowongan /></ProtectedRoute>} />
+        <Route path="/dashboard/lowongan/:id" element={<ProtectedRoute allowedRole="alumni"><StudentDetailLowongan /></ProtectedRoute>} />
+        <Route path="/dashboard/notifikasi" element={<ProtectedRoute allowedRole="alumni"><Notifikasi /></ProtectedRoute>} />
+        <Route path="/dashboard/pengaturan" element={<ProtectedRoute allowedRole="alumni"><Pengaturan /></ProtectedRoute>} />
+        <Route path="/dashboard/edit-profil" element={<ProtectedRoute allowedRole="alumni"><EditProfil /></ProtectedRoute>} />
 
         {/* Admin Routes */}
-        <Route path="/admin/dashboard" element={<DashboardAdmin />} />
-        <Route path="/admin/alumni" element={<DataAlumni />} />
-        <Route path="/admin/lowongan" element={<LowonganAdmin />} />
-        <Route path="/admin/berita" element={<BeritaAdmin />} />
-        <Route path="/admin/info-kampus" element={<InfoKampusAdmin />} />
-        <Route path="/admin/konten-web" element={<KontenWebAdmin />} />
-        <Route path="/admin/pengaturan" element={<PengaturanAdmin />} />
+        <Route path="/admin/dashboard" element={<ProtectedRoute allowedRole="admin"><DashboardAdmin /></ProtectedRoute>} />
+        <Route path="/admin/alumni" element={<ProtectedRoute allowedRole="admin"><DataAlumni /></ProtectedRoute>} />
+        <Route path="/admin/lowongan" element={<ProtectedRoute allowedRole="admin"><LowonganAdmin /></ProtectedRoute>} />
+        <Route path="/admin/berita" element={<ProtectedRoute allowedRole="admin"><BeritaAdmin /></ProtectedRoute>} />
+        <Route path="/admin/info-kampus" element={<ProtectedRoute allowedRole="admin"><InfoKampusAdmin /></ProtectedRoute>} />
+        <Route path="/admin/konten-web" element={<ProtectedRoute allowedRole="admin"><KontenWebAdmin /></ProtectedRoute>} />
+        <Route path="/admin/pengaturan" element={<ProtectedRoute allowedRole="admin"><PengaturanAdmin /></ProtectedRoute>} />
       </Routes>
     </Router>
   );

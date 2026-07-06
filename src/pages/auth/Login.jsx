@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axiosInstance from '../../api/axiosInstance';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -7,7 +8,43 @@ import { useNavigate } from 'react-router-dom';
 
 export function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const [loginData, setLoginData] = useState({ login: '', password: '' });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const handleChange = (e) => {
+    setLoginData({ ...loginData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axiosInstance.post('/auth/login', loginData);
+      const { access_token, role } = response.data;
+      localStorage.setItem('access_token', access_token);
+      localStorage.setItem('role', role);
+      if (role === 'admin') {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/dashboard');
+      }
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError('Login gagal. Silakan periksa email dan kata sandi Anda.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -66,7 +103,12 @@ export function Login() {
               <p className="text-gray-500">Silakan masukkan email dan kata sandi Anda.</p>
             </div>
 
-            <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              {error && (
+                <div className="p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-r-md text-sm">
+                  {error}
+                </div>
+              )}
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2">Email</label>
                 <div className="relative group">
@@ -74,8 +116,11 @@ export function Login() {
                     <Mail size={20} />
                   </div>
                   <input 
-                    type="email" 
-                    placeholder="nama@email.com" 
+                    type="text" 
+                    name="login"
+                    value={loginData.login}
+                    onChange={handleChange}
+                    placeholder="Username atau Email" 
                     className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all text-gray-800"
                     required
                   />
@@ -90,6 +135,9 @@ export function Login() {
                   </div>
                   <input 
                     type={showPassword ? "text" : "password"} 
+                    name="password"
+                    value={loginData.password}
+                    onChange={handleChange}
                     placeholder="Masukkan kata sandi" 
                     className="w-full pl-12 pr-12 py-3.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-[#7FE0B0] focus:ring-4 focus:ring-[#7FE0B0]/10 transition-all text-gray-800"
                     required
@@ -111,14 +159,14 @@ export function Login() {
                 <a href="#" className="text-sm font-bold text-[#0F4C3A] hover:text-[#7FE0B0] transition-colors">Lupa sandi?</a>
               </div>
 
-              <Button type="button" onClick={() => navigate('/lengkapi-profil')} variant="primary" className="w-full py-4 rounded-xl text-[16px] font-bold shadow-lg shadow-[#0F4C3A]/20 bg-[#0F4C3A] hover:bg-[#0a3629] hover:-translate-y-1 transition-all text-white">
-                Masuk Sekarang
+              <Button type="submit" disabled={loading} variant="primary" className="w-full py-4 rounded-xl text-[16px] font-bold shadow-lg shadow-[#0F4C3A]/20 bg-[#0F4C3A] hover:bg-[#0a3629] hover:-translate-y-1 transition-all text-white disabled:opacity-70 disabled:hover:translate-y-0">
+                {loading ? 'Memproses...' : 'Masuk Sekarang'}
               </Button>
             </form>
 
             <div className="mt-10 text-center">
               <p className="text-gray-600">
-                Belum punya akun? <a href="#" className="font-bold text-[#0F4C3A] hover:text-[#7FE0B0] transition-colors">Daftar di sini</a>
+                Belum punya akun? <Link to="/register" className="font-bold text-[#0F4C3A] hover:text-[#7FE0B0] transition-colors">Daftar di sini</Link>
               </p>
             </div>
           </motion.div>
