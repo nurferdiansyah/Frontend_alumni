@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AdminLayout } from '../../components/AdminLayout';
-import { Search, Filter, Download, MoreVertical, Eye, Trash2, Edit } from 'lucide-react';
+import { Search, Filter, MoreVertical, Eye, Trash2, Edit } from 'lucide-react';
 import { Button } from '../../components/Button';
 import { getAlumni, updateAlumni, deleteAlumni } from '../../api/adminService';
 import Swal from 'sweetalert2';
@@ -103,11 +103,6 @@ export function DataAlumni() {
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Data Alumni</h1>
             <p className="text-gray-500 mt-1">Kelola dan pantau data seluruh alumni yang terdaftar.</p>
-          </div>
-          <div className="flex gap-3">
-            <Button variant="outline" className="flex items-center gap-2 bg-white text-gray-700 border-gray-200 hover:bg-[#0F4C3A] hover:text-white hover:border-[#0F4C3A] transition-colors">
-              <Download size={16} /> Ekspor Data
-            </Button>
           </div>
         </div>
 

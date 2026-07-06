@@ -11,6 +11,19 @@ const faculties = {
   "Fakultas Sains dan Teknologi": ["Informatika", "Matematika", "Sains Pertanian"]
 };
 
+const prodiMap = {
+  "Pendidikan Agama Islam": 1,
+  "Pendidikan Guru Madrasah Ibtidaiyah": 2,
+  "Pendidikan Fisika": 3,
+  "Pendidikan Ekonomi": 4,
+  "Pendidikan Bahasa Inggris": 5,
+  "Pendidikan Bahasa dan Sastra Indonesia": 6,
+  "Pendidikan Teknologi Informasi": 7,
+  "Informatika": 8,
+  "Matematika": 9,
+  "Sains Pertanian": 10
+};
+
 const locations = {
   "Malaysia": {
     "Kuala Lumpur": ["Bukit Bintang", "Cheras"],
@@ -210,6 +223,7 @@ export function LengkapiProfil() {
     setSaving(true);
     setError(null);
     try {
+      const mappedId = prodiMap[formData.prodi] || 1;
       // Update basic profile
       await updateProfile({
         nama_lengkap: formData.nama,
@@ -217,7 +231,7 @@ export function LengkapiProfil() {
         angkatan: formData.tahunLulus,
         nomor_telepon: formData.noWa,
         alamat: formData.alamatDetail,
-        id_prodi: 1 // Default or map from prodi string if you have an ID mapping
+        id_prodi: mappedId
       });
 
       // Submit Tracer Study based on status

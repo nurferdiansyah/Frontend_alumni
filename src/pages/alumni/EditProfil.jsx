@@ -11,6 +11,19 @@ const faculties = {
   "Fakultas Sains dan Teknologi": ["Informatika", "Matematika", "Sains Pertanian"]
 };
 
+const prodiMap = {
+  "Pendidikan Agama Islam": 1,
+  "Pendidikan Guru Madrasah Ibtidaiyah": 2,
+  "Pendidikan Fisika": 3,
+  "Pendidikan Ekonomi": 4,
+  "Pendidikan Bahasa Inggris": 5,
+  "Pendidikan Bahasa dan Sastra Indonesia": 6,
+  "Pendidikan Teknologi Informasi": 7,
+  "Informatika": 8,
+  "Matematika": 9,
+  "Sains Pertanian": 10
+};
+
 const locations = {
   "Indonesia": {
     "Sumatera Selatan": ["OKU Timur", "Palembang", "Ogan Ilir", "Ogan Komering Ulu"],
@@ -87,13 +100,14 @@ export function EditProfil() {
     setSaving(true);
     setError(null);
     try {
+      const mappedId = prodiMap[formData.prodi] || formData.id_prodi || 1;
       await updateProfile({
         nama_lengkap: formData.nama,
         nim: formData.nim,
         angkatan: formData.tahunLulus,
         nomor_telepon: formData.noWa,
         alamat: formData.alamatDetail,
-        id_prodi: formData.id_prodi || 1,
+        id_prodi: mappedId,
       });
       navigate('/profil-saya');
     } catch (err) {

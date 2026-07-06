@@ -5,32 +5,44 @@ import { motion } from 'framer-motion';
 import { Button } from '../../components/Button';
 import { getAlumni } from '../../api/adminService';
 import { getJobs } from '../../api/publicService';
+import { Link } from 'react-router-dom';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import Swal from 'sweetalert2';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 export function DashboardAdmin() {
   const [totalAlumni, setTotalAlumni] = useState(0);
   const [activeJobs, setActiveJobs] = useState(0);
   const [alumniList, setAlumniList] = useState([]);
+  const [jobsList, setJobsList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedYear, setSelectedYear] = useState('Semua');
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
+      
       try {
-        const [alumniRes, jobsRes] = await Promise.all([
-          getAlumni(),
-          getJobs()
-        ]);
-        
+        const alumniRes = await getAlumni();
         const alumniData = alumniRes.data.data || alumniRes.data;
-        const jobsData = jobsRes.data.data || jobsRes.data;
-        
         setTotalAlumni(Array.isArray(alumniData) ? alumniData.length : 0);
-        setActiveJobs(Array.isArray(jobsData) ? jobsData.length : 0);
         setAlumniList(Array.isArray(alumniData) ? alumniData : []);
       } catch (error) {
-        console.error('Error fetching dashboard stats:', error);
-      } finally {
-        setIsLoading(false);
+        console.error('Error fetching alumni stats:', error);
       }
+
+      try {
+        const jobsRes = await getJobs();
+        const jobsData = jobsRes.data.data || jobsRes.data;
+        setActiveJobs(Array.isArray(jobsData) ? jobsData.length : 0);
+        setJobsList(Array.isArray(jobsData) ? jobsData : []);
+      } catch (error) {
+        console.error('Error fetching job stats:', error);
+      }
+
+      setIsLoading(false);
     };
     fetchData();
   }, []);
@@ -41,6 +53,120 @@ export function DashboardAdmin() {
     { label: 'Lowongan Aktif', value: activeJobs.toString(), icon: Briefcase, color: 'text-purple-600', bg: 'bg-purple-100', trend: '4 baru minggu ini' },
     { label: 'Lanjut Studi', value: Math.floor(totalAlumni * 0.1).toString(), icon: GraduationCap, color: 'text-orange-600', bg: 'bg-orange-100', trend: '+2% bulan ini' },
   ];
+
+  const availableYears = [...new Set(alumniList.map(a => a.tahun_lulus || a.angkatan).filter(Boolean))].sort((a, b) => b - a);
+
+  let chartData = [];
+  if (selectedYear === 'Semua') {
+    const yearCounts = alumniList.reduce((acc, curr) => {
+      const year = curr.tahun_lulus || curr.angkatan || 'Lainnya';
+      acc[year] = (acc[year] || 0) + 1;
+      return acc;
+    }, {});
+    chartData = Object.keys(yearCounts).sort().map(year => ({
+      name: year,
+      jumlah: yearCounts[year]
+    }));
+  } else {
+    const filteredAlumni = alumniList.filter(a => (a.tahun_lulus || a.angkatan) == selectedYear);
+    const prodiCounts = filteredAlumni.reduce((acc, curr) => {
+      const prodi = curr.prodi?.nama_prodi || curr.prodi || 'Lainnya';
+      acc[prodi] = (acc[prodi] || 0) + 1;
+      return acc;
+    }, {});
+    chartData = Object.keys(prodiCounts).map(prodi => ({
+      name: prodi,
+      jumlah: prodiCounts[prodi]
+    }));
+  }
+
+  const downloadReport = (format) => {
+    const dataToExport = alumniList.map(a => ({
+      'Nama Lengkap': a.nama_lengkap || a.nama || '-',
+      'NIM': a.nim || '-',
+      'Program Studi': a.prodi?.nama_prodi || a.prodi || '-',
+      'Tahun Lulus': a.tahun_lulus || a.angkatan || '-',
+      'Status Pekerjaan': a.status_pekerjaan || '-'
+    }));
+    const title = 'Laporan Data Alumni';
+    const filename = 'Laporan_Data_Alumni';
+
+    if (dataToExport.length === 0) {
+      Swal.fire('Kosong', 'Tidak ada data untuk diunduh.', 'info');
+      return;
+    }
+
+    if (format === 'csv') {
+      const headers = Object.keys(dataToExport[0]).join(',');
+      const rows = dataToExport.map(obj => 
+        Object.values(obj).map(val => `"${String(val).replace(/"/g, '""')}"`).join(',')
+      );
+      const csvContent = [headers, ...rows].join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.setAttribute('download', `${filename}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } 
+    else if (format === 'xlsx') {
+      const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
+      XLSX.writeFile(workbook, `${filename}.xlsx`);
+    }
+    else if (format === 'pdf') {
+      const doc = new jsPDF();
+      doc.text(title, 14, 15);
+      
+      const headers = Object.keys(dataToExport[0]);
+      const data = dataToExport.map(obj => Object.values(obj));
+      
+      autoTable(doc, {
+        head: [headers],
+        body: data,
+        startY: 20,
+      });
+      
+      doc.save(`${filename}.pdf`);
+    }
+  };
+
+  const handleDownloadReport = async () => {
+    const { value: formValues } = await Swal.fire({
+      title: 'Unduh Laporan Alumni',
+      html: `
+        <div style="text-align: left;">
+          <label style="display: block; margin-bottom: 12px; font-weight: bold; color: #374151;">Pilih Format File Laporan</label>
+          <div style="display: flex; gap: 16px; margin-bottom: 10px;">
+            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+              <input type="radio" name="format" value="csv" checked style="accent-color: #0F4C3A;"> CSV
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+              <input type="radio" name="format" value="xlsx" style="accent-color: #0F4C3A;"> Excel (.xlsx)
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+              <input type="radio" name="format" value="pdf" style="accent-color: #0F4C3A;"> PDF
+            </label>
+          </div>
+        </div>
+      `,
+      showCancelButton: true,
+      confirmButtonText: 'Unduh Sekarang',
+      cancelButtonText: 'Batal',
+      confirmButtonColor: '#0F4C3A',
+      preConfirm: () => {
+        const format = document.querySelector('input[name="format"]:checked').value;
+        return { format };
+      }
+    });
+
+    if (formValues) {
+      downloadReport(formValues.format);
+    }
+  };
+
 
   return (
     <AdminLayout>
@@ -53,7 +179,7 @@ export function DashboardAdmin() {
             <p className="text-gray-500 mt-1">Ringkasan data alumni dan aktivitas portal.</p>
           </div>
           <div className="flex gap-3">
-            <Button variant="outline" className="flex items-center gap-2 bg-white text-gray-700 border-gray-200 hover:bg-[#0F4C3A] hover:text-white hover:border-[#0F4C3A] transition-colors">
+            <Button onClick={handleDownloadReport} variant="outline" className="flex items-center gap-2 bg-white text-gray-700 border-gray-200 hover:bg-[#0F4C3A] hover:text-white hover:border-[#0F4C3A] transition-colors">
               <Download size={16} /> Unduh Laporan
             </Button>
           </div>
@@ -98,18 +224,35 @@ export function DashboardAdmin() {
             className="lg:col-span-2 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm"
           >
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-bold text-gray-900">Tren Pendaftaran Alumni (2026)</h2>
-              <select className="bg-gray-50 border border-gray-200 text-sm rounded-lg px-3 py-1.5 outline-none">
-                <option>Tahun Ini</option>
-                <option>Tahun Lalu</option>
+              <h2 className="text-lg font-bold text-gray-900">Grafik Data Alumni</h2>
+              <select 
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(e.target.value)}
+                className="bg-gray-50 border border-gray-200 text-sm rounded-lg px-3 py-1.5 outline-none text-gray-700 cursor-pointer"
+              >
+                <option value="Semua">Semua Tahun</option>
+                {availableYears.map(year => (
+                  <option key={year} value={year}>{year}</option>
+                ))}
               </select>
             </div>
             {isLoading ? (
               <div className="h-72 bg-gray-100 rounded-xl animate-pulse"></div>
             ) : (
-              <div className="h-72 bg-gray-50 rounded-xl border border-dashed border-gray-200 flex items-center justify-center">
-                <p className="text-gray-400 font-medium">Grafik Data Alumni</p>
-                {/* Di sini biasanya menggunakan Recharts atau Chart.js */}
+              <div className="h-72 bg-white rounded-xl flex items-center justify-center">
+                {chartData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+                      <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6B7280' }} />
+                      <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6B7280' }} />
+                      <Tooltip cursor={{ fill: '#F3F4F6' }} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+                      <Bar dataKey="jumlah" fill="#0F4C3A" radius={[4, 4, 0, 0]} barSize={40} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <p className="text-gray-400 font-medium">Tidak ada data untuk ditampilkan</p>
+                )}
               </div>
             )}
           </motion.div>
@@ -123,7 +266,7 @@ export function DashboardAdmin() {
           >
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-lg font-bold text-gray-900">Alumni Terbaru</h2>
-              <button className="text-sm font-bold text-blue-600 hover:underline">Lihat Semua</button>
+              <Link to="/admin/alumni" className="text-sm font-bold text-blue-600 hover:underline">Lihat Semua</Link>
             </div>
             
             <div className="space-y-6">
