@@ -25,7 +25,15 @@ export const updateNews = (id, data) => axiosInstance.put(`/admin/news/${id}`, d
 export const deleteNews = (id) => axiosInstance.delete(`/admin/news/${id}`);
 
 // Web Settings & TTD
-export const updateWebSettings = (data) => axiosInstance.put('/admin/web-settings', data);
+export const updateWebSettings = (data) => {
+    if (data instanceof FormData) {
+        if (!data.has('_method')) data.append('_method', 'PUT');
+        return axiosInstance.post('/admin/web-settings', data, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+    }
+    return axiosInstance.put('/admin/web-settings', data);
+};
 export const uploadTtd = (data) => axiosInstance.post('/admin/ttd', data, {
     headers: { 'Content-Type': 'multipart/form-data' }
 });

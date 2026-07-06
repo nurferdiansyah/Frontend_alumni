@@ -50,7 +50,7 @@ export function Navbar() {
           >
             {['masuk', 'daftar'].map((item) => (
               <Link
-                to={item === 'masuk' ? '/login' : '#'}
+                to={item === 'masuk' ? '/login' : '/register'}
                 key={item}
                 className="relative"
                 onMouseEnter={() => setHoveredAuth(item)}
@@ -93,7 +93,9 @@ export function Navbar() {
               <Link to="/login">
                 <Button variant="outline" className="w-full">Masuk</Button>
               </Link>
-              <Button variant="primary" className="w-full">Daftar</Button>
+              <Link to="/register">
+                <Button variant="primary" className="w-full">Daftar</Button>
+              </Link>
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getNews, getJobs } from '../../api/publicService';
+import { getNews, getJobs, getWebSettings } from '../../api/publicService';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 import { Button } from '../../components/Button';
@@ -10,36 +10,61 @@ import { BookOpen, Award, Building, Users, Briefcase, GraduationCap, CheckCircle
 import { Link } from 'react-router-dom';
 
 export function Home() {
-  const heroImages = [
-    "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2070&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=2070&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1573164713988-8665fc963095?q=80&w=2069&auto=format&fit=crop"
-  ];
-  
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [newsList, setNewsList] = useState([]);
   const [jobsList, setJobsList] = useState([]);
+  const [webSettings, setWebSettings] = useState({
+    hero_title: '',
+    hero_description: '',
+    hero_image_1: null,
+    hero_image_2: null,
+    hero_image_3: null,
+  });
+
+  const heroImages = [];
+  if (webSettings.hero_image_1 || webSettings.hero_image) heroImages.push(webSettings.hero_image_1 || webSettings.hero_image);
+  if (webSettings.hero_image_2) heroImages.push(webSettings.hero_image_2);
+  if (webSettings.hero_image_3) heroImages.push(webSettings.hero_image_3);
 
   useEffect(() => {
+    if (heroImages.length <= 1) return;
     const timer = setInterval(() => {
       setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
     }, 4000); // geser otomatis setiap 4 detik
     return () => clearInterval(timer);
-  }, []);
+  }, [heroImages.length]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [newsRes, jobsRes] = await Promise.all([getNews(), getJobs()]);
+        const [newsRes, jobsRes, settingsRes] = await Promise.all([
+          getNews().catch(() => ({ data: [] })), 
+          getJobs().catch(() => ({ data: [] })),
+          getWebSettings().catch(() => null)
+        ]);
         const fetchedNews = newsRes.data.data || newsRes.data;
         const fetchedJobs = jobsRes.data.data || jobsRes.data;
         
         setNewsList(Array.isArray(fetchedNews) ? fetchedNews.slice(0, 3) : []);
         setJobsList(Array.isArray(fetchedJobs) ? fetchedJobs.slice(0, 3) : []);
+
+        if (settingsRes && settingsRes.data) {
+          const settingsData = settingsRes.data.data || settingsRes.data;
+          setWebSettings(prev => ({
+            hero_title: settingsData.hero_title || prev.hero_title,
+            hero_description: settingsData.hero_description || prev.hero_description,
+            hero_image_1: settingsData.hero_image_1 || settingsData.hero_image || prev.hero_image_1,
+            hero_image_2: settingsData.hero_image_2 || prev.hero_image_2,
+            hero_image_3: settingsData.hero_image_3 || prev.hero_image_3,
+          }));
+        }
       } catch (err) {
         console.error('Gagal mengambil data dari API', err);
         // Fallback or leave empty
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchData();
@@ -56,13 +81,31 @@ export function Home() {
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/20 bg-white/10 text-[11px] font-bold mb-8 text-white/90 tracking-widest uppercase">
               <span className="w-2 h-2 rounded-full bg-[#7FE0B0]"></span> RESMI: CAREER CENTER UNUHA
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-[56px] font-bold leading-[1.1] mb-6 tracking-tight">
-              <span className="block text-white">Membangun Karir,</span>
-              <span className="block text-[#7FE0B0]">Menghubungkan Alumni.</span>
-            </h1>
-            <p className="text-white/80 text-[17px] mb-10 max-w-lg leading-relaxed">
-              Selamat datang di Pusat Pengembangan Karir dan Alumni Universitas Nurul Huda (UNUHA). Kami berkomitmen membantu setiap mahasiswa dan lulusan mencapai potensi karir maksimal mereka melalui jejaring profesional yang kuat.
-            </p>
+            {isLoading ? (
+              <div className="animate-pulse mb-10">
+                <div className="h-[56px] bg-white/20 rounded-xl w-3/4 mb-4"></div>
+                <div className="h-[56px] bg-[#7FE0B0]/40 rounded-xl w-1/2 mb-8"></div>
+                <div className="h-4 bg-white/20 rounded-md w-full mb-3"></div>
+                <div className="h-4 bg-white/20 rounded-md w-5/6 mb-3"></div>
+                <div className="h-4 bg-white/20 rounded-md w-4/6"></div>
+              </div>
+            ) : (
+              <>
+                <h1 className="text-4xl md:text-5xl lg:text-[56px] font-bold leading-[1.1] mb-6 tracking-tight">
+                  {webSettings.hero_title.split(',').length > 1 ? (
+                    <>
+                      <span className="block text-white">{webSettings.hero_title.substring(0, webSettings.hero_title.lastIndexOf(','))},</span>
+                      <span className="block text-[#7FE0B0]">{webSettings.hero_title.substring(webSettings.hero_title.lastIndexOf(',') + 1).trim()}</span>
+                    </>
+                  ) : (
+                    <span className="block text-white">{webSettings.hero_title}</span>
+                  )}
+                </h1>
+                <p className="text-white/80 text-[17px] mb-10 max-w-lg leading-relaxed whitespace-pre-line">
+                  {webSettings.hero_description}
+                </p>
+              </>
+            )}
             <div className="flex flex-col sm:flex-row gap-5">
               <Link to="/jobs">
                 <Button variant="accent" className="w-full sm:w-auto text-base px-8 py-3.5 rounded-xl font-bold shadow-lg shadow-[#7FE0B0]/20 text-[#0F4C3A] bg-[#7FE0B0] hover:bg-[#66c698]">Eksplorasi Karir</Button>
@@ -74,27 +117,37 @@ export function Home() {
           </ScrollReveal>
           
           <ScrollReveal delay={0.2} className="relative h-full min-h-[500px] hidden lg:block">
-            <div className="absolute top-0 right-0 w-[95%] h-[550px] rounded-[32px] overflow-hidden shadow-2xl z-10 border-[6px] border-white/10 group">
-              {heroImages.map((img, idx) => (
-                <img 
-                  key={idx}
-                  src={img} 
-                  alt={`Hero ${idx + 1}`} 
-                  className={`absolute inset-0 w-full h-full object-cover object-top transition-opacity duration-1000 ${currentImageIndex === idx ? 'opacity-100 z-10' : 'opacity-0 z-0'}`} 
-                />
-              ))}
-              
-              {/* Indikator Titik (Pagination Dots) */}
-              <div className="absolute bottom-6 left-0 right-0 z-20 flex justify-center gap-2">
-                {heroImages.map((_, idx) => (
-                  <button 
-                    key={idx} 
-                    onClick={() => setCurrentImageIndex(idx)}
-                    className={`h-2.5 rounded-full transition-all duration-300 ${currentImageIndex === idx ? 'bg-[#7FE0B0] w-8' : 'bg-white/60 hover:bg-white w-2.5'}`}
-                    aria-label={`Go to slide ${idx + 1}`}
-                  />
-                ))}
-              </div>
+            <div className="absolute top-0 right-0 w-[95%] h-[550px] rounded-[32px] overflow-hidden shadow-2xl z-10 border-[6px] border-white/10 group bg-white/5">
+              {isLoading ? (
+                <div className="w-full h-full animate-pulse flex flex-col items-center justify-center gap-4">
+                   <div className="w-16 h-16 rounded-full border-4 border-[#7FE0B0]/30 border-t-[#7FE0B0] animate-spin"></div>
+                </div>
+              ) : (
+                <>
+                  {heroImages.map((img, idx) => (
+                    <img 
+                      key={idx}
+                      src={img} 
+                      alt={`Hero ${idx + 1}`} 
+                      className={`absolute inset-0 w-full h-full object-cover object-top transition-opacity duration-1000 ${currentImageIndex === idx ? 'opacity-100 z-10' : 'opacity-0 z-0'}`} 
+                    />
+                  ))}
+                  
+                  {/* Indikator Titik (Pagination Dots) */}
+                  {heroImages.length > 1 && (
+                    <div className="absolute bottom-6 left-0 right-0 z-20 flex justify-center gap-2">
+                      {heroImages.map((_, idx) => (
+                        <button 
+                          key={idx} 
+                          onClick={() => setCurrentImageIndex(idx)}
+                          className={`h-2.5 rounded-full transition-all duration-300 ${currentImageIndex === idx ? 'bg-[#7FE0B0] w-8' : 'bg-white/60 hover:bg-white w-2.5'}`}
+                          aria-label={`Go to slide ${idx + 1}`}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </>
+              )}
             </div>
           </ScrollReveal>
         </div>
@@ -192,10 +245,10 @@ export function Home() {
                   <ul className="space-y-3 pt-5 border-t border-gray-100/80 relative z-10">
                     {card.items.map((item, j) => (
                       <li key={j} className="flex items-center gap-3 text-gray-600 text-[13px] font-medium group/item">
-                        <span className={`w-6 h-6 rounded-full flex items-center justify-center ${card.accent} bg-opacity-10 ${card.textAccent} group-hover/item:scale-110 group-hover/item:bg-opacity-20 transition-all duration-300`}>
+                        <span className={`w-6 h-6 rounded-full flex items-center justify-center ${card.accent} text-white shadow-sm group-hover/item:scale-110 group-hover/item:shadow-md transition-all duration-300`}>
                           <CheckCircle2 size={13} strokeWidth={3} />
                         </span>
-                        <span>{item}</span>
+                        {item}
                       </li>
                     ))}
                   </ul>
