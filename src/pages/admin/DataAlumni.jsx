@@ -283,7 +283,25 @@ export function DataAlumni() {
                   </div>
                   <div className="col-span-2">
                     <p className="text-xs text-gray-500 uppercase tracking-wide font-bold mb-1">Alamat</p>
-                    <p className="font-medium text-gray-900">{selectedAlumni.alamat || '-'}</p>
+                    {(() => {
+                      const alamatStr = selectedAlumni.alamat || '';
+                      if (!alamatStr) return <p className="font-medium text-gray-900">-</p>;
+                      if (alamatStr.includes(', ')) {
+                        const parts = alamatStr.split(', ').reverse();
+                        if (parts.length >= 5) {
+                          return (
+                            <div className="grid grid-cols-2 gap-4 mt-2 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                              <div><p className="text-[11px] text-gray-500 uppercase tracking-wide mb-1">Negara</p><p className="font-medium text-gray-900 text-sm">{parts[0]}</p></div>
+                              <div><p className="text-[11px] text-gray-500 uppercase tracking-wide mb-1">Provinsi</p><p className="font-medium text-gray-900 text-sm">{parts[1]}</p></div>
+                              <div><p className="text-[11px] text-gray-500 uppercase tracking-wide mb-1">Kab/Kota</p><p className="font-medium text-gray-900 text-sm">{parts[2]}</p></div>
+                              <div><p className="text-[11px] text-gray-500 uppercase tracking-wide mb-1">Kecamatan</p><p className="font-medium text-gray-900 text-sm">{parts[3]}</p></div>
+                              <div className="col-span-2"><p className="text-[11px] text-gray-500 uppercase tracking-wide mb-1">Detail Jalan</p><p className="font-medium text-gray-900 text-sm">{parts.slice(4).reverse().join(', ')}</p></div>
+                            </div>
+                          );
+                        }
+                      }
+                      return <p className="font-medium text-gray-900">{alamatStr}</p>;
+                    })()}
                   </div>
                 </div>
                 <div className="mt-6 flex justify-end">

@@ -80,11 +80,6 @@ export function NotifikasiAdmin() {
               <h1 className="text-3xl font-bold text-gray-900 mb-2">Pusat Notifikasi</h1>
               <p className="text-gray-500">Pemberitahuan aktivitas sistem dan pengguna.</p>
             </div>
-            <button 
-              className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
-            >
-              <CheckCircle size={16} /> Tandai semua dibaca
-            </button>
           </div>
 
           <div className="bg-white rounded-[24px] shadow-sm border border-gray-100 overflow-hidden">

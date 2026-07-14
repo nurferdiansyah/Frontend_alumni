@@ -22,6 +22,7 @@ export function Jobs() {
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState('Terbaru Dipublikasi');
 
+
   useEffect(() => {
     const fetchJobs = async () => {
       try {
@@ -119,20 +120,7 @@ export function Jobs() {
           transition={{ duration: 0.8 }}
         >
           <h1 className="text-4xl md:text-5xl font-bold mb-4 text-[#7FE0B0]">Temukan Pekerjaan Impianmu</h1>
-          <p className="text-white/80 text-[16px] max-w-2xl mx-auto mb-10 leading-relaxed">Jelajahi ratusan lowongan kerja dari perusahaan mitra Universitas Nurul Huda khusus untuk alumni.</p>
-          
-          <div className="bg-white p-2.5 rounded-2xl flex flex-col md:flex-row gap-2 max-w-4xl mx-auto shadow-2xl">
-            <div className="flex-1 flex items-center px-4 py-2 text-gray-700">
-              <Search className="w-5 h-5 text-gray-400 mr-3 flex-shrink-0" />
-              <input type="text" placeholder="Posisi, kata kunci, atau perusahaan" className="w-full bg-transparent outline-none border-none text-[15px]" />
-            </div>
-            <div className="hidden md:block w-[1px] bg-gray-200 my-2"></div>
-            <div className="flex-1 flex items-center px-4 py-2 text-gray-700 border-t border-gray-100 md:border-none">
-              <MapPin className="w-5 h-5 text-gray-400 mr-3 flex-shrink-0" />
-              <input type="text" placeholder="Kota atau provinsi" className="w-full bg-transparent outline-none border-none text-[15px]" />
-            </div>
-            <Button variant="primary" className="bg-[#7FE0B0] hover:bg-[#66c698] text-[#0F4C3A] font-bold rounded-xl px-8 py-3.5 shadow-md">Cari Lowongan</Button>
-          </div>
+          <p className="text-white/80 text-[16px] max-w-2xl mx-auto mb-2 leading-relaxed">Jelajahi ratusan lowongan kerja dari perusahaan mitra Universitas Nurul Huda khusus untuk alumni.</p>
         </motion.div>
       </section>
 

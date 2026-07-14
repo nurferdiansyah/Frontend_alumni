@@ -86,7 +86,9 @@ export function Campus() {
               <p className="text-white/80 text-[17px] max-w-xl">Jadilah bagian dari generasi unggul berwawasan global bersama kami. Daftar sekarang untuk masa depan yang lebih cerah.</p>
             </div>
             <div className="relative z-10 flex-shrink-0">
-              <Button variant="accent" className="bg-[#7FE0B0] text-[#0F4C3A] font-bold px-10 py-4 text-[17px] rounded-xl shadow-xl hover:bg-[#66c698] transition-all hover:scale-105">Bergabung Sekarang</Button>
+              <a href="https://sisfo.unuha.ac.id/" target="_blank" rel="noopener noreferrer">
+                <Button variant="accent" className="bg-[#7FE0B0] text-[#0F4C3A] font-bold px-10 py-4 text-[17px] rounded-xl shadow-xl hover:bg-[#66c698] transition-all hover:scale-105">Bergabung Sekarang</Button>
+              </a>
             </div>
           </div>
         </ScrollReveal>
@@ -167,76 +169,38 @@ export function Campus() {
           </div>
         </div>
 
-        {/* Pengumuman & Agenda */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-16">
-          
-          <div className="lg:col-span-2">
-            <ScrollReveal>
-              <div className="flex justify-between items-end mb-6">
-                <h3 className="text-2xl font-bold text-gray-900">Pengumuman Terbaru</h3>
-              </div>
-            </ScrollReveal>
-            
-            <div className="flex flex-col gap-4">
-              {loading ? (
-                <p className="text-gray-500">Memuat pengumuman...</p>
-              ) : infoList.length > 0 ? (
-                infoList.map((item, idx) => (
-                  <ScrollReveal key={item.id_info || item.id || idx} delay={idx * 0.1}>
-                    <Link to={`/campus/${item.id_info || item.id}`} className="bg-white border border-gray-100 p-6 rounded-[20px] shadow-sm hover:shadow-md transition-all duration-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4 group block">
-                      <div>
-                        <div className="flex items-center gap-3 mb-2.5">
-                          <span className="bg-[#F8FAFC] text-gray-700 text-[11px] px-3 py-1 rounded-md font-bold border border-gray-100 uppercase tracking-wide">{item.type || item.tipe || 'Informasi'}</span>
-                          <span className="text-gray-400 text-[12px] flex items-center gap-1.5 font-medium"><Calendar size={12}/> {item.created_at ? new Date(item.created_at).toLocaleDateString('id-ID') : (item.tanggal || '-')}</span>
-                        </div>
-                        <h4 className="font-bold text-gray-900 text-[16px] group-hover:text-[#0F4C3A] transition-colors">{item.title || item.judul}</h4>
-                      </div>
-                      <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-[#0F4C3A] transition-colors flex-shrink-0">
-                        <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
-                      </div>
-                    </Link>
-                  </ScrollReveal>
-                ))
-              ) : (
-                <p className="text-gray-500">Belum ada pengumuman kampus saat ini.</p>
-              )}
-            </div>
-          </div>
-          
-          <ScrollReveal delay={0.2} className="lg:col-span-1">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">Agenda Kampus</h3>
-            <div className="bg-[#F8FAFC] rounded-[24px] p-8 border border-gray-100">
-              <div className="relative border-l-2 border-[#7FE0B0] ml-2.5 pl-6 space-y-8 py-2">
-                
-                <div className="relative">
-                  <div className="absolute -left-[31px] bg-white border-[3px] border-[#7FE0B0] w-[14px] h-[14px] rounded-full"></div>
-                  <div className="text-[12px] font-bold text-[#0F4C3A] mb-1 uppercase tracking-wider">15 - 20 Nov 2026</div>
-                  <div className="font-bold text-gray-900 text-[15px]">Ujian Tengah Semester (UTS)</div>
-                </div>
-                
-                <div className="relative">
-                  <div className="absolute -left-[31px] bg-white border-[3px] border-gray-300 w-[14px] h-[14px] rounded-full"></div>
-                  <div className="text-[12px] font-bold text-gray-500 mb-1 uppercase tracking-wider">01 Des 2026</div>
-                  <div className="font-bold text-gray-900 text-[15px]">Batas Akhir Pembayaran SPP</div>
-                </div>
-
-                <div className="relative">
-                  <div className="absolute -left-[31px] bg-white border-[3px] border-gray-300 w-[14px] h-[14px] rounded-full"></div>
-                  <div className="text-[12px] font-bold text-gray-500 mb-1 uppercase tracking-wider">20 Des 2026</div>
-                  <div className="font-bold text-gray-900 text-[15px]">Libur Semester Ganjil</div>
-                </div>
-
-                <div className="relative">
-                  <div className="absolute -left-[31px] bg-white border-[3px] border-gray-300 w-[14px] h-[14px] rounded-full"></div>
-                  <div className="text-[12px] font-bold text-gray-500 mb-1 uppercase tracking-wider">15 Jan 2027</div>
-                  <div className="font-bold text-gray-900 text-[15px]">Awal Perkuliahan Genap</div>
-                </div>
-
-              </div>
-              <Button variant="outline" className="w-full mt-10 rounded-xl bg-white text-gray-700 font-bold border-gray-200">Lihat Kalender Akademik</Button>
+        {/* Pengumuman Terbaru */}
+        <div className="mb-16 w-full max-w-5xl mx-auto">
+          <ScrollReveal>
+            <div className="flex justify-between items-end mb-6">
+              <h3 className="text-2xl font-bold text-gray-900">Pengumuman Terbaru</h3>
             </div>
           </ScrollReveal>
-
+          
+          <div className="flex flex-col gap-4">
+            {loading ? (
+              <p className="text-gray-500">Memuat pengumuman...</p>
+            ) : infoList.length > 0 ? (
+              infoList.map((item, idx) => (
+                <ScrollReveal key={item.id_info || item.id || idx} delay={idx * 0.1}>
+                  <Link to={`/campus/${item.id_info || item.id}`} className="bg-white border border-gray-100 p-6 rounded-[20px] shadow-sm hover:shadow-md transition-all duration-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4 group block">
+                    <div>
+                      <div className="flex items-center gap-3 mb-2.5">
+                        <span className="bg-[#F8FAFC] text-gray-700 text-[11px] px-3 py-1 rounded-md font-bold border border-gray-100 uppercase tracking-wide">{item.type || item.tipe || 'Informasi'}</span>
+                        <span className="text-gray-400 text-[12px] flex items-center gap-1.5 font-medium"><Calendar size={12}/> {item.created_at ? new Date(item.created_at).toLocaleDateString('id-ID') : (item.tanggal || '-')}</span>
+                      </div>
+                      <h4 className="font-bold text-gray-900 text-[16px] group-hover:text-[#0F4C3A] transition-colors">{item.title || item.judul}</h4>
+                    </div>
+                    <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-[#0F4C3A] transition-colors flex-shrink-0">
+                      <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
+                    </div>
+                  </Link>
+                </ScrollReveal>
+              ))
+            ) : (
+              <p className="text-gray-500">Belum ada pengumuman kampus saat ini.</p>
+            )}
+          </div>
         </div>
       </section>
 

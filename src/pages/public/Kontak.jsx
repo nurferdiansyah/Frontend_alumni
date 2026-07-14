@@ -4,7 +4,31 @@ import { Footer } from '../../components/Footer';
 import { Button } from '../../components/Button';
 import { ScrollReveal } from '../../components/ScrollReveal';
 import { motion } from 'framer-motion';
-import { MapPin, Phone, Mail, Clock, Send } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+
+const FacebookIcon = ({ className }) => (
+  <svg className={className} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" />
+  </svg>
+);
+
+const InstagramIcon = ({ className }) => (
+  <svg className={className} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path fillRule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clipRule="evenodd" />
+  </svg>
+);
+
+const YoutubeIcon = ({ className }) => (
+  <svg className={className} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path fillRule="evenodd" d="M19.812 5.418c.861.23 1.538.907 1.768 1.768C21.998 8.746 22 12 22 12s-.002 3.254-.42 4.814a2.504 2.504 0 0 1-1.768 1.768c-1.56.419-7.812.419-7.812.419s-6.252 0-7.812-.419a2.505 2.505 0 0 1-1.768-1.768C2 15.254 2 12 2 12s.002-3.254.42-4.814a2.507 2.507 0 0 1 1.768-1.768C5.748 5 12 5 12 5s6.252 0 7.812.418ZM15.194 12 10 15V9l5.194 3Z" clipRule="evenodd" />
+  </svg>
+);
+
+const TiktokIcon = ({ className }) => (
+  <svg className={className} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.01.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.12-3.44-3.17-3.49-5.46-.05-2.04.94-4.01 2.65-5.18 1.63-1.12 3.73-1.37 5.61-.71 0 1.48 0 2.96 0 4.44-.64-.26-1.39-.23-1.99.11-.82.46-1.29 1.43-1.16 2.37.13.93.75 1.72 1.61 2.02.86.3 1.83.13 2.55-.42.71-.55 1.13-1.41 1.13-2.31.02-6.52.01-13.04.02-19.56z"/>
+  </svg>
+);
 
 export function Kontak() {
   return (
@@ -39,13 +63,13 @@ export function Kontak() {
 
       {/* Content Section */}
       <section className="pb-24 px-6 md:px-12 lg:px-16 flex-grow w-full max-w-[1200px] mx-auto -mt-16 relative z-20">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        <div className="flex justify-center">
 
           {/* Contact Information */}
-          <div className="lg:col-span-5 flex flex-col gap-8">
+          <div className="w-full max-w-3xl flex flex-col gap-8">
             <ScrollReveal>
               <div className="bg-white rounded-[32px] p-10 shadow-xl shadow-gray-200/50 border border-gray-100">
-                <h3 className="text-2xl font-extrabold text-gray-900 mb-8">Informasi Kontak</h3>
+                <h3 className="text-2xl font-extrabold text-gray-900 mb-8 text-center">Informasi Kontak</h3>
 
                 <div className="space-y-8">
                   <div className="flex gap-4 group">
@@ -53,12 +77,11 @@ export function Kontak() {
                       <MapPin size={24} />
                     </div>
                     <div>
-                      <h4 className="font-bold text-gray-900 mb-1">Alamat Kampus</h4>
-                      <p className="text-gray-500 text-[15px] leading-relaxed">
-                        Jl. Raya Lintas Timur KM. 15<br />
-                        Kabupaten Ogan Komering Ulu Timur<br />
-                        Sumatera Selatan, 32181
-                      </p>
+                      <h4 className="font-bold text-gray-900 mb-2">Alamat Kampus</h4>
+                      <div className="flex flex-col text-[14px] space-y-2 text-gray-600">
+                        <span><strong className="text-gray-800">Kampus A & B:</strong> Jl. Kota Baru, Desa Sukaraja, Kec. Buay Madang, OKU Timur, Sumatera Selatan 32161.</span>
+                        <span><strong className="text-gray-800">Kampus C:</strong> Jl. Tanah Merah Jembatan 2, Desa Tanah Merah, Kec. Belitang Madang Raya, OKU Timur, Sumatera Selatan.</span>
+                      </div>
                     </div>
                   </div>
 
@@ -67,11 +90,12 @@ export function Kontak() {
                       <Phone size={24} />
                     </div>
                     <div>
-                      <h4 className="font-bold text-gray-900 mb-1">Telepon</h4>
-                      <p className="text-gray-500 text-[15px] leading-relaxed">
-                        (0714) 321-4567<br />
-                        +62 811-2233-4455 (WhatsApp)
-                      </p>
+                      <h4 className="font-bold text-gray-900 mb-2">Telepon & Kontak Resmi</h4>
+                      <div className="flex flex-col text-[14px] space-y-1 text-gray-600">
+                        <span><strong className="text-gray-800">Telepon Utama (FST/Umum):</strong> 0735-4840646</span>
+                        <span><strong className="text-gray-800">WA PMB (Kampus A & B):</strong> 0821-8466-0898</span>
+                        <span><strong className="text-gray-800">WA PMB (Kampus C):</strong> 0857-5833-9135</span>
+                      </div>
                     </div>
                   </div>
 
@@ -82,8 +106,7 @@ export function Kontak() {
                     <div>
                       <h4 className="font-bold text-gray-900 mb-1">Email</h4>
                       <p className="text-gray-500 text-[15px] leading-relaxed">
-                        info@unuha.ac.id<br />
-                        alumni@unuha.ac.id
+                        info@unuha.ac.id
                       </p>
                     </div>
                   </div>
@@ -103,66 +126,20 @@ export function Kontak() {
                 </div>
 
                 <div className="mt-10 pt-8 border-t border-gray-100">
-                  <h4 className="font-bold text-gray-900 mb-4">Media Sosial Kami</h4>
-                  <div className="flex gap-3">
+                  <h4 className="font-bold text-gray-900 mb-4 text-center">Media Sosial Kami</h4>
+                  <div className="flex justify-center gap-3">
                     {[
-                      { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>, href: "#" },
-                      { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>, href: "#" },
-                      { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>, href: "#" },
-                      { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>, href: "#" }
+                      { icon: <FacebookIcon className="w-5 h-5" />, href: "https://web.facebook.com/univ.nurulhuda/?_rdc=1&_rdr#" },
+                      { icon: <InstagramIcon className="w-5 h-5" />, href: "https://www.instagram.com/universitasnurulhuda/" },
+                      { icon: <TiktokIcon className="w-5 h-5" />, href: "https://www.tiktok.com/@pmb.unuha" },
+                      { icon: <YoutubeIcon className="w-5 h-5" />, href: "https://www.youtube.com/@universitasnurulhuda" }
                     ].map((item, idx) => (
-                      <a key={idx} href={item.href} className="w-10 h-10 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center hover:bg-[#0F4C3A] hover:text-white transition-all duration-300 hover:-translate-y-1">
+                      <a key={idx} href={item.href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center hover:bg-[#0F4C3A] hover:text-white transition-all duration-300 hover:-translate-y-1">
                         {item.icon}
                       </a>
                     ))}
                   </div>
                 </div>
-              </div>
-            </ScrollReveal>
-          </div>
-
-          {/* Contact Form */}
-          <div className="lg:col-span-7">
-            <ScrollReveal delay={0.2}>
-              <div className="bg-white rounded-[32px] p-10 md:p-12 shadow-xl shadow-gray-200/50 border border-gray-100">
-                <div className="mb-8">
-                  <h3 className="text-2xl font-extrabold text-gray-900 mb-2">Kirim Pesan</h3>
-                  <p className="text-gray-500 text-[15px]">Silakan isi formulir di bawah ini dan kami akan segera membalas pesan Anda.</p>
-                </div>
-
-                <form className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label className="text-[14px] font-bold text-gray-700">Nama Lengkap</label>
-                      <input type="text" placeholder="Masukkan nama Anda" className="w-full bg-gray-50/50 border border-gray-200 rounded-xl px-4 py-3.5 outline-none focus:border-[#0F4C3A] focus:ring-1 focus:ring-[#0F4C3A] transition-all text-[15px]" />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-[14px] font-bold text-gray-700">Alamat Email</label>
-                      <input type="email" placeholder="contoh@email.com" className="w-full bg-gray-50/50 border border-gray-200 rounded-xl px-4 py-3.5 outline-none focus:border-[#0F4C3A] focus:ring-1 focus:ring-[#0F4C3A] transition-all text-[15px]" />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-[14px] font-bold text-gray-700">Kategori Pesan / Subjek</label>
-                    <select className="w-full bg-gray-50/50 border border-gray-200 rounded-xl px-4 py-3.5 outline-none focus:border-[#0F4C3A] focus:ring-1 focus:ring-[#0F4C3A] transition-all text-[15px] cursor-pointer text-gray-600">
-                      <option>Pilih Kategori</option>
-                      <option>Informasi Pendaftaran</option>
-                      <option>Kerja Sama / Kemitraan</option>
-                      <option>Dukungan Alumni</option>
-                      <option>Lainnya</option>
-                    </select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-[14px] font-bold text-gray-700">Isi Pesan</label>
-                    <textarea rows="5" placeholder="Tuliskan pesan Anda di sini..." className="w-full bg-gray-50/50 border border-gray-200 rounded-xl px-4 py-3.5 outline-none focus:border-[#0F4C3A] focus:ring-1 focus:ring-[#0F4C3A] transition-all text-[15px] resize-none"></textarea>
-                  </div>
-
-                  <Button variant="primary" className="w-full py-4 text-[16px] flex items-center justify-center gap-2 group mt-4">
-                    Kirim Pesan Sekarang
-                    <Send size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                  </Button>
-                </form>
               </div>
             </ScrollReveal>
           </div>

@@ -369,7 +369,9 @@ export function Home() {
             </div>
             
             <div className="relative z-10 flex-shrink-0">
-              <Button variant="accent" className="text-[16px] px-8 py-4 rounded-xl shadow-lg shadow-[#7FE0B0]/20 bg-[#7FE0B0] hover:bg-[#66c698] font-bold text-[#0F4C3A]">Daftar Sekarang</Button>
+              <Link to="/register">
+                <Button variant="accent" className="text-[16px] px-8 py-4 rounded-xl shadow-lg shadow-[#7FE0B0]/20 bg-[#7FE0B0] hover:bg-[#66c698] font-bold text-[#0F4C3A]">Daftar Sekarang</Button>
+              </Link>
             </div>
           </div>
         </ScrollReveal>

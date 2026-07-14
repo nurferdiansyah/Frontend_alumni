@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../../components/Button';
@@ -37,6 +37,27 @@ export function LengkapiProfil() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
+
+  const [fotoFile, setFotoFile] = useState(null);
+  const [fotoPreview, setFotoPreview] = useState(null);
+  const fileInputRef = useRef(null);
+
+  const handleFotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        setError('Ukuran foto maksimal 2MB. Silakan pilih foto lain.');
+        return;
+      }
+      setError(null);
+      setFotoFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFotoPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const [provinces, setProvinces] = useState([]);
   const [regencies, setRegencies] = useState([]);
@@ -176,7 +197,7 @@ export function LengkapiProfil() {
 
   const isStepComplete = () => {
     if (step === 1) {
-      return formData.nama && formData.nim && formData.fakultas && formData.prodi && formData.tahunLulus && formData.noWa;
+      return formData.nama && formData.nim && formData.id_fakultas && formData.id_prodi && formData.tahunLulus && formData.noWa;
     }
     if (step === 2) {
       return formData.negara && formData.provinsi && formData.kabupaten && formData.alamatDetail;
@@ -222,14 +243,25 @@ export function LengkapiProfil() {
     setSaving(true);
     setError(null);
     try {
+      const fullAddressParts = [formData.alamatDetail, formData.kecamatan, formData.kabupaten, formData.provinsi, formData.negara].filter(Boolean);
+      const fullAddress = fullAddressParts.join(', ');
+
       // Update basic profile
+      // If there's an API for photo upload, you can handle it here using fotoFile
+      // e.g. await uploadFotoProfil(fotoFile);
+
+      if (fotoPreview) {
+        localStorage.setItem('foto_profil', fotoPreview);
+      }
+
       await updateProfile({
         nama_lengkap: formData.nama,
         nim: formData.nim,
         angkatan: formData.tahunLulus,
         nomor_telepon: formData.noWa,
-        alamat: formData.alamatDetail,
-        id_prodi: formData.id_prodi
+        alamat: fullAddress,
+        id_prodi: formData.id_prodi,
+        foto_profil: fotoPreview // Send base64 if backend supports it
       });
 
       // Submit Tracer Study based on status
@@ -339,14 +371,25 @@ export function LengkapiProfil() {
                     </div>
 
                     <div className="flex justify-center mb-8">
-                      <div className="relative group cursor-pointer">
-                        <div className="w-28 h-28 bg-gray-100 rounded-full border-4 border-white shadow-md flex items-center justify-center overflow-hidden">
-                          <Camera className="text-gray-400 w-8 h-8 group-hover:scale-110 transition-transform" />
+                      <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                        <div className="w-28 h-28 bg-gray-100 rounded-full border-4 border-white shadow-md flex items-center justify-center overflow-hidden relative">
+                          {fotoPreview ? (
+                            <img src={fotoPreview} alt="Preview" className="w-full h-full object-cover" />
+                          ) : (
+                            <Camera className="text-gray-400 w-8 h-8 group-hover:scale-110 transition-transform" />
+                          )}
                         </div>
                         <div className="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                           <span className="text-white text-xs font-bold">Unggah Foto</span>
                         </div>
                       </div>
+                      <input 
+                        type="file" 
+                        ref={fileInputRef}
+                        className="hidden" 
+                        accept="image/jpeg, image/png, image/jpg" 
+                        onChange={handleFotoChange} 
+                      />
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

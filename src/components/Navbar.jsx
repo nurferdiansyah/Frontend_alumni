@@ -24,10 +24,8 @@ export function Navbar() {
         <div className="flex justify-between items-center">
 
           <div className="flex items-center gap-3 cursor-pointer">
-            <div className="bg-[#F3F4F6] p-2 rounded-xl">
-              <GraduationCap className="text-[#0F4C3A] w-6 h-6" />
-            </div>
-            <span className="font-bold text-[22px] tracking-tight text-[#0F4C3A]">UNUHA Alumni</span>
+            <img src="/logo.png" alt="Logo UNUHA" className="w-10 h-10 object-contain" />
+            <span className="font-bold text-[22px] tracking-tight text-[#0F4C3A]">Alumni & Karir UNUHA</span>
           </div>
 
           <div className="hidden lg:flex items-center space-x-6 xl:space-x-8">

@@ -50,8 +50,11 @@ export function ProfilSaya() {
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 -mt-16 mb-4">
                 <div className="flex flex-col md:flex-row gap-6 items-center md:items-end">
                   <div className="w-32 h-32 rounded-full border-4 border-white bg-[#7FE0B0] flex items-center justify-center text-4xl font-bold text-[#0F4C3A] shadow-md z-10 relative overflow-hidden uppercase">
-                    {profile?.nama_lengkap ? profile.nama_lengkap.substring(0, 2) : 'AL'}
-                    {/* If photo exists: <img src="..." className="w-full h-full object-cover" /> */}
+                    {(profile?.foto_profil || localStorage.getItem('foto_profil')) ? (
+                      <img src={profile?.foto_profil || localStorage.getItem('foto_profil')} alt="Foto Profil" className="w-full h-full object-cover absolute inset-0" />
+                    ) : (
+                      profile?.nama_lengkap ? profile.nama_lengkap.substring(0, 2) : 'AL'
+                    )}
                   </div>
                   <div className="text-center md:text-left pb-2">
                     <h1 className="text-2xl font-bold text-gray-900">{profile?.nama_lengkap || 'Nama Belum Diisi'}</h1>
@@ -151,12 +154,47 @@ export function ProfilSaya() {
                 </div>
                 
                 <div className="space-y-4">
-                  <div>
-                    <p className="text-sm text-gray-500 mb-1">Detail Alamat</p>
-                    <p className="font-medium text-gray-900 text-sm leading-relaxed">
-                      {profile?.alamat || 'Belum diisi'}
-                    </p>
-                  </div>
+                  {(() => {
+                    const alamatStr = profile?.alamat || '';
+                    if (!alamatStr) return <p className="font-medium text-gray-900 text-sm">Belum diisi</p>;
+                    
+                    if (alamatStr.includes(', ')) {
+                      const parts = alamatStr.split(', ').reverse();
+                      if (parts.length >= 5) {
+                        return (
+                          <div className="space-y-4">
+                            <div>
+                              <p className="text-xs text-gray-500 mb-1">Negara</p>
+                              <p className="font-medium text-gray-900 text-sm">{parts[0]}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-gray-500 mb-1">Provinsi</p>
+                              <p className="font-medium text-gray-900 text-sm">{parts[1]}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-gray-500 mb-1">Kabupaten/Kota</p>
+                              <p className="font-medium text-gray-900 text-sm">{parts[2]}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-gray-500 mb-1">Kecamatan</p>
+                              <p className="font-medium text-gray-900 text-sm">{parts[3]}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-gray-500 mb-1">Detail Alamat / Jalan</p>
+                              <p className="font-medium text-gray-900 text-sm leading-relaxed">{parts.slice(4).reverse().join(', ')}</p>
+                            </div>
+                          </div>
+                        );
+                      }
+                    }
+                    
+                    return (
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Alamat Lengkap</p>
+                        <p className="font-medium text-gray-900 text-sm leading-relaxed">{alamatStr}</p>
+                      </div>
+                    );
+                  })()}
                 </div>
               </motion.div>
             </div>
