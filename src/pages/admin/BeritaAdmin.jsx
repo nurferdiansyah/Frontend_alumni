@@ -3,7 +3,7 @@ import { AdminLayout } from '../../components/AdminLayout';
 import { Search, Plus, Edit, Trash2, Eye } from 'lucide-react';
 import { Button } from '../../components/Button';
 import { getNews } from '../../api/publicService';
-import { createNews, updateNews, deleteNews } from '../../api/adminService';
+import { createNews, updateNews, deleteNews, getNewsAdmin } from '../../api/adminService';
 import Swal from 'sweetalert2';
 
 export function BeritaAdmin() {
@@ -25,7 +25,7 @@ export function BeritaAdmin() {
 
   const fetchNews = async () => {
     try {
-      const response = await getNews();
+      const response = await getNewsAdmin();
       const data = response.data.data || response.data;
       setNews(Array.isArray(data) ? data : []);
     } catch (error) {

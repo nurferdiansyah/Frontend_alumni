@@ -3,7 +3,7 @@ import { AdminLayout } from '../../components/AdminLayout';
 import { Search, Plus, Edit, Trash2, Eye } from 'lucide-react';
 import { Button } from '../../components/Button';
 import { getInfo } from '../../api/publicService';
-import { createInfo, updateInfo, deleteInfo } from '../../api/adminService';
+import { createInfo, updateInfo, deleteInfo, getInfoAdmin } from '../../api/adminService';
 import Swal from 'sweetalert2';
 
 export function InfoKampusAdmin() {
@@ -24,7 +24,7 @@ export function InfoKampusAdmin() {
 
   const fetchInfo = async () => {
     try {
-      const response = await getInfo();
+      const response = await getInfoAdmin();
       const data = response.data.data || response.data;
       setInfoList(Array.isArray(data) ? data : []);
     } catch (error) {

@@ -19,9 +19,11 @@ export const updateJob = (id, data) => axiosInstance.put(`/admin/jobs/${id}`, da
 export const deleteJob = (id) => axiosInstance.delete(`/admin/jobs/${id}`);
 
 // Info Kampus & Berita
+export const getInfoAdmin = () => axiosInstance.get('/admin/info');
 export const createInfo = (data) => axiosInstance.post('/admin/info', data);
 export const updateInfo = (id, data) => axiosInstance.put(`/admin/info/${id}`, data);
 export const deleteInfo = (id) => axiosInstance.delete(`/admin/info/${id}`);
+export const getNewsAdmin = () => axiosInstance.get('/admin/news');
 export const createNews = (data) => axiosInstance.post('/admin/news', data);
 export const updateNews = (id, data) => axiosInstance.put(`/admin/news/${id}`, data);
 export const deleteNews = (id) => axiosInstance.delete(`/admin/news/${id}`);
